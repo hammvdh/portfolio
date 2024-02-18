@@ -1,4 +1,5 @@
-import "./App.css";
+import './App.css';
+import FeaturedProject from './components/featured-project';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
             <img
               className="logo"
               alt="Elite's Logo"
-              src={process.env.PUBLIC_URL + "/images/elite-text.png"}
+              src={process.env.PUBLIC_URL + '/images/elite-text.png'}
             />
           </div>
 
@@ -20,13 +21,24 @@ function App() {
             <p className="nav-item">CONTACT</p>
           </div>
         </div>
-
         <div className="detail-header">
           <h3 className="hey-there">Hey there, I’m Hammadh Arquil</h3>
           <h1>Software Engineer & Graphic Designer based in Sri Lanka.</h1>
           <div className="rows">
-            <p>HAMMADH A.</p>
+            <p>BRAND ALIAS: ELITE</p>
+            <p>CREATING VISUAL EXPERIENCES.</p>
             <p>ENHANCING BRANDS SINCE 2016</p>
+          </div>
+
+          <div className="availability">
+            <div className="rows2">
+              <p>AVAILABLE FOR WORK</p>
+              <span class="blink_me"></span>
+            </div>
+            <div className="rows2 avail-contact">
+              <div className="line"></div>
+              <p className="w500 ">CONTACT</p>
+            </div>
           </div>
         </div>
         <div className="fields rows">
@@ -54,10 +66,23 @@ function App() {
         <div className="rows-flex spacebtwn">
           <h2>Featured Projects</h2>
           <div className="featured-btn rows-flex">
-              <div className="line"></div>
-              <div className="featured-btn-title">View Portfolio</div>
-            </div>
+            <div className="line"></div>
+            <div className="featured-btn-title">View Portfolio</div>
+          </div>
         </div>
+        <div className="projects grid-container">
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+          <FeaturedProject />
+        </div>
+      </div>
+      <div className="divider-container">
+        <div className="divider"></div>
       </div>
       <div className="connect"></div>
       <div className="footer"></div>
