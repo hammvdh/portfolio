@@ -43,18 +43,26 @@
   animation: 1.8s fadeUp;
 }
 
+.proj:hover {
+  transition: 0.8s ease-out;
+  transform: scale(1.03);
+}
+
 .proj1 {
   background-image: url('../../images/featured/proj1.png');
   background-size: cover;
 }
+
 .proj2 {
   background-image: url('../../images/featured/proj2.png');
   background-size: cover;
 }
+
 .proj3 {
   background-image: url('../../images/featured/proj3.png');
   background-size: cover;
 }
+
 .proj4 {
   background-image: url('../../images/featured/proj4.png');
   background-size: cover;

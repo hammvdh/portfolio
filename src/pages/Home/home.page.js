@@ -143,17 +143,25 @@ const Home = () => {
         </div>
 
         <div class="grid grid-flow-col gap-3 mt-[15px]">
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg proj1"></div>
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg proj2"></div>
+          <div className="col-span-2 rounded-lg overflow-hidden link">
+            <div className="proj bg-[#373737] h-[200px] proj1"></div>
+          </div>
+          <div className="col-span-2 rounded-lg overflow-hidden link">
+            <div className="proj bg-[#373737] h-[200px]  proj2"></div>
+          </div>
         </div>
-        {/* <div class="grid grid-flow-col gap-3 mt-[15px]">
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
+        {/* <div className="grid grid-flow-col gap-3 mt-[15px]">
+          <div className="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
+          <div className="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
+          <div className="bg-[#373737] col-span-2 h-[200px] rounded-lg"></div>
         </div> */}
-        <div class="grid grid-flow-col gap-3 mt-[15px]">
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg proj3"></div>
-          <div class="bg-[#373737] col-span-2 h-[200px] rounded-lg proj4"></div>
+        <div className="grid grid-flow-col gap-3 mt-[15px] ">
+          <div className="col-span-2 rounded-lg overflow-hidden link">
+            <div className="proj bg-[#373737] h-[200px] proj3"></div>
+          </div>
+          <div className="col-span-2 rounded-lg overflow-hidden link">
+            <div className="proj bg-[#373737] h-[200px] proj4"></div>
+          </div>
         </div>
       </div>
       <div className="mt-[3em] fadeUpRest">
