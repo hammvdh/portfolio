@@ -1,0 +1,61 @@
+.avatar {
+  background-image: url('../../images/avatar.jpg');
+  background-color: #373737;
+  background-size: cover;
+}
+
+.blink_me {
+  animation: blinker 1.5s ease-in-out infinite;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid #bede64;
+  background-color: #bede64;
+  border-radius: 100%;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    transform: translateY(25%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+.fadeUpProfile {
+  animation: 1.2s fadeUp;
+}
+
+.fadeUpDesc {
+  animation: 1.5s fadeUp;
+}
+
+.fadeUpRest {
+  animation: 1.8s fadeUp;
+}
+
+.proj1 {
+  background-image: url('../../images/featured/proj1.png');
+  background-size: cover;
+}
+.proj2 {
+  background-image: url('../../images/featured/proj2.png');
+  background-size: cover;
+}
+.proj3 {
+  background-image: url('../../images/featured/proj3.png');
+  background-size: cover;
+}
+.proj4 {
+  background-image: url('../../images/featured/proj4.png');
+  background-size: cover;
+}
