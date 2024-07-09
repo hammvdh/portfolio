@@ -7,7 +7,7 @@ const Home = () => {
     <div className="container">
       <AnimatedCursor
         color="190,222,100"
-        trailingSpeed={10}
+        trailingSpeed={20}
         innerSize={8}
         outerSize={20}
         innerScale={1.2}
