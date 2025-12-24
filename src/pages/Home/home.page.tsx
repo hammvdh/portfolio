@@ -118,7 +118,7 @@ const Home = () => {
           <div className="flex flex-row text-[#A4A4A4] hover:text-[#bede64] items-center">
             <a
               className="text-[#A4A4A4] font-normal text-sm sm:text-base link"
-              href="https://drive.google.com/file/d/18JrHT5_aCjXMZXx1zyCXIkCBsrZ96xdu/view?usp=sharing"
+              href="https://drive.google.com/file/d/1ZSCS8i97f35PkGOfqCOUPxefGt2DMpyk/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -257,7 +257,7 @@ const Home = () => {
           </a>
           <a
             className="text-sm sm:text-base underline hover:text-[#bede64]"
-            href="https://drive.google.com/file/d/18JrHT5_aCjXMZXx1zyCXIkCBsrZ96xdu/view?usp=sharing"
+            href="https://drive.google.com/file/d/1ZSCS8i97f35PkGOfqCOUPxefGt2DMpyk/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
           >
