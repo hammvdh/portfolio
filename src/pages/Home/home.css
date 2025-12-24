@@ -4,7 +4,7 @@
   background-size: cover;
 }
 
-.blink_me {
+.availability-indicator {
   animation: blinker 1.5s ease-in-out infinite;
   width: 10px;
   height: 10px;
@@ -21,31 +21,51 @@
 }
 
 @keyframes fadeUp {
-  0% {
-    transform: translateY(25%);
+  from {
+    transform: translateY(20px);
     opacity: 0;
   }
-  100% {
-    transform: translateY(0%);
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
 
-.fadeUpProfile {
-  animation: 1.2s fadeUp;
+.fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+  opacity: 0;
 }
 
-.fadeUpDesc {
-  animation: 1.5s fadeUp;
+.fade-up[data-delay='0'] {
+  animation-delay: 0s;
 }
 
-.fadeUpRest {
-  animation: 1.8s fadeUp;
+.fade-up[data-delay='1'] {
+  animation-delay: 0.1s;
 }
 
-.proj:hover {
-  transition: 0.8s ease-out;
-  transform: scale(1.03);
+.fade-up[data-delay='2'] {
+  animation-delay: 0.2s;
+}
+
+.fade-up[data-delay='3'] {
+  animation-delay: 0.3s;
+}
+
+.fade-up[data-delay='4'] {
+  animation-delay: 0.4s;
+}
+
+.fade-up[data-delay='5'] {
+  animation-delay: 0.5s;
+}
+
+.fade-up[data-delay='6'] {
+  animation-delay: 0.6s;
+}
+
+.fade-up[data-delay='7'] {
+  animation-delay: 0.7s;
 }
 
 .proj1 {
