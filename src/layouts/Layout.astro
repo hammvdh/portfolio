@@ -19,7 +19,21 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
+	<body class="preload">
+        <script is:inline>
+            (function() {
+                const theme = localStorage.getItem('theme');
+                const body = document.body;
+                if (theme === 'light') {
+                    body.classList.add('light-mode');
+                }
+                
+                // Remove preload class after a short delay to enable transitions
+                setTimeout(() => {
+                    body.classList.remove('preload');
+                }, 100);
+            })();
+        </script>
 		<Navigation />
 		<slot />
 	</body>

@@ -32,27 +32,27 @@ const projects = [
 
 <Layout title="Work | Hammadh Arquil">
     <div id="work-page" class="container mt-8 sm:mt-12">
-        <h1 class="text-3xl font-bold text-[#bede64] mb-4">Selected Work</h1>
+        <h1 class="text-3xl font-bold text-[var(--accent)] mb-4">Selected Work</h1>
         <p class="text-zinc-400 mb-12 max-w-prose">
             A deep dive into some of the projects I'm most proud of.
         </p>
         
         <div class="mb-16">
-            <h4 class="text-white font-medium text-lg sm:text-xl mb-4">Open Source Activity</h4>
+            <h4 class="text-[var(--text-primary)] font-medium text-lg sm:text-xl mb-4">Open Source Activity</h4>
             <GitHubHeatmap client:load />
         </div>
 
         <div class="space-y-12">
-            <h4 class="text-white font-medium text-lg sm:text-xl mb-6">Selected Projects</h4>
+            <h4 class="text-[var(--text-primary)] font-medium text-lg sm:text-xl mb-6">Selected Projects</h4>
             {projects.map((proj, index) => (
                 <div class="group grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div class={`proj h-[250px] w-full bg-[#373737] rounded-lg bg-cover ${proj.imgClass} group-hover:opacity-90 transition-opacity`}></div>
                     <div class="space-y-3">
-                        <h3 class="text-xl font-bold text-white group-hover:text-[#bede64] transition-colors">{proj.title}</h3>
+                        <h3 class="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">{proj.title}</h3>
                         <p class="text-zinc-400 leading-relaxed text-sm">
                             {proj.desc}
                         </p>
-                        <a href={proj.link} class="inline-flex items-center text-sm font-medium text-[#bede64] hover:underline mt-2">
+                        <a href={proj.link} class="inline-flex items-center text-sm font-medium text-[var(--accent)] hover:underline mt-2">
                             View Project
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
                         </a>
@@ -85,24 +85,11 @@ const projects = [
         if (page) {
             if (light) {
                 page.classList.add('light-mode');
-                 const title = page.querySelector('h1');
-                if (title) title.classList.remove('text-[#bede64]');
-                if (title) title.classList.add('text-[#1a1a1a]');
                  const sub = page.querySelector('p');
                 if (sub) sub.classList.remove('text-zinc-400');
                 if (sub) sub.classList.add('text-[#4a4a4a]');
 
-                 const osTitle = page.querySelector('h4');
-                if(osTitle) {
-                     osTitle.classList.remove('text-white');
-                     osTitle.classList.add('text-[#1a1a1a]');
-                }
-
-                const projTitles = page.querySelectorAll('h3');
-                projTitles.forEach(t => {
-                    t.classList.remove('text-white');
-                    t.classList.add('text-[#1a1a1a]');
-                });
+                 // Removed H4 and H3 toggle logic as they now use CSS variables
 
                  const projDescs = page.querySelectorAll('.text-zinc-400');
                 projDescs.forEach(t => {
@@ -119,24 +106,11 @@ const projects = [
 
             } else {
                 page.classList.remove('light-mode');
-                 const title = page.querySelector('h1');
-                if (title) title.classList.add('text-[#bede64]');
-                if (title) title.classList.remove('text-[#1a1a1a]');
                  const sub = page.querySelector('p');
                 if (sub) sub.classList.add('text-zinc-400');
                 if (sub) sub.classList.remove('text-[#4a4a4a]');
                 
-                const osTitle = page.querySelector('h4');
-                if(osTitle) {
-                     osTitle.classList.add('text-white');
-                     osTitle.classList.remove('text-[#1a1a1a]');
-                }
-
-                 const projTitles = page.querySelectorAll('h3');
-                projTitles.forEach(t => {
-                    t.classList.add('text-white');
-                    t.classList.remove('text-[#1a1a1a]');
-                });
+                // Removed H4 and H3 toggle logic
 
                  const projDescs = page.querySelectorAll('.text-[#5a5a5a]');
                 projDescs.forEach(t => {

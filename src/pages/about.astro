@@ -6,7 +6,7 @@ import TechStack from '../components/TechStack';
 
 <Layout title="About | Hammadh Arquil">
     <div id="about-page" class="container mt-8 sm:mt-12">
-        <h1 class="text-3xl font-bold text-[#bede64] mb-8">About Me</h1>
+        <h1 class="text-3xl font-bold text-[var(--accent)] mb-8">About Me</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div class="md:col-span-1">
@@ -57,9 +57,8 @@ import TechStack from '../components/TechStack';
             if (light) {
                 page.classList.add('light-mode');
                  const title = page.querySelector('h1');
-                if (title) title.classList.remove('text-[#bede64]');
-                if (title) title.classList.add('text-[#1a1a1a]');
-                
+                // removed manual color toggle
+
                 const texts = page.querySelectorAll('.text-zinc-300');
                 texts.forEach(el => {
                      el.classList.remove('text-zinc-300');
@@ -74,8 +73,7 @@ import TechStack from '../components/TechStack';
             } else {
                 page.classList.remove('light-mode');
                 const title = page.querySelector('h1');
-                if (title) title.classList.add('text-[#bede64]');
-                if (title) title.classList.remove('text-[#1a1a1a]');
+                // removed manual color restoration
 
                 const texts = page.querySelectorAll('.text-[#4a4a4a]');
                 texts.forEach(el => {

@@ -7,8 +7,9 @@ const Connect = () => {
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
     
+    // Constant accent color for all modes
+    const headerColor = 'text-[var(--accent)]';
     const bodyTextColor = isLightMode ? 'text-[#2a2a2a]' : 'text-[#8a8a91]';
-    const headerColor = isLightMode ? 'text-[#1a1a1a]' : 'text-[#bede64]';
 
     if (!mounted) return null;
 
@@ -17,7 +18,7 @@ const Connect = () => {
             <h4 className={`${headerColor} font-medium text-md sm:text-lg`}>Let's connect</h4>
             <div className={`${bodyTextColor} gap-3 sm:gap-4 flex flex-wrap mt-3`}>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="mailto:hammadharquil@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -25,7 +26,7 @@ const Connect = () => {
                 Email
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://www.linkedin.com/in/hammadharquil/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -33,7 +34,7 @@ const Connect = () => {
                 LinkedIn
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://twitter.com/elitepsd"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -41,7 +42,7 @@ const Connect = () => {
                 X / Twitter
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://www.instagram.com/hammvdh/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -49,7 +50,7 @@ const Connect = () => {
                 Instagram
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://github.com/hammvdh"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -57,7 +58,7 @@ const Connect = () => {
                 GitHub
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://www.behance.net/hammadh"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -65,7 +66,7 @@ const Connect = () => {
                 Behance
             </a>
             <a
-                className="animated-underline text-sm sm:text-base hover:text-[#bede64]"
+                className="animated-underline text-sm sm:text-base hover:text-[var(--accent)]"
                 href="https://drive.google.com/file/d/1ZSCS8i97f35PkGOfqCOUPxefGt2DMpyk/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"

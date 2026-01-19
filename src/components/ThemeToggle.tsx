@@ -17,7 +17,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       className={`p-2 rounded-full transition-colors cursor-pointer hover:bg-opacity-10 
-        ${$isLightMode ? 'text-[#1a1a1a] hover:bg-[#bede64]' : 'text-zinc-400 hover:text-[#bede64] hover:bg-[#bede64]'}
+        ${$isLightMode ? 'text-[#1a1a1a] hover:bg-[#bede64]' : 'text-zinc-400 hover:text-[#1a1a1a] hover:bg-[#bede64]'}
       `}
       aria-label={$isLightMode ? 'Switch to dark mode' : 'Switch to light mode'}
     >

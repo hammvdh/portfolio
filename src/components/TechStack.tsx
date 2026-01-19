@@ -26,7 +26,7 @@ const TechnologyList = ({ isLightMode, secondaryTextColor, linkTextColor }: { is
             {technologies.map((tech, index) => (
               <div
                 key={index}
-                className={`px-2.5 py-1 rounded-full border ${borderColor} ${linkTextColor} font-normal text-xs sm:text-sm hover:border-[#bede64] hover:text-[#bede64] transition-colors`}
+                className={`px-2.5 py-1 rounded-full border ${borderColor} ${linkTextColor} font-normal text-xs sm:text-sm hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors`}
               >
                 {tech}
               </div>
@@ -46,7 +46,7 @@ const TechStack = () => {
     const textColor = isLightMode ? 'text-[#1a1a1a]' : 'text-white';
     const secondaryTextColor = isLightMode ? 'text-[#4a4a4a]' : 'text-[#656565]';
     const linkTextColor = isLightMode ? 'text-[#4a4a4a]' : 'text-[#A4A4A4]';
-    const headerColor = isLightMode ? 'text-[#1a1a1a]' : 'text-[#bede64]';
+    const headerColor = 'text-[var(--accent)]';
     
     if (!mounted) return null;
 

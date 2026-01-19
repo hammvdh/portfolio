@@ -17,7 +17,7 @@ const { Content } = await post.render();
 
 <Layout title={post.data.title}>
 	<div id="blog-post-page" class="container mt-8 sm:mt-12 max-w-3xl">
-        <a href="/blog" class="inline-flex items-center text-sm text-zinc-500 hover:text-[#bede64] mb-8 transition-colors">
+        <a href="/blog" class="inline-flex items-center text-sm text-zinc-500 hover:text-[var(--accent)] mb-8 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="m15 18-6-6 6-6"/></svg>
             Back to writing
         </a>
@@ -26,7 +26,7 @@ const { Content } = await post.render();
 
 			
             <div class="mb-8 border-b border-zinc-800 pb-8 header-border">
-                <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-[#bede64] leading-tight">{post.data.title}</h1>
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-[var(--accent)] leading-tight">{post.data.title}</h1>
                 <div class="flex items-center text-zinc-500 text-sm font-mono">
                     <time datetime={post.data.pubDate.toISOString()}>
                         {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -40,9 +40,9 @@ const { Content } = await post.render();
                 prose-headings:text-white prose-headings:font-bold prose-headings:mb-8 prose-headings:mt-16 sm:prose-headings:mt-20
                 prose-p:text-zinc-300 prose-p:leading-9 prose-p:mb-8
                 prose-li:text-zinc-300 prose-li:leading-9 prose-li:mb-4
-                prose-a:text-[#bede64] hover:prose-a:text-[#d4f57b] prose-a:no-underline hover:prose-a:underline
+                prose-a:text-[var(--accent)] hover:prose-a:text-[var(--accent)] prose-a:no-underline hover:prose-a:underline
                 prose-strong:text-white prose-strong:font-semibold
-                prose-code:text-[#bede64] prose-code:bg-zinc-800/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                prose-code:text-[var(--accent)] prose-code:bg-zinc-800/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
                 prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-zinc-800 prose-pre:rounded-xl prose-pre:my-12
                 prose-hr:border-zinc-800 prose-hr:my-12
                 prose-img:rounded-xl prose-img:shadow-lg prose-img:my-12">
@@ -68,8 +68,7 @@ const { Content } = await post.render();
                 page.classList.add('light-mode');
                  // Title
                  const title = page.querySelector('h1');
-                if (title) title.classList.remove('text-[#bede64]');
-                if (title) title.classList.add('text-[#1a1a1a]');
+                // removed manual color toggle for title
 
                 // Borders
                 const borders = page.querySelectorAll('.header-border, .footer-border');
@@ -83,10 +82,6 @@ const { Content } = await post.render();
                 const prose = page.querySelector('.prose');
                 if (prose) {
                     prose.classList.remove('prose-invert');
-                    // We need to override the specific text colors we set manually
-                    // This is getting complex to do imperatively. 
-                    // LET'S USE A GLOBAL SYLE APPROACH FOR PROSE INSTEAD? 
-                    // Actually, simple class toggling is cleaner.
                 }
 
                  const proseHeadings = page.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4');
@@ -110,8 +105,7 @@ const { Content } = await post.render();
             } else {
                 page.classList.remove('light-mode');
                  const title = page.querySelector('h1');
-                if (title) title.classList.add('text-[#bede64]');
-                if (title) title.classList.remove('text-[#1a1a1a]');
+                // removed manual color toggle restoration for title
 
                  const borders = page.querySelectorAll('.header-border, .footer-border');
                 borders.forEach(b => {
