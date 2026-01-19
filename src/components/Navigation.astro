@@ -1,0 +1,138 @@
+---
+import ThemeToggle from './ThemeToggle';
+
+const pathname = new URL(Astro.request.url).pathname;
+// remove trailing slash if exists for consistent matching
+const currentPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
+---
+
+<nav class="container mt-8 sm:mt-12 mx-auto px-4 sm:px-6 py-8 sm:py-12 flex justify-between items-center text-sm font-medium relative z-50">
+    <!-- Logo / Home Link -->
+    <a href="/" class="z-50 relative text-[var(--accent)]" aria-label="Home">
+        <svg class="h-8 w-auto fill-current" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1282.84 900">
+            <title>@elitepsd</title>
+            <polygon points="441.42 400 441.42 700 1182.84 700 1282.84 600 1141.42 600 1141.42 0 500 0 400 100 1041.42 100 1041.42 600 541.42 600 541.42 500 941.41 500 941.41 200 300 200 0 500 241.42 500 241.42 900 982.84 900 1082.84 800 341.42 800 341.42 400 241.42 400 341.42 300 841.41 300 841.41 400 441.42 400"/>
+        </svg>
+    </a>
+
+    <!-- Desktop Menu -->
+    <div class="hidden sm:flex gap-6 items-center">
+        <a href="/" class={`nav-link hover:text-[var(--accent)] transition-colors ${currentPath === '/' ? 'text-[var(--accent)] active' : 'text-zinc-400'}`}>
+            Home
+        </a>
+        <a href="/about" class={`nav-link hover:text-[var(--accent)] transition-colors ${currentPath.startsWith('/about') ? 'text-[var(--accent)] active' : 'text-zinc-400'}`}>
+            About
+        </a>
+        <a href="/work" class={`nav-link hover:text-[var(--accent)] transition-colors ${currentPath.startsWith('/work') ? 'text-[var(--accent)] active' : 'text-zinc-400'}`}>
+            Work
+        </a>
+        <a href="/blog" class={`nav-link hover:text-[var(--accent)] transition-colors ${currentPath.startsWith('/blog') ? 'text-[var(--accent)] active' : 'text-zinc-400'}`}>
+            Blog
+        </a>
+        <a href="/contact" class={`nav-link hover:text-[var(--accent)] transition-colors ${currentPath.startsWith('/contact') ? 'text-[var(--accent)] active' : 'text-zinc-400'}`}>
+            Contact
+        </a>
+        <div class="pl-4 border-l border-zinc-700 light:border-zinc-300">
+             <ThemeToggle client:load />
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div class="flex items-center gap-4 sm:hidden z-50 relative">
+        <ThemeToggle client:load />
+        <button id="menu-btn" class="text-zinc-400 hover:text-[var(--accent)] focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-[#1a1a1a] flex flex-col items-center justify-center gap-8 text-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+        <a href="/" class="mobile-link text-zinc-400 hover:text-[var(--accent)]">Home</a>
+        <a href="/about" class="mobile-link text-zinc-400 hover:text-[var(--accent)]">About</a>
+        <a href="/work" class="mobile-link text-zinc-400 hover:text-[var(--accent)]">Work</a>
+        <a href="/blog" class="mobile-link text-zinc-400 hover:text-[var(--accent)]">Blog</a>
+        <a href="/contact" class="mobile-link text-zinc-400 hover:text-[var(--accent)]">Contact</a>
+    </div>
+</nav>
+
+<script>
+    import { isLightMode } from '../stores/themeStore';
+
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.contains('opacity-0');
+            if (isOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    
+    // Subscribe to theme changes to toggle classes
+    isLightMode.subscribe(light => {
+        // Mobile Menu Background
+        if (mobileMenu) {
+            if (light) {
+                mobileMenu.classList.remove('bg-[#1a1a1a]');
+                mobileMenu.classList.add('bg-white');
+            } else {
+                 mobileMenu.classList.add('bg-[#1a1a1a]');
+                mobileMenu.classList.remove('bg-white');
+            }
+        }
+
+        // Nav Links Colors - Only toggle base color if not active. Active links stay accent color.
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (light) {
+                if (!link.classList.contains('active')) {
+                    link.classList.remove('text-zinc-400');
+                    link.classList.add('text-[#1a1a1a]');
+                }
+            } else {
+                if (!link.classList.contains('active')) {
+                    link.classList.add('text-zinc-400');
+                    link.classList.remove('text-[#1a1a1a]');
+                }
+            }
+        });
+
+        // Mobile Links Colors
+        const mLinks = document.querySelectorAll('.mobile-link');
+        mLinks.forEach(link => {
+            if (light) {
+                link.classList.remove('text-zinc-400');
+                link.classList.add('text-[#1a1a1a]');
+            } else {
+                link.classList.add('text-zinc-400');
+                link.classList.remove('text-[#1a1a1a]');
+            }
+        });
+        
+        // Mobile Burger Button
+        const btn = document.getElementById('menu-btn');
+        if (btn) {
+            if (light) {
+                btn.classList.remove('text-zinc-400');
+                btn.classList.add('text-[#1a1a1a]');
+            } else {
+                btn.classList.add('text-zinc-400');
+                btn.classList.remove('text-[#1a1a1a]');
+            }
+        }
+    });
+</script>

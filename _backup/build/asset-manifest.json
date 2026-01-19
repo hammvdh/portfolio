@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.db642500.css",
+    "main.js": "/static/js/main.94ca35c2.js",
+    "static/js/453.1407b060.chunk.js": "/static/js/453.1407b060.chunk.js",
+    "static/media/proj4.png": "/static/media/proj4.195e01347666f5fa7316.png",
+    "static/media/proj2.png": "/static/media/proj2.fc0131ac968a49bd1e1a.png",
+    "static/media/proj1.png": "/static/media/proj1.c75532f18c922063479a.png",
+    "static/media/avatar.jpg": "/static/media/avatar.66a3995e79a7f6eb8558.jpg",
+    "static/media/SFUIText-Heavy.ttf": "/static/media/SFUIText-Heavy.19874e1b83169c077427.ttf",
+    "static/media/SFUIText-Bold.ttf": "/static/media/SFUIText-Bold.39019507036595a661d4.ttf",
+    "static/media/SFUIText-Semibold.ttf": "/static/media/SFUIText-Semibold.ecf579529674436eb3c5.ttf",
+    "static/media/SFUIText-Light.ttf": "/static/media/SFUIText-Light.50a2235d5523a8194f4e.ttf",
+    "static/media/SFUIText-Medium.ttf": "/static/media/SFUIText-Medium.e04b6fa4dc6937fba636.ttf",
+    "static/media/SFUIText-Regular.ttf": "/static/media/SFUIText-Regular.96141c83bd71d7cccb63.ttf",
+    "static/media/proj3.png": "/static/media/proj3.f0599ad9aba22809030a.png",
+    "index.html": "/index.html",
+    "main.db642500.css.map": "/static/css/main.db642500.css.map",
+    "main.94ca35c2.js.map": "/static/js/main.94ca35c2.js.map",
+    "453.1407b060.chunk.js.map": "/static/js/453.1407b060.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.db642500.css",
+    "static/js/main.94ca35c2.js"
+  ]
+}

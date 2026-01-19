@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Experience from '../components/Experience';
+import TechStack from '../components/TechStack';
+---
+
+<Layout title="About | Hammadh Arquil">
+    <div id="about-page" class="container mt-8 sm:mt-12">
+        <h1 class="text-3xl font-bold text-[var(--accent)] mb-8">About Me</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="md:col-span-1">
+                 <div class="w-full aspect-square bg-[#373737] rounded-lg bg-[url('/images/avatar.jpg')] bg-cover"></div>
+            </div>
+            <div class="md:col-span-2 text-zinc-300 space-y-4 leading-relaxed">
+                <p>
+                    Hey, I'm <strong class="text-white">Hammadh Arquil</strong>, a software engineer and product designer based in Colombo, Sri Lanka.
+                </p>
+                <p>
+                    My journey started back in 2016 as a graphic designer under the alias <em>ElitePSD</em>. 
+                    I've always been obsessed with how things look and feel. Transitioning into engineering felt natural—it allowed me to bring my designs to life and build systems that actually work.
+                </p>
+                <p>
+                    I currently work at <strong>HTWorks</strong>, building telemedicine solutions that directly impact patient care. 
+                    I previously explored the bleeding edge of AI as a Founding Engineer at <strong>Suno Analytics</strong>, 
+                    and continue building for my community with <strong>Prayr</strong>.
+                </p>
+                <p>
+                    When I'm not coding, you can find me exploring new design trends, contributing to open source, 
+                    or just enjoying a good cup of tea while pondering the next big idea.
+                </p>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <Experience client:load />
+        </div>
+
+        <div class="mb-12">
+            <TechStack client:load />
+        </div>
+        
+        <div class="mt-[2em] sm:mt-[3em] pb-[3em]">
+             <p class="text-xs sm:text-sm font-normal text-zinc-500">
+                ©️ 2026 Hammadh Arquil. All Rights Reserved.
+            </p>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import { isLightMode } from '../stores/themeStore';
+    
+    isLightMode.subscribe(light => {
+        const page = document.getElementById('about-page');
+        if (page) {
+            if (light) {
+                page.classList.add('light-mode');
+                 const title = page.querySelector('h1');
+                // removed manual color toggle
+
+                const texts = page.querySelectorAll('.text-zinc-300');
+                texts.forEach(el => {
+                     el.classList.remove('text-zinc-300');
+                     el.classList.add('text-[#4a4a4a]');
+                })
+                 const strongs = page.querySelectorAll('strong.text-white');
+                strongs.forEach(el => {
+                     el.classList.remove('text-white');
+                     el.classList.add('text-[#1a1a1a]');
+                })
+
+            } else {
+                page.classList.remove('light-mode');
+                const title = page.querySelector('h1');
+                // removed manual color restoration
+
+                const texts = page.querySelectorAll('.text-[#4a4a4a]');
+                texts.forEach(el => {
+                     el.classList.add('text-zinc-300');
+                     el.classList.remove('text-[#4a4a4a]');
+                })
+                const strongs = page.querySelectorAll('strong.text-[#1a1a1a]');
+                strongs.forEach(el => {
+                     el.classList.add('text-white');
+                     el.classList.remove('text-[#1a1a1a]');
+                })
+            }
+        }
+    });
+</script>

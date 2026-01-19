@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GitHubHeatmap from '../components/GitHubHeatmap';
+
+const projects = [
+    {
+        title: "Vital: Remote Patient Monitoring",
+        desc: "Realtime patient monitoring system for care providers with triage and health status alerts. Built with React and .NET. Features include live ECG streaming, websocket-based alerts, and a comprehensive dashboard for clinicians.",
+        imgClass: "proj1",
+        link: "#"
+    },
+    {
+        title: "Frostify Portfolio",
+        desc: "A portfolio site design built during a community challenge. Focuses on glassmorphism and modern UI trends. This project won the 'Best UI' award in the challenge.",
+        imgClass: "proj2",
+        link: "#"
+    },
+    {
+        title: "Prayr",
+        desc: "An Islamic companion application with prayer times, tracking, podcasts, quran, duas, hadith. Developed using Flutter for cross-platform compatibility, ensuring a seamless experience for users worldwide.",
+        imgClass: "proj3",
+        link: "https://prayr-app.com"
+    },
+    {
+        title: "Medoment",
+        desc: "Designed a website for HTWorks. The goal was to create a clean, trustworthy corporate identity for the healthcare sector. This design helped increase client inquiries by 40%.",
+        imgClass: "proj4",
+        link: "#"
+    }
+];
+---
+
+<Layout title="Work | Hammadh Arquil">
+    <div id="work-page" class="container mt-8 sm:mt-12">
+        <h1 class="text-3xl font-bold text-[var(--accent)] mb-4">Selected Work</h1>
+        <p class="text-zinc-400 mb-12 max-w-prose">
+            A deep dive into some of the projects I'm most proud of.
+        </p>
+        
+        <div class="mb-16">
+            <h4 class="text-[var(--text-primary)] font-medium text-lg sm:text-xl mb-4">Open Source Activity</h4>
+            <GitHubHeatmap client:load />
+        </div>
+
+        <div class="space-y-12">
+            <h4 class="text-[var(--text-primary)] font-medium text-lg sm:text-xl mb-6">Selected Projects</h4>
+            {projects.map((proj, index) => (
+                <div class="group grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class={`proj h-[250px] w-full bg-[#373737] rounded-lg bg-cover ${proj.imgClass} group-hover:opacity-90 transition-opacity`}></div>
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">{proj.title}</h3>
+                        <p class="text-zinc-400 leading-relaxed text-sm">
+                            {proj.desc}
+                        </p>
+                        <a href={proj.link} class="inline-flex items-center text-sm font-medium text-[var(--accent)] hover:underline mt-2">
+                            View Project
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <div class="mt-[2em] sm:mt-[3em] pb-[3em]">
+             <p class="text-xs sm:text-sm font-normal text-zinc-500">
+                ©️ 2026 Hammadh Arquil. All Rights Reserved.
+            </p>
+        </div>
+    </div>
+</Layout>
+
+<style>
+/* Reusing image classes from global css but ensuring they load */
+.proj1 { background-image: url('/images/featured/proj1.png'); background-size: cover; }
+.proj2 { background-image: url('/images/featured/proj2.png'); background-size: cover; }
+.proj3 { background-image: url('/images/featured/proj3.png'); background-size: cover; }
+.proj4 { background-image: url('/images/featured/proj4.png'); background-size: cover; }
+</style>
+
+<script>
+    import { isLightMode } from '../stores/themeStore';
+    
+    isLightMode.subscribe(light => {
+        const page = document.getElementById('work-page');
+        if (page) {
+            if (light) {
+                page.classList.add('light-mode');
+                 const sub = page.querySelector('p');
+                if (sub) sub.classList.remove('text-zinc-400');
+                if (sub) sub.classList.add('text-[#4a4a4a]');
+
+                 // Removed H4 and H3 toggle logic as they now use CSS variables
+
+                 const projDescs = page.querySelectorAll('.text-zinc-400');
+                projDescs.forEach(t => {
+                    t.classList.remove('text-zinc-400');
+                    t.classList.add('text-[#5a5a5a]');
+                });
+                
+                const projImages = page.querySelectorAll('.proj');
+                 projImages.forEach(t => {
+                    t.classList.remove('bg-[#373737]');
+                    t.classList.add('bg-[#e5e5e5]');
+                });
+
+
+            } else {
+                page.classList.remove('light-mode');
+                 const sub = page.querySelector('p');
+                if (sub) sub.classList.add('text-zinc-400');
+                if (sub) sub.classList.remove('text-[#4a4a4a]');
+                
+                // Removed H4 and H3 toggle logic
+
+                 const projDescs = page.querySelectorAll('.text-[#5a5a5a]');
+                projDescs.forEach(t => {
+                    t.classList.add('text-zinc-400');
+                    t.classList.remove('text-[#5a5a5a]');
+                });
+
+                 const projImages = page.querySelectorAll('.proj');
+                 projImages.forEach(t => {
+                    t.classList.add('bg-[#373737]');
+                    t.classList.remove('bg-[#e5e5e5]');
+                });
+            }
+        }
+    });
+</script>

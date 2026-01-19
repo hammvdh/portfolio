@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+import Navigation from '../components/Navigation.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Hammadh Arquil - Software Engineer & Product Designer" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="preload">
+        <script is:inline>
+            (function() {
+                const theme = localStorage.getItem('theme');
+                const body = document.body;
+                if (theme === 'light') {
+                    body.classList.add('light-mode');
+                }
+                
+                // Remove preload class after a short delay to enable transitions
+                setTimeout(() => {
+                    body.classList.remove('preload');
+                }, 100);
+            })();
+        </script>
+		<Navigation />
+		<slot />
+	</body>
+</html>
