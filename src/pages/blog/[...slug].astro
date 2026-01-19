@@ -1,0 +1,215 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+	<div id="blog-post-page" class="container mt-8 sm:mt-12 max-w-3xl">
+        <a href="/blog" class="inline-flex items-center text-sm text-zinc-500 hover:text-[#bede64] mb-8 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="m15 18-6-6 6-6"/></svg>
+            Back to writing
+        </a>
+
+		<article>
+
+			
+            <div class="mb-8 border-b border-zinc-800 pb-8 header-border">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-[#bede64] leading-tight">{post.data.title}</h1>
+                <div class="flex items-center text-zinc-500 text-sm font-mono">
+                    <time datetime={post.data.pubDate.toISOString()}>
+                        {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </time>
+                    <span class="mx-2">•</span>
+                    <span>Article</span>
+                </div>
+            </div>
+
+			<div class="prose prose-invert prose-lg max-w-none 
+                prose-headings:text-white prose-headings:font-bold prose-headings:mb-8 prose-headings:mt-16 sm:prose-headings:mt-20
+                prose-p:text-zinc-300 prose-p:leading-9 prose-p:mb-8
+                prose-li:text-zinc-300 prose-li:leading-9 prose-li:mb-4
+                prose-a:text-[#bede64] hover:prose-a:text-[#d4f57b] prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-white prose-strong:font-semibold
+                prose-code:text-[#bede64] prose-code:bg-zinc-800/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-zinc-800 prose-pre:rounded-xl prose-pre:my-12
+                prose-hr:border-zinc-800 prose-hr:my-12
+                prose-img:rounded-xl prose-img:shadow-lg prose-img:my-12">
+                <Content />
+            </div>
+		</article>
+
+        <div class="mt-[4em] pb-[3em] border-t border-zinc-800 footer-border pt-8">
+             <p class="text-xs sm:text-sm font-normal text-zinc-500">
+                ©️ 2026 Hammadh Arquil. All Rights Reserved.
+            </p>
+        </div>
+	</div>
+</Layout>
+
+<script>
+    import { isLightMode } from '../../stores/themeStore';
+    
+    isLightMode.subscribe(light => {
+        const page = document.getElementById('blog-post-page');
+        if (page) {
+            if (light) {
+                page.classList.add('light-mode');
+                 // Title
+                 const title = page.querySelector('h1');
+                if (title) title.classList.remove('text-[#bede64]');
+                if (title) title.classList.add('text-[#1a1a1a]');
+
+                // Borders
+                const borders = page.querySelectorAll('.header-border, .footer-border');
+                borders.forEach(b => {
+                    b.classList.remove('border-zinc-800');
+                    b.classList.add('border-zinc-200');
+                });
+                
+                // Prose content (manual override for typography plugin since we can't easily swap the prose class completely dynamically without potential flash)
+                // A better way is to style .light-mode .prose in global css, but let's try inline first or swap classes
+                const prose = page.querySelector('.prose');
+                if (prose) {
+                    prose.classList.remove('prose-invert');
+                    // We need to override the specific text colors we set manually
+                    // This is getting complex to do imperatively. 
+                    // LET'S USE A GLOBAL SYLE APPROACH FOR PROSE INSTEAD? 
+                    // Actually, simple class toggling is cleaner.
+                }
+
+                 const proseHeadings = page.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4');
+                 proseHeadings.forEach(el => {
+                     el.classList.remove('text-white');
+                     el.classList.add('text-[#1a1a1a]');
+                 });
+
+                 const proseP = page.querySelectorAll('.prose p, .prose li');
+                 proseP.forEach(el => {
+                     el.classList.remove('text-zinc-300');
+                     el.classList.add('text-[#4a4a4a]');
+                 });
+
+                 const proseStrong = page.querySelectorAll('.prose strong');
+                 proseStrong.forEach(el => {
+                     el.classList.remove('text-white');
+                     el.classList.add('text-[#1a1a1a]');
+                 });
+
+            } else {
+                page.classList.remove('light-mode');
+                 const title = page.querySelector('h1');
+                if (title) title.classList.add('text-[#bede64]');
+                if (title) title.classList.remove('text-[#1a1a1a]');
+
+                 const borders = page.querySelectorAll('.header-border, .footer-border');
+                borders.forEach(b => {
+                    b.classList.add('border-zinc-800');
+                    b.classList.remove('border-zinc-200');
+                });
+
+                const prose = page.querySelector('.prose');
+                if (prose) {
+                    prose.classList.add('prose-invert');
+                }
+                
+                const proseHeadings = page.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4');
+                 proseHeadings.forEach(el => {
+                     el.classList.add('text-white');
+                     el.classList.remove('text-[#1a1a1a]');
+                 });
+
+                 const proseP = page.querySelectorAll('.prose p, .prose li');
+                 proseP.forEach(el => {
+                     el.classList.add('text-zinc-300');
+                     el.classList.remove('text-[#4a4a4a]');
+                 });
+
+                  const proseStrong = page.querySelectorAll('.prose strong');
+                 proseStrong.forEach(el => {
+                     el.classList.add('text-white');
+                     el.classList.remove('text-[#1a1a1a]');
+                 });
+            }
+        }
+    });
+</script>
+
+<style is:global>
+    /* Force typography spacing overrides */
+    .prose p {
+        line-height: 1.6 !important;
+        margin-bottom: 1rem !important;
+        font-size: 1rem !important;
+    }
+    .prose li {
+        line-height: 1.5 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .prose ul {
+        list-style-type: disc !important;
+        padding-left: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+    .prose ol {
+        list-style-type: decimal !important;
+        padding-left: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+    .prose h1, .prose h2, .prose h3, .prose h4 {
+        margin-top: 1.5rem !important;
+        margin-bottom: 0.75rem !important;
+        font-weight: 800 !important;
+    }
+    .prose h1 {
+        font-size: 1.75rem !important; /* Mobile h1 */
+        line-height: 1.2 !important;
+    }
+    .prose h2 {
+        font-size: 1.5rem !important; /* Mobile h2 */
+        line-height: 1.2 !important;
+    }
+    .prose h3 {
+        font-size: 1.25rem !important; /* Mobile h3 */
+        line-height: 1.2 !important;
+    }
+    .prose h4 {
+        font-size: 1.125rem !important;
+    }
+
+    /* Desktop adjustments */
+    @media (min-width: 640px) {
+        .prose p {
+            font-size: 1.125rem !important; /* Larger body text on desktop */
+            line-height: 1.75 !important;
+            margin-bottom: 1.25rem !important;
+        }
+        .prose h1, .prose h2, .prose h3, .prose h4 {
+            margin-top: 2rem !important;
+            margin-bottom: 1rem !important;
+        }
+        .prose h1 {
+            font-size: 2.5rem !important;
+        }
+        .prose h2 {
+            font-size: 1.75rem !important;
+        }
+        .prose h3 {
+            font-size: 1.5rem !important;
+        }
+        .prose h4 {
+            font-size: 1.25rem !important;
+        }
+    }
+</style>

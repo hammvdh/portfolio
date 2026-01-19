@@ -1,0 +1,211 @@
+.avatar {
+  background-image: url('../../images/avatar.jpg');
+  background-color: #373737;
+  background-size: cover;
+}
+
+.animated-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #bede64;
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+.light-mode .animated-underline::after {
+  background-color: #1a1a1a;
+}
+
+.availability-indicator {
+  animation: blinker 1.5s ease-in-out infinite;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid #bede64;
+  background-color: #bede64;
+  border-radius: 100%;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.fade-up[data-delay='0'] {
+  animation-delay: 0s;
+}
+
+.fade-up[data-delay='1'] {
+  animation-delay: 0.1s;
+}
+
+.fade-up[data-delay='2'] {
+  animation-delay: 0.2s;
+}
+
+.fade-up[data-delay='3'] {
+  animation-delay: 0.3s;
+}
+
+.fade-up[data-delay='4'] {
+  animation-delay: 0.4s;
+}
+
+.fade-up[data-delay='5'] {
+  animation-delay: 0.5s;
+}
+
+.fade-up[data-delay='6'] {
+  animation-delay: 0.6s;
+}
+
+.fade-up[data-delay='7'] {
+  animation-delay: 0.7s;
+}
+
+.proj1 {
+  background-image: url('../../images/featured/proj1.png');
+  background-size: cover;
+}
+
+.proj2 {
+  background-image: url('../../images/featured/proj2.png');
+  background-size: cover;
+}
+
+.proj3 {
+  background-image: url('../../images/featured/proj3.png');
+  background-size: cover;
+}
+
+.proj4 {
+  background-image: url('../../images/featured/proj4.png');
+  background-size: cover;
+}
+
+/* GitHub Heatmap Styles */
+.github-heatmap-container {
+  color: #ffffff;
+}
+
+.github-heatmap-container svg {
+  width: 100%;
+  max-width: 100%;
+}
+
+.github-heatmap-container rect {
+  rx: 3;
+  ry: 3;
+  stroke: #1a1a1a;
+  stroke-width: 1;
+}
+
+.github-heatmap-container rect:hover {
+  stroke: #bede64;
+  stroke-width: 2;
+}
+
+.github-heatmap-container text {
+  fill: #ffffff;
+  font-size: 12px;
+}
+
+/* Dark theme text colors */
+.github-heatmap-container [data-testid="calendar"] text {
+  fill: #ffffff;
+}
+
+.github-heatmap-container [data-testid="legend"] text {
+  fill: #ffffff;
+}
+
+/* Target all text elements including the total count text */
+.github-heatmap-container * {
+  color: #ffffff !important;
+}
+
+/* Specific selector for the total count text */
+.github-heatmap-container [class*="count"],
+.github-heatmap-container [class*="react-activity-calendar"] {
+  color: #ffffff !important;
+}
+
+/* Tooltip styling for dark theme */
+.github-heatmap-container .react-activity-calendar__tooltip {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+  border: 1px solid #404040;
+}
+
+.github-heatmap-container .react-activity-calendar__tooltip-arrow {
+  fill: #2a2a2a !important;
+}
+
+/* Light mode styles */
+.github-heatmap-container.light-mode {
+  color: #1a1a1a;
+}
+
+.github-heatmap-container.light-mode text {
+  fill: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode [data-testid="calendar"] text {
+  fill: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode [data-testid="legend"] text {
+  fill: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode svg text {
+  fill: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode * {
+  color: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode [class*="count"],
+.github-heatmap-container.light-mode [class*="react-activity-calendar"] {
+  color: #1a1a1a !important;
+}
+
+.github-heatmap-container.light-mode .react-activity-calendar__tooltip {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  border: 1px solid #d0d0d0;
+}
+
+.github-heatmap-container.light-mode .react-activity-calendar__tooltip-arrow {
+  fill: #ffffff !important;
+}

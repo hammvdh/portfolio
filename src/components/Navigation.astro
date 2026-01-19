@@ -1,0 +1,94 @@
+---
+import ThemeToggle from './ThemeToggle';
+
+const pathname = new URL(Astro.request.url).pathname;
+// remove trailing slash if exists for consistent matching
+const currentPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
+---
+
+<nav class="container mt-8 sm:mt-12 mx-auto px-4 sm:px-6 py-8 sm:py-12 flex justify-between items-center text-sm font-medium relative z-50">
+    <!-- Logo / Home Link -->
+    <a href="/" class="text-xl font-bold text-[#bede64] z-50 relative">
+        hammadh.dev
+    </a>
+
+    <!-- Desktop Menu -->
+    <div class="hidden sm:flex gap-6 items-center">
+        <a href="/" class={`hover:text-[#bede64] transition-colors ${currentPath === '/' ? 'text-[#bede64]' : 'text-zinc-400'}`}>
+            Home
+        </a>
+        <a href="/about" class={`hover:text-[#bede64] transition-colors ${currentPath.startsWith('/about') ? 'text-[#bede64]' : 'text-zinc-400'}`}>
+            About
+        </a>
+        <a href="/work" class={`hover:text-[#bede64] transition-colors ${currentPath.startsWith('/work') ? 'text-[#bede64]' : 'text-zinc-400'}`}>
+            Work
+        </a>
+        <a href="/blog" class={`hover:text-[#bede64] transition-colors ${currentPath.startsWith('/blog') ? 'text-[#bede64]' : 'text-zinc-400'}`}>
+            Blog
+        </a>
+        <a href="/contact" class={`hover:text-[#bede64] transition-colors ${currentPath.startsWith('/contact') ? 'text-[#bede64]' : 'text-zinc-400'}`}>
+            Contact
+        </a>
+        <div class="pl-4 border-l border-zinc-700">
+             <ThemeToggle client:load />
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div class="flex items-center gap-4 sm:hidden z-50 relative">
+        <ThemeToggle client:load />
+        <button id="menu-btn" class="text-zinc-400 hover:text-[#bede64] focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-[#1a1a1a] flex flex-col items-center justify-center gap-8 text-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+        <a href="/" class="mobile-link text-zinc-400 hover:text-[#bede64]">Home</a>
+        <a href="/about" class="mobile-link text-zinc-400 hover:text-[#bede64]">About</a>
+        <a href="/work" class="mobile-link text-zinc-400 hover:text-[#bede64]">Work</a>
+        <a href="/blog" class="mobile-link text-zinc-400 hover:text-[#bede64]">Blog</a>
+        <a href="/contact" class="mobile-link text-zinc-400 hover:text-[#bede64]">Contact</a>
+    </div>
+</nav>
+
+<script>
+    import { isLightMode } from '../stores/themeStore';
+
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.contains('opacity-0');
+            if (isOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            } else {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    
+    // Quick fix for menu bg in light mode
+    isLightMode.subscribe(light => {
+        if (mobileMenu) {
+            if (light) {
+                mobileMenu.classList.remove('bg-[#1a1a1a]');
+                mobileMenu.classList.add('bg-white');
+            } else {
+                 mobileMenu.classList.add('bg-[#1a1a1a]');
+                mobileMenu.classList.remove('bg-white');
+            }
+        }
+    });
+</script>
