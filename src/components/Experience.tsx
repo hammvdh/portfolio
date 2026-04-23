@@ -6,13 +6,29 @@ import { useRetroShell } from '../lib/useRetroShell';
 import { SectionPanel } from './SectionPanel';
 import type { PortfolioSectionId } from './portfolioSectionIds';
 
-const roles = [
-  { period: '2025 - 2026', title: 'Founding Engineer', org: 'Suno Analytics', href: 'https://sunoanalytics.com', type: 'NEW' as const },
-  { period: '2024 - Present', title: 'Software Engineer', org: 'HTWorks', href: 'https://htworkslk.com', type: 'RENEWAL' as const },
-  { period: '2025 - Present', title: 'Founder & CEO', org: 'Prayr', href: 'https://prayr-app.com', type: 'NEW' as const },
-  { period: '2023 - 2024', title: 'Junior Software Engineer', org: 'HTWorks', href: 'https://htworkslk.com', type: 'RENEWAL' as const },
-  { period: '2016 - Present', title: 'Visual/Product Designer', org: 'ElitePSD', href: 'https://x.com/hammvdh', type: 'TRIAL' as const },
-  { period: '2021 - 2022', title: 'Software Engineer Intern', org: 'HTWorks', href: 'https://htworkslk.com', type: 'TRIAL' as const },
+type Engagement = 'full_time' | 'internship' | 'founder' | 'startup' | 'freelance';
+
+const engagementLabel: Record<Engagement, string> = {
+  full_time: 'Full-time',
+  internship: 'Internship',
+  founder: 'Founder',
+  startup: 'Startup',
+  freelance: 'Freelance',
+};
+
+const roles: {
+  period: string;
+  title: string;
+  org: string;
+  href: string;
+  engagement: Engagement;
+}[] = [
+  { period: '2025 - 2026', title: 'Founding Engineer', org: 'Suno Analytics', href: 'https://sunoanalytics.com', engagement: 'startup' },
+  { period: '2024 - Present', title: 'Software Engineer', org: 'HTWorks', href: 'https://htworkslk.com', engagement: 'full_time' },
+  { period: '2025 - Present', title: 'Founder & CEO', org: 'Prayr', href: 'https://prayr-app.com', engagement: 'founder' },
+  { period: '2023 - 2024', title: 'Junior Software Engineer', org: 'HTWorks', href: 'https://htworkslk.com', engagement: 'full_time' },
+  { period: '2016 - Present', title: 'Visual/Product Designer', org: 'ElitePSD', href: 'https://x.com/hammvdh', engagement: 'freelance' },
+  { period: '2021 - 2022', title: 'Software Engineer Intern', org: 'HTWorks', href: 'https://htworkslk.com', engagement: 'internship' },
 ];
 
 type ExperienceProps = {
@@ -56,7 +72,7 @@ const Experience = ({ registerSection }: ExperienceProps) => {
                   <th scope="col">Period</th>
                   <th scope="col">Role</th>
                   <th scope="col">Organization</th>
-                  <th scope="col">Type</th>
+                  <th scope="col">Engagement</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,7 +86,7 @@ const Experience = ({ registerSection }: ExperienceProps) => {
                       </a>
                     </td>
                     <td>
-                      <span className={`retro-tag retro-tag--${r.type.toLowerCase()}`}>{r.type}</span>
+                      <span className={`retro-tag retro-tag--${r.engagement}`}>{engagementLabel[r.engagement]}</span>
                     </td>
                   </tr>
                 ))}
