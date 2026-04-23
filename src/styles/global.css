@@ -321,8 +321,8 @@ button,
   fill: #ffffff !important;
 }
 
-/* ——— Retro portfolio (home) ——— */
-body.retro-home {
+/* ——— Retro desktop shell (site-wide) ——— */
+body.retro-site {
   background-color: #5a6a7a;
   background-image: linear-gradient(180deg, #6a7a8a 0%, #4a5560 100%);
   font-family: Tahoma, 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
@@ -330,38 +330,38 @@ body.retro-home {
   -moz-osx-font-smoothing: auto;
 }
 
-body.retro-home.light-mode {
+body.retro-site.light-mode {
   background-color: #808080;
   background-image: linear-gradient(180deg, #a0a0a0 0%, #808080 100%);
 }
 
-body.retro-home .retro-theme-toggle {
+body.retro-site .retro-theme-toggle {
   border-radius: 0;
   border: 2px outset #d4d0c8;
   background: #d4d0c8;
   padding: 4px 6px;
 }
 
-body.retro-home .retro-theme-toggle:hover {
+body.retro-site .retro-theme-toggle:hover {
   background: #e8e4dc;
 }
 
-body.retro-home .retro-loading {
-  min-height: 60vh;
-  margin: 2rem auto;
-  max-width: 880px;
+body.retro-site .retro-loading {
+  min-height: 40vh;
+  margin: 8px;
   border: 2px inset #d4d0c8;
   background: #c0c0c0;
 }
 
 .retro-desktop {
-  padding: 12px 12px 24px;
+  padding: 8px;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
 .retro-window {
-  max-width: 960px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   background: #c0c0c0;
   border: 2px solid #000;
@@ -462,6 +462,9 @@ body.retro-home .retro-loading {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: inherit;
 }
 
 .retro-toolbtn:active {
@@ -610,6 +613,11 @@ body.retro-home .retro-loading {
   width: 100%;
 }
 
+a.retro-navitem--link {
+  text-decoration: none;
+  display: block;
+}
+
 .retro-mobile-nav-toggle {
   display: none;
   font-size: 11px;
@@ -629,6 +637,11 @@ body.retro-home .retro-loading {
   display: flex;
   flex-direction: column;
   background: #c0c0c0;
+}
+
+.retro-main--single .retro-main__content {
+  max-height: none;
+  min-height: min(70vh, 800px);
 }
 
 .retro-tabs {
@@ -997,6 +1010,331 @@ body.retro-home .retro-loading {
 
 .retro-panel--heatmap .retro-panel__body--flush {
   margin: 4px;
+}
+
+/* Inner pages (non-home) */
+.retro-page-h1 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.retro-page-lead {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #404040;
+  max-width: 72ch;
+}
+
+.retro-blog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.retro-blog-item {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #808080;
+}
+
+.retro-blog-item:last-child {
+  border-bottom: none;
+}
+
+.retro-blog-item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.retro-blog-item a:hover .retro-blog-title {
+  text-decoration: underline;
+}
+
+.retro-blog-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.retro-blog-meta {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-family: ui-monospace, monospace;
+  color: #505050;
+}
+
+.retro-blog-desc {
+  margin: 0;
+  font-size: 12px;
+  color: #202020;
+  line-height: 1.45;
+}
+
+.retro-blog-read {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.retro-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #000080;
+  margin-bottom: 12px;
+}
+
+.retro-work-section-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+}
+
+.retro-work-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.retro-work-card {
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .retro-work-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.retro-work-thumb {
+  height: 200px;
+  width: 100%;
+  border: 2px inset #d4d0c8;
+  background-color: #808080;
+  background-size: cover;
+}
+
+.retro-work-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.retro-work-desc {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #303030;
+  line-height: 1.45;
+}
+
+.retro-work-link {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.retro-contact-intro {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #303030;
+}
+
+.retro-contact-primary {
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px outset #d4d0c8;
+  background: #c0c0c0;
+  text-decoration: none;
+  color: #000;
+}
+
+.retro-contact-primary:active {
+  border-style: inset;
+}
+
+.retro-contact-primary h3 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.retro-contact-primary p {
+  margin: 0;
+  font-size: 11px;
+  color: #404040;
+}
+
+.retro-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.retro-contact-card {
+  display: block;
+  padding: 10px;
+  border: 2px outset #d4d0c8;
+  background: #c0c0c0;
+  text-decoration: none;
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.retro-contact-card:active {
+  border-style: inset;
+}
+
+.retro-about-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .retro-about-grid {
+    grid-template-columns: minmax(200px, 280px) 1fr;
+    align-items: start;
+  }
+}
+
+.retro-about-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px inset #d4d0c8;
+  background: url('/images/avatar.jpg') center / cover #808080;
+}
+
+.retro-about-copy p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #202020;
+}
+
+.retro-about-copy strong {
+  font-weight: bold;
+  color: #000;
+}
+
+/* Blog article typography inside retro shell */
+.retro-prose {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #1a1a1a;
+}
+
+.retro-prose h1,
+.retro-prose h2,
+.retro-prose h3,
+.retro-prose h4 {
+  color: #000080;
+  font-weight: bold;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+}
+
+.retro-prose h1 {
+  font-size: 1.75rem;
+}
+.retro-prose h2 {
+  font-size: 1.35rem;
+}
+.retro-prose h3 {
+  font-size: 1.15rem;
+}
+.retro-prose h4 {
+  font-size: 1.05rem;
+}
+
+.retro-prose p {
+  margin: 0 0 1em;
+}
+
+.retro-prose a {
+  color: #000080;
+  text-decoration: underline;
+}
+
+.retro-prose ul,
+.retro-prose ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+.retro-prose li {
+  margin-bottom: 0.35em;
+}
+
+.retro-prose strong {
+  font-weight: bold;
+  color: #000;
+}
+
+.retro-prose code {
+  font-family: ui-monospace, 'Courier New', monospace;
+  font-size: 0.92em;
+  background: #e8e8e8;
+  border: 1px solid #808080;
+  padding: 0 3px;
+}
+
+.retro-prose pre {
+  background: #1a1a1a;
+  color: #e8e8e8;
+  border: 2px inset #404040;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 12px;
+  margin: 1em 0;
+}
+
+.retro-prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+.retro-prose hr {
+  border: none;
+  border-top: 2px groove #d4d0c8;
+  margin: 1.5em 0;
+}
+
+.retro-prose img {
+  max-width: 100%;
+  height: auto;
+  border: 2px inset #d4d0c8;
+  margin: 1em 0;
+}
+
+.retro-article-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px groove #d4d0c8;
+}
+
+.retro-article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #505050;
+  margin-top: 6px;
 }
 
 @media (max-width: 639px) {

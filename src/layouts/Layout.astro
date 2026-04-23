@@ -1,13 +1,30 @@
 ---
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
+import RetroTop from '../components/RetroTop';
+import HomeDesktop from '../components/HomeDesktop';
+import RetroSiteNav from '../components/RetroSiteNav';
 
 interface Props {
 	title: string;
-	hideNavigation?: boolean;
 }
 
-const { title, hideNavigation = false } = Astro.props;
+const { title } = Astro.props;
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
+
+const pathKey = pathname.replace(/\/$/, '') || '/';
+const statusLabel =
+	pathKey === '/about'
+		? 'About'
+		: pathKey === '/work'
+			? 'Work'
+			: pathKey === '/blog'
+				? 'Blog index'
+				: pathKey === '/contact'
+					? 'Contact'
+					: pathKey.startsWith('/blog/')
+						? 'Reading article'
+						: 'Ready';
 ---
 
 <!doctype html>
@@ -20,22 +37,43 @@ const { title, hideNavigation = false } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="preload">
-        <script is:inline>
-            (function() {
-                const theme = localStorage.getItem('theme');
-                const body = document.body;
-                if (theme === 'light') {
-                    body.classList.add('light-mode');
-                }
-                
-                // Remove preload class after a short delay to enable transitions
-                setTimeout(() => {
-                    body.classList.remove('preload');
-                }, 100);
-            })();
-        </script>
-		{!hideNavigation && <Navigation />}
-		<slot />
+	<body class="preload retro-site">
+		<script is:inline>
+			(function () {
+				const theme = localStorage.getItem('theme');
+				const body = document.body;
+				if (theme === 'light') {
+					body.classList.add('light-mode');
+				}
+				setTimeout(function () {
+					body.classList.remove('preload');
+				}, 100);
+			})();
+		</script>
+		<div class="retro-desktop">
+			<div class="retro-window">
+				<RetroTop client:load pathname={pathname} />
+				{
+					isHome ? (
+						<HomeDesktop client:load />
+					) : (
+						<>
+							<div class="retro-body">
+								<RetroSiteNav client:load currentPath={pathname} />
+								<main class="retro-main retro-main--single">
+									<div class="retro-main__content">
+										<slot />
+									</div>
+								</main>
+							</div>
+							<footer class="retro-statusbar">
+								<span class="retro-statusbar__left">{statusLabel}</span>
+								<span class="retro-statusbar__right">Press Help for about this window</span>
+							</footer>
+						</>
+					)
+				}
+			</div>
+		</div>
 	</body>
 </html>

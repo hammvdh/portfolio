@@ -1,7 +1,7 @@
 import { useStore } from '@nanostores/react';
 import { isLightMode as isLightModeStore } from '../stores/themeStore';
 import { useState, useEffect } from 'react';
-import { useRetroShell } from './RetroShellContext';
+import { useRetroShell } from '../lib/useRetroShell';
 import { SectionPanel } from './SectionPanel';
 import type { PortfolioSectionId } from './portfolioSectionIds';
 
