@@ -28,7 +28,7 @@ const statusLabel =
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="retro-site">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Hammadh Arquil - Software Engineer & Product Designer" />
@@ -57,7 +57,7 @@ const statusLabel =
 					isHome ? (
 						<HomeDesktop client:load />
 					) : (
-						<>
+						<div class="retro-page-wrap">
 							<div class="retro-body">
 								<RetroSiteNav client:load currentPath={pathname} />
 								<main class="retro-main retro-main--single">
@@ -70,7 +70,7 @@ const statusLabel =
 								<span class="retro-statusbar__left">{statusLabel}</span>
 								<span class="retro-statusbar__right">Press Help for about this window</span>
 							</footer>
-						</>
+						</div>
 					)
 				}
 			</div>

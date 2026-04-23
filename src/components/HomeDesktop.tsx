@@ -80,7 +80,7 @@ export default function HomeDesktop() {
   const statusLabel = NAV.find((n) => n.id === activeSection)?.label ?? 'Ready';
 
   return (
-    <>
+    <div className="retro-home-wrap">
       <div className="retro-body">
         <aside className="retro-sidebar">
           <label className="retro-sidebar__label" htmlFor="retro-view-select">
@@ -170,6 +170,6 @@ export default function HomeDesktop() {
         <span className="retro-statusbar__left">{statusLabel}</span>
         <span className="retro-statusbar__right">Press Help for about this window</span>
       </footer>
-    </>
+    </div>
   );
 }

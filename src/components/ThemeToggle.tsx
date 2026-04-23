@@ -23,9 +23,10 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
       type="button"
       onClick={toggleTheme}
       className={clsx(
-        'p-2 rounded-full transition-colors cursor-pointer hover:bg-opacity-10',
-        $isLightMode ? 'text-[#1a1a1a] hover:bg-[#bede64]' : 'text-zinc-400 hover:text-[#1a1a1a] hover:bg-[#bede64]',
+        'p-2 transition-colors cursor-pointer',
         'retro-theme-toggle',
+        !$isLightMode && 'rounded-full text-zinc-400 hover:text-[#1a1a1a] hover:bg-[#bede64]',
+        $isLightMode && 'rounded-full text-[#1a1a1a] hover:bg-[#bede64]',
         className
       )}
       aria-label={$isLightMode ? 'Switch to dark mode' : 'Switch to light mode'}
