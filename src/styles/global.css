@@ -517,6 +517,8 @@ body.retro-site .retro-loading {
   border-color: var(--retro-outset-hi) var(--retro-outset-lo) var(--retro-outset-lo) var(--retro-outset-hi);
   background: var(--retro-outset-face);
   box-sizing: border-box;
+  padding: 0;
+  cursor: pointer;
 }
 
 .retro-titlebar__btn--close {
@@ -534,24 +536,110 @@ body.retro-site .retro-loading {
 
 .retro-menubar {
   display: flex;
-  gap: 14px;
-  padding: 4px 8px;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 2px 6px 4px;
   background: var(--retro-menubar-bg);
   border-bottom: 1px solid var(--retro-menubar-border);
   font-size: 12px;
+  position: relative;
+  z-index: 20;
+}
+
+.retro-menubar__slot {
+  position: relative;
+  display: inline-block;
+}
+
+.retro-menubar__trigger {
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 6px;
+  margin: 0;
+  cursor: pointer;
+  color: var(--retro-text);
+}
+
+.retro-menubar__trigger:hover,
+.retro-menubar__trigger--open {
+  border-color: var(--retro-outset-hi) var(--retro-outset-lo) var(--retro-outset-lo) var(--retro-outset-hi);
+  background: var(--retro-outset-face);
 }
 
 .retro-menubar__item {
   color: var(--retro-text);
 }
 
+.retro-menubar__dead {
+  padding: 2px 6px;
+  opacity: 0.65;
+}
+
 .retro-menubar__btn {
   border: none;
   background: none;
   font: inherit;
-  padding: 0;
+  padding: 2px 6px;
   cursor: pointer;
   text-decoration: underline;
+  color: var(--retro-text);
+}
+
+.retro-menu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 2px;
+  min-width: 180px;
+  padding: 2px;
+  background: var(--retro-outset-face);
+  border: 2px solid;
+  border-color: var(--retro-outset-hi) var(--retro-outset-lo) var(--retro-outset-lo) var(--retro-outset-hi);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.retro-menu__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 4px 20px 4px 24px;
+  font-size: 12px;
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  color: var(--retro-text);
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.retro-menu__item:hover,
+.retro-menu__item:focus {
+  background: var(--retro-nav-active);
+  color: #fff;
+}
+
+a.retro-menu__item:hover,
+a.retro-menu__item:focus {
+  color: #fff;
+}
+
+.retro-menu-sep {
+  height: 1px;
+  margin: 2px 0;
+  background: var(--retro-inset-lo);
+  border-top: 1px solid var(--retro-outset-hi);
+}
+
+body.retro-window-minimized .retro-home-wrap,
+body.retro-window-minimized .retro-page-wrap {
+  display: none !important;
+}
+
+body.retro-hide-statusbar .retro-statusbar {
+  display: none !important;
 }
 
 .retro-toolbar {
@@ -585,53 +673,19 @@ body.retro-site .retro-loading {
   border-color: var(--retro-outset-lo) var(--retro-outset-hi) var(--retro-outset-hi) var(--retro-outset-lo);
 }
 
-.retro-toolbtn__icon {
+.retro-toolbtn__glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.retro-toolbtn__glyph svg {
   display: block;
-  width: 16px;
-  height: 16px;
   image-rendering: pixelated;
-}
-
-.retro-toolbtn__icon--back {
-  border-left: 4px solid #0a6b0a;
-  border-bottom: 4px solid transparent;
-  border-top: 4px solid transparent;
-  margin-left: 2px;
-}
-
-.retro-toolbtn__icon--fwd {
-  border-right: 4px solid #666;
-  border-bottom: 4px solid transparent;
-  border-top: 4px solid transparent;
-  margin-right: 2px;
-}
-
-.retro-toolbtn__icon--refresh {
-  border: 2px solid #0a6b0a;
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  border-right-color: transparent;
-}
-
-.retro-toolbtn__icon--home {
-  width: 0;
-  height: 0;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-bottom: 10px solid #c06000;
-}
-
-.retro-toolbtn__icon--help {
-  background: #000080;
-  color: #fff;
-  font-size: 11px;
-  font-weight: bold;
-  line-height: 16px;
-  text-align: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  shape-rendering: crispEdges;
 }
 
 .retro-toolbar__sep {

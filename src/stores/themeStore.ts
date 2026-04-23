@@ -4,7 +4,7 @@ const getInitialState = () => {
     if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
         return localStorage.getItem('theme') === 'light';
     }
-    return false; // Default to dark
+    return true; // Default to light (classic gray chrome)
 };
 
 export const isLightMode = atom(getInitialState());

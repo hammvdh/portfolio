@@ -37,12 +37,15 @@ const statusLabel =
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="preload retro-site">
+	<body class="preload retro-site light-mode">
 		<script is:inline>
 			(function () {
 				const theme = localStorage.getItem('theme');
 				const body = document.body;
-				if (theme === 'light') {
+				// Default: light. Only omit light-mode when user explicitly chose dark.
+				if (theme === 'dark') {
+					body.classList.remove('light-mode');
+				} else {
 					body.classList.add('light-mode');
 				}
 				setTimeout(function () {
