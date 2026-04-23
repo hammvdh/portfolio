@@ -1,9 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Home from '../components/Home';
+import PortfolioShell from '../components/PortfolioShell';
 ---
 
-<Layout title="Hammadh Arquil | Software Engineer">
-	<Home client:load />
+<Layout title="Hammadh Arquil | Software Engineer" hideNavigation={true}>
+	<PortfolioShell client:load />
 </Layout>
 
