@@ -1,71 +1,65 @@
 import { GitHubCalendar } from 'react-github-calendar';
-import { useStore } from '@nanostores/react';
-import { isLightMode as isLightModeStore } from '../stores/themeStore';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+const transformLastSixMonths = (
+  data: Array<{ date: string; count: number; level: number }>
+) => {
+  const sixAgo = new Date();
+  sixAgo.setMonth(sixAgo.getMonth() - 6);
+  return data.filter((d) => new Date(d.date) >= sixAgo);
+};
+
+// Single theme object with both color schemes — the library indexes
+// `theme[colorScheme]`, so both keys must be present.
+const theme = {
+  light: ['#e5e5ea', '#c7c7cc', '#a4a4ab', '#7d7d83', '#5a8a1a'],
+  dark: ['#18181c', '#3f3f44', '#7d7d83', '#a4a4ab', '#c4e069'],
+};
 
 const GitHubHeatmap = () => {
-  const isLightMode = useStore(isLightModeStore);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [colorScheme, setColorScheme] = useState<'dark' | 'light'>('dark');
+  const [isMobile, setIsMobile] = useState(false);
 
-  if (!mounted) return null;
+  useEffect(() => {
+    const readTheme = () =>
+      (document.documentElement.dataset.theme as 'dark' | 'light') ?? 'dark';
+    setColorScheme(readTheme());
+    const onTheme = () => setColorScheme(readTheme());
+    window.addEventListener('themechange', onTheme);
 
-  const blackWhiteTheme = {
-    dark: [
-      '#1a1a1a', // level 0 - no contributions (dark gray)
-      '#404040', // level 1
-      '#707070', // level 2
-      '#a0a0a0', // level 3
-      '#ffffff', // level 4 - most contributions (white)
-    ],
-  };
+    const mq = window.matchMedia('(max-width: 639px)');
+    const onResize = () => setIsMobile(mq.matches);
+    onResize();
+    mq.addEventListener('change', onResize);
 
-  const lightBlackWhiteTheme = {
-    light: [
-      '#e5e5e5', // level 0 - no contributions (light gray)
-      '#d0d0d0', // level 1
-      '#a0a0a0', // level 2
-      '#707070', // level 3
-      '#1a1a1a', // level 4 - most contributions (dark gray/black)
-    ],
-  };
+    return () => {
+      window.removeEventListener('themechange', onTheme);
+      mq.removeEventListener('change', onResize);
+    };
+  }, []);
 
   return (
-    <div className={`mt-[1em] fade-up hidden sm:block github-heatmap-container ${isLightMode ? 'light-mode' : ''}`}>
-      <GitHubCalendar 
-        username="hammvdh" 
-        theme={isLightMode ? lightBlackWhiteTheme : blackWhiteTheme} 
-        colorScheme={isLightMode ? "light" : "dark"}
-        tooltips={{
-          // @ts-ignore
-          activity: {
-            text: (activity: { date: string | number | Date; count: number; }) => {
-              const date = new Date(activity.date);
-              const formattedDate = date.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-              });
-              return `${activity.count} contribution${activity.count > 1 ? 's' : ''} on ${formattedDate}`;
-            }
-          }
-        }}
-        // @ts-ignore
+    <div className="github-heatmap-container">
+      <p className="caption">
+        {isMobile ? 'Last 6 months' : 'This year on GitHub'}
+      </p>
+      <GitHubCalendar
+        username="hammvdh"
+        theme={theme}
+        colorScheme={colorScheme}
+        blockSize={isMobile ? 10 : 12}
+        blockMargin={isMobile ? 3 : 4}
+        blockRadius={2}
+        fontSize={12}
+        // @ts-ignore — transformData is supported but not in older types
+        transformData={isMobile ? transformLastSixMonths : undefined}
         labels={{
-            legend: {
-                less: 'Less',
-                more: 'More',
-            },
-            months: [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ],
-            totalCount: '{{count}} contributions in {{year}}',
-            weekdays: [
-                'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
-            ]
+          totalCount: '{{count}} contributions in the last year',
         }}
+        errorMessage="Couldn't load GitHub contributions right now."
       />
     </div>
   );
 };
+
 export default GitHubHeatmap;

@@ -2,109 +2,196 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+const tagCounts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) {
+    tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+  }
+}
+const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 ---
 
-<Layout title="Blog | Hammadh Arquil">
-	<div id="blog-page" class="container mt-8 sm:mt-12 px-4 sm:px-0 mx-auto">
-        <h1 class="text-3xl font-bold text-[var(--accent)] mb-8">Writing</h1>
-		<ul class="space-y-8 sm:space-y-10">
-			{
-				posts.map((post) => (
-					<li class="group">
-						<a href={`/blog/${post.slug}/`} class="block">
-                            <div class="flex flex-col sm:flex-row justify-between sm:items-baseline gap-1 sm:gap-2">
-							    <h4 class="text-lg sm:text-xl font-bold text-white group-hover:text-[var(--accent)] transition-colors leading-tight">{post.data.title}</h4>
-                                <p class="text-zinc-500 text-xs sm:text-sm font-mono shrink-0 mt-1 sm:mt-0">
-                                    {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                </p>
-                            </div>
-							<p class="text-zinc-400 mt-2 text-sm sm:text-base leading-relaxed max-w-2xl">
-								{post.data.description}
-							</p>
-                            <div class="mt-3 text-sm text-[#bede64] font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex items-center">
-                                Read Article
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                            </div>
-						</a>
-					</li>
-				))
-			}
-		</ul>
+<Layout
+  title="Writing — Hammadh Arquil"
+  description="Thoughts on engineering, design, and the messy place they meet."
+>
+  <div class="blog-index container-page">
+    <header class="head">
+      <p class="caption">/writing</p>
+      <h1>Writing</h1>
+      <p class="lede">
+        Notes on engineering, design, and the messy place they meet. Sometimes
+        startup life. Occasionally personal.
+        <a class="rss-link" href="/rss.xml" aria-label="RSS feed">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 11a9 9 0 0 1 9 9" />
+            <path d="M4 4a16 16 0 0 1 16 16" />
+            <circle cx="5" cy="19" r="1" />
+          </svg>
+          RSS
+        </a>
+      </p>
 
-        <div class="mt-[4em] pb-[3em]">
-             <p class="text-xs sm:text-sm font-normal text-zinc-500">
-                ©️ 2026 Hammadh Arquil. All Rights Reserved.
-            </p>
-        </div>
-	</div>
+      {tags.length > 0 && (
+        <ul class="tag-row" aria-label="Filter by tag">
+          <li><a href="/blog" class="tag is-active">All ({posts.length})</a></li>
+          {tags.map(([tag, count]) => (
+            <li><a href={`/blog/tags/${tag}`} class="tag">{tag} ({count})</a></li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <ul class="posts">
+      {posts.map((p) => (
+        <li>
+          <a class="post" href={`/blog/${p.slug}/`} data-astro-prefetch>
+            <div class="post-head">
+              <h2 class="post-title">{p.data.title}</h2>
+              <time class="post-date" datetime={p.data.pubDate.toISOString()}>
+                {fmtDate(p.data.pubDate)}
+              </time>
+            </div>
+            <p class="post-desc">{p.data.description}</p>
+            {p.data.tags.length > 0 && (
+              <p class="post-tags">{p.data.tags.map((t) => `#${t}`).join('  ')}</p>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </Layout>
 
-<script>
-    import { isLightMode } from '../../stores/themeStore';
-    
-    isLightMode.subscribe(light => {
-        const page = document.getElementById('blog-page');
-        if (page) {
-            if (light) {
-                page.classList.add('light-mode');
-                 const title = page.querySelector('h1');
-                if (title) title.classList.remove('text-[#bede64]');
-                if (title) title.classList.add('text-[#1a1a1a]');
+<style>
+  .blog-index {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .blog-index { padding-top: 3rem; }
+  }
+  .head { margin-bottom: 2.5rem; }
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-subtle);
+    margin: 0 0 0.5rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3rem);
+    line-height: var(--leading-display);
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .lede {
+    color: var(--fg-muted);
+    margin: 0.75rem 0 0;
+    line-height: var(--leading-loose);
+    max-width: var(--max-prose);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: baseline;
+  }
+  .rss-link {
+    color: var(--fg-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color var(--duration-fast) ease;
+  }
+  .rss-link:hover { color: var(--accent); }
 
-                 const postTitles = page.querySelectorAll('h4');
-                postTitles.forEach(t => {
-                    t.classList.remove('text-white');
-                    t.classList.add('text-[#1a1a1a]');
-                });
+  .tag-row {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+  .tag:hover, .tag.is-active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 
-                 const postDescs = page.querySelectorAll('.text-zinc-400, .text-zinc-500');
-                postDescs.forEach(t => {
-                    t.classList.remove('text-zinc-400', 'text-zinc-500');
-                    t.classList.add('text-[#5a5a5a]');
-                });
-                
-                const readLinks = page.querySelectorAll('.text-[#bede64]');
-                 readLinks.forEach(t => {
-                     // Note: main title is also #bede64, but we handled it. 
-                     // This targets the "Read Article" link specifically if we want to change it, 
-                     // but #bede64 might look okay or we might want to darken it.
-                     // The title was handled above, this catches the list items.
-                     if (!t.classList.contains('text-3xl')) { 
-                         t.classList.remove('text-[#bede64]');
-                         t.classList.add('text-[#1a1a1a]'); 
-                     }
-                });
-
-
-            } else {
-                page.classList.remove('light-mode');
-                const title = page.querySelector('h1');
-                if (title) title.classList.add('text-[#bede64]');
-                if (title) title.classList.remove('text-[#1a1a1a]');
-
-                 const postTitles = page.querySelectorAll('h4');
-                postTitles.forEach(t => {
-                    t.classList.add('text-white');
-                    t.classList.remove('text-[#1a1a1a]');
-                });
-
-                 const postDescs = page.querySelectorAll('.text-[#5a5a5a]');
-                postDescs.forEach(t => {
-                    t.classList.add('text-zinc-400'); // using 400 for general
-                    t.classList.remove('text-[#5a5a5a]');
-                });
-
-                 const readLinks = page.querySelectorAll('.text-[#1a1a1a]');
-                 readLinks.forEach(t => {
-                     if (!t.classList.contains('text-3xl')) {
-                         t.classList.add('text-[#bede64]');
-                         t.classList.remove('text-[#1a1a1a]');
-                     }
-                });
-            }
-        }
-    });
-</script>
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .posts li + li .post {
+    border-top: 1px solid var(--border);
+  }
+  .post {
+    display: block;
+    padding: 1.5rem 0;
+    color: inherit;
+    transition: color var(--duration-fast) ease;
+  }
+  .post-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  @media (min-width: 640px) {
+    .post-head {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    transition: color var(--duration-fast) ease;
+    letter-spacing: -0.01em;
+  }
+  .post:hover .post-title {
+    color: var(--accent);
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg-subtle);
+    flex-shrink: 0;
+  }
+  .post-desc {
+    color: var(--fg-muted);
+    line-height: var(--leading-loose);
+    margin: 0.5rem 0 0;
+  }
+  .post-tags {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--fg-subtle);
+    margin: 0.5rem 0 0;
+  }
+</style>

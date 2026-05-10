@@ -2,6 +2,7 @@
 title: 'Design Systems are more than just Figma Components'
 description: 'Why your perfectly organized Figma file is failing in production.'
 pubDate: 'Jan 15 2026'
+tags: ['design', 'engineering']
 ---
 
 I see this pattern often: a design team spends months crafting the perfect Design System in Figma. Variables, auto-layout, component properties—it’s beautiful.

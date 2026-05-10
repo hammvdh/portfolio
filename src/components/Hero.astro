@@ -1,0 +1,202 @@
+---
+import { nowSnippet } from '../data/now.ts';
+
+const { available, summary, lastUpdated } = nowSnippet;
+const updated = new Date(lastUpdated);
+const ageInDays = Math.floor((Date.now() - updated.getTime()) / (1000 * 60 * 60 * 24));
+const isFresh = ageInDays < 90;
+---
+
+<section class="hero container-page">
+  <div class="pills fade-up" data-delay="0">
+    {available && (
+      <span class="pill pill-available">
+        <span class="availability-indicator" aria-hidden="true"></span>
+        Available for work
+      </span>
+    )}
+    {isFresh && (
+      <a href="/now" class="pill pill-now" data-astro-prefetch>
+        <span class="pill-label">Now</span>
+        {summary}
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17 17 7" />
+          <path d="M7 7h10v10" />
+        </svg>
+      </a>
+    )}
+  </div>
+
+  <h1 class="display-name fade-up" data-delay="1">Hammadh Arquil</h1>
+  <p class="role fade-up" data-delay="2">Software Engineer & Product Designer</p>
+
+  <p class="tagline fade-up" data-delay="3">
+    Currently <span id="ist-clock">—</span> in Colombo, Sri Lanka.
+  </p>
+
+  <div class="bio fade-up" data-delay="3">
+    <div
+      class="avatar inline-avatar"
+      role="img"
+      aria-label="Hammadh Arquil portrait"
+    ></div>
+    <p>
+      I'm a full-stack engineer and founder building scalable web, mobile, and
+      AI-powered systems. I started as a graphic designer under the alias
+      <em>ElitePSD</em> in 2016 and grew into engineering — bringing the visual
+      eye with me.
+    </p>
+    <p>
+      Today I'm building <a href="https://www.requset.com" class="animated-underline" target="_blank" rel="noopener noreferrer">Requset</a>,
+      an AI-driven approval workflow SaaS, while delivering production solutions at
+      <a href="https://htworkslk.com" class="animated-underline" target="_blank" rel="noopener noreferrer">HT Works</a>.
+      Earlier in 2025 I was the founding engineer at
+      <a href="https://sunoanalytics.com" class="animated-underline" target="_blank" rel="noopener noreferrer">Suno Analytics</a>,
+      shipping an AI spreadsheet engine for autonomous workflows.
+    </p>
+    <p>
+      Outside paid work I've been building <a href="https://prayr-app.com" class="animated-underline" target="_blank" rel="noopener noreferrer">Prayr</a> —
+      an Islamic companion platform for prayer, learning, and reflection.
+    </p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: 2rem;
+  }
+  @media (min-width: 640px) {
+    .hero { padding-top: 3rem; }
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+  .pill-available {
+    color: var(--fg);
+  }
+  .pill-now {
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+  }
+  .pill-now .pill-label {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 0.15rem;
+  }
+  .pill-now:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .display-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    line-height: var(--leading-display);
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .role {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: var(--leading-heading);
+    color: var(--fg-muted);
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.01em;
+  }
+  .tagline {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--fg-subtle);
+    margin: 1rem 0 0;
+  }
+  #ist-clock {
+    color: var(--fg-muted);
+  }
+
+  .bio {
+    margin-top: 1.75rem;
+    max-width: var(--max-narrow);
+    font-size: 1rem;
+    line-height: var(--leading-loose);
+    color: var(--fg);
+  }
+  .bio p {
+    margin: 0 0 1rem;
+  }
+  .bio p:last-child { margin-bottom: 0; }
+  .bio a {
+    color: var(--accent);
+  }
+  .bio em {
+    font-style: italic;
+    color: var(--fg-muted);
+  }
+
+  .inline-avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 9999px;
+    background-image: url('/images/avatar.png');
+    float: left;
+    margin: 0.25rem 1rem 0.4rem 0;
+    shape-outside: circle();
+  }
+  @media (min-width: 640px) {
+    .inline-avatar {
+      width: 96px;
+      height: 96px;
+    }
+  }
+</style>
+
+<script>
+  function setupClock() {
+    const el = document.getElementById('ist-clock');
+    if (!el) return;
+    const fmt = () =>
+      new Date().toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Colombo',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+    el.textContent = fmt();
+    const id = window.setInterval(() => {
+      const node = document.getElementById('ist-clock');
+      if (!node) {
+        window.clearInterval(id);
+        return;
+      }
+      node.textContent = fmt();
+    }, 60_000);
+  }
+  setupClock();
+  document.addEventListener('astro:page-load', setupClock);
+</script>

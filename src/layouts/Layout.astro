@@ -1,40 +1,173 @@
 ---
+import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/global.css';
 import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
-	title: string;
+  title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: 'website' | 'article';
+  publishedDate?: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  noIndex?: boolean;
 }
 
-const { title } = Astro.props;
+const SITE = 'https://hammadh.dev';
+const DEFAULT_DESC =
+  'Full-stack software engineer and founder building scalable web, mobile, and AI-powered systems. Currently developing Requset while delivering production-grade solutions at HT Works.';
+
+const {
+  title,
+  description = DEFAULT_DESC,
+  image = '/og/default.png',
+  canonical,
+  type = 'website',
+  publishedDate,
+  updatedDate,
+  tags = [],
+  noIndex = false,
+} = Astro.props;
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE).toString();
+const ogImage = image.startsWith('http') ? image : new URL(image, SITE).toString();
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Hammadh Arquil',
+  jobTitle: 'Software Engineer & Product Designer',
+  url: SITE,
+  image: `${SITE}/images/avatar.jpg`,
+  email: 'hammadharquil@gmail.com',
+  description: DEFAULT_DESC,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Colombo',
+    addressCountry: 'LK',
+  },
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'University of Westminster',
+    url: 'https://www.westminster.ac.uk',
+  },
+  sameAs: [
+    'https://github.com/hammvdh',
+    'https://www.linkedin.com/in/hammadharquil/',
+    'https://x.com/hammvdh',
+    'https://www.instagram.com/hammvdh/',
+    'https://www.behance.net/hammadh',
+  ],
+};
+
+const articleJsonLd = type === 'article' && publishedDate ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  image: ogImage,
+  datePublished: publishedDate.toISOString(),
+  ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+  author: {
+    '@type': 'Person',
+    name: 'Hammadh Arquil',
+    url: SITE,
+  },
+  keywords: tags.join(', '),
+  url: canonicalUrl,
+} : null;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Hammadh Arquil - Software Engineer & Product Designer" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body class="preload">
-        <script is:inline>
-            (function() {
-                const theme = localStorage.getItem('theme');
-                const body = document.body;
-                if (theme === 'light') {
-                    body.classList.add('light-mode');
-                }
-                
-                // Remove preload class after a short delay to enable transitions
-                setTimeout(() => {
-                    body.classList.remove('preload');
-                }, 100);
-            })();
-        </script>
-		<Navigation />
-		<slot />
-	</body>
+<html lang="en" data-theme="dark">
+  <head>
+    <script is:inline>
+      (function () {
+        function applyStoredTheme(doc) {
+          const root = doc.documentElement;
+          try {
+            const stored = localStorage.getItem('theme');
+            const system = window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+            root.dataset.theme = stored === 'light' || stored === 'dark' ? stored : system;
+          } catch (_) {
+            root.dataset.theme = 'dark';
+          }
+        }
+        applyStoredTheme(document);
+        document.addEventListener('astro:before-swap', (event) => {
+          applyStoredTheme(event.newDocument);
+        });
+      })();
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="Hammadh Arquil" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@hammvdh" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {publishedDate && <meta property="article:published_time" content={publishedDate.toISOString()} />}
+    {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+    {tags.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#08080b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Hammadh Arquil — Writing"
+      href="/rss.xml"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href="/fonts/PPNeueMontreal-Book.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/PPNeueMontreal-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+    {articleJsonLd && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+    )}
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class="skip-to-content">Skip to content</a>
+    <Navigation />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <Analytics />
+    <SpeedInsights />
+  </body>
 </html>

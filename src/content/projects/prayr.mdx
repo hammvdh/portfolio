@@ -1,0 +1,41 @@
+---
+title: 'Prayr'
+summary: 'An Islamic companion platform — prayer tracking, podcasts, Quran, articles, duas, and zakat.'
+image: '/images/projects/prayr.png'
+year: 2025
+yearRange: '2025 – Present'
+category: 'islamic'
+role: 'Founder & engineer'
+stack: ['React', 'Tailwind CSS', 'Supabase', 'REST APIs']
+featured: true
+caseStudy: true
+status: 'live'
+links:
+  live: 'https://prayr-app.com'
+publishedAt: 2025-03-01
+order: 2
+---
+
+## Context
+
+Prayr started from a simple frustration: the Islamic companion app market is fragmented across five apps that each do one thing — prayer times here, Quran there, duas elsewhere — and none of them get personalisation right. I wanted a single home for the spiritual side of daily life: tracking, listening, reading, and learning.
+
+## What I built
+
+- **Global prayer tracking** — daily salah logging with streaks, location-aware times, and gentle reminders.
+- **Quran recitations & articles CMS** — searchable, bookmarkable, with multiple reciters.
+- **Podcast streaming** — Islamic content hosted in-app, no third-party redirect.
+- **Dua collections** — categorised by occasion, with audio.
+- **Zakat calculator** — properly accounting for the lunar year, debts, and asset categories most calculators get wrong.
+
+## How it works
+
+React + Tailwind front-end on top of **Supabase** for auth, database, and storage. External REST APIs feed the Quran / hadith / prayer-time content; the article CMS and tracking data live in our own Postgres tables. The architecture is deliberately modular — each surface (Quran, podcasts, duas, articles) is a self-contained feature module so adding the next one (currently considering halal-finance tools) is a one-folder change, not a refactor.
+
+## Outcome
+
+Live at [prayr-app.com](https://prayr-app.com). Currently growing organically through community channels — no paid acquisition yet.
+
+## Reflection
+
+The biggest call I'd make differently: I should have shipped the lunar-aware streak system before the article CMS. Tracking is the daily-return loop; content is the depth surface. Get the loop right first, then deepen.

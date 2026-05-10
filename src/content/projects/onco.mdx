@@ -1,0 +1,49 @@
+---
+title: 'ONCO'
+summary: 'Open-source mobile platform for AI-assisted diagnosis and prognosis of skin, lung, and breast cancer.'
+image: '/images/projects/onco.png'
+year: 2021
+yearRange: '2020 – 2021'
+category: 'research'
+role: 'Co-creator & engineer'
+stack: ['Flutter', 'Python', 'Flask', 'TensorFlow', 'Keras', 'Sci-kit Learn', 'NLTK', 'OpenCV', 'Azure', 'Heroku']
+featured: true
+caseStudy: true
+status: 'archived'
+links:
+  repo: 'https://github.com/hammvdh/onco'
+publishedAt: 2021-06-01
+order: 4
+---
+
+## Context
+
+ONCO was a second-year group research project at the **University of Westminster** — an open-source mobile platform aimed at the diagnosis _and_ prognosis of three of the most prevalent cancers: **skin, lung, and breast**.
+
+The brief came out of a frustration we kept running into while researching the consumer-health app space: most "AI cancer detection" apps available at the time were either toy demos, paywalled black boxes, or built on shaky datasets with no reproducibility. The space was crowded with mediocre, unreliable tools — and patients deserved better than that. Our goal was to ship something open, transparent, and at least credible enough to be a starting point for a clinician-grade workflow.
+
+## What we built
+
+- **Flutter mobile app** as a single front-end across iOS and Android — image capture, history, and reports for each cancer type.
+- **Deep CNN diagnosis pipeline** for image-based detection: skin lesions, chest X-rays for lung cancer, and mammography for breast cancer — each with its own dedicated convolutional model trained in **TensorFlow / Keras**.
+- **Prognosis pipeline** using classical ML and risk models (Sci-kit Learn) for survival likelihood and progression-risk scoring, with **NLTK** powering text-based intake (symptoms, history) so the prognosis model could ingest unstructured patient input.
+- **Python / Flask inference services** for each modality, with **OpenCV** doing the pre-processing — normalisation, segmentation, and ROI extraction before anything hit the model.
+- **Azure + Heroku hybrid hosting** — heavier model endpoints on Azure, lightweight services on Heroku, deliberately kept on free / academic tiers so the whole platform could run for a student-project budget.
+
+## How it works
+
+For diagnosis, the flow was simple: capture (or upload) an image in Flutter → send to the Flask inference service for that cancer type → OpenCV pre-processes → the CNN runs inference → the app receives a structured response with the predicted class and a confidence score. Each model was trained and validated separately so we could iterate on lung-cancer accuracy without touching the skin or breast pipelines.
+
+For prognosis, we wired NLTK into the intake form so free-text symptom descriptions and history could be tokenised and feature-extracted alongside the structured inputs (age, lifestyle factors, etc.). Those features fed into Sci-kit Learn risk models that produced a prognosis score the app surfaced alongside the diagnosis result — not a clinical verdict, but a "this is what the model thinks, here's why" output.
+
+I personally focused on the **lung-cancer image-classification service** (Python / Flask / OpenCV) and contributed across the **Flutter front-end** for capture, results, and history screens.
+
+## Outcome
+
+Submitted as the second-year group research deliverable. The full source — Flutter app, the three model services, training notebooks, and infrastructure scripts — is **open on GitHub**, which was a deliberate choice: the whole point was that nobody should have to take an "AI cancer app" on faith.
+
+→ [github.com/hammvdh/onco](https://github.com/hammvdh/onco)
+
+## Reflection
+
+The thing I'd do differently now: separate diagnosis and prognosis into clearer surfaces in the UX. We folded both into one flow because the engineering pipelines reused so much, but for the user those are two very different conversations — "here's what we see" vs "here's what might happen next" — and conflating them undersold both. The other call I'd revisit is dataset provenance — for an open-source clinical-adjacent project, dataset cards and per-model evaluation reports should have shipped alongside the code on day one, not been left as a follow-up.

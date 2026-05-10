@@ -1,0 +1,57 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer container-page">
+  <div class="row">
+    <p class="copyright">© {year} Hammadh Arquil</p>
+    <nav class="more" aria-label="More pages">
+      <a href="/now" data-astro-prefetch>/now</a>
+      <span aria-hidden="true">·</span>
+      <a href="/uses" data-astro-prefetch>/uses</a>
+      <span aria-hidden="true">·</span>
+      <a href="/resume" data-astro-prefetch>/resume</a>
+      <span aria-hidden="true">·</span>
+      <a href="/rss.xml">/rss</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--gap-section-mobile);
+    padding-block: 2.5rem 3rem;
+    border-top: 1px solid var(--border);
+  }
+  @media (min-width: 640px) {
+    .site-footer { margin-top: var(--gap-section-desktop); }
+  }
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-subtle);
+  }
+  @media (min-width: 640px) {
+    .row {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+  .copyright { margin: 0; }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .more a {
+    color: var(--fg-subtle);
+    transition: color var(--duration-fast) ease;
+  }
+  .more a:hover { color: var(--accent); }
+  .more span { color: var(--fg-subtle); }
+</style>

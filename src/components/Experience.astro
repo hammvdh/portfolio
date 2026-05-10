@@ -1,0 +1,140 @@
+---
+import { experience } from '../data/experience.ts';
+
+// Strip leading "MMM " from values like "Jan 2025"; leave "Present" / pure years intact.
+const yearOnly = (s: string) => s.replace(/^[A-Za-z]{3,9}\s+(\d{4})$/, '$1');
+---
+
+<section class="section reveal-on-scroll" id="experience" aria-labelledby="exp-heading">
+  <div class="container-page">
+    <header class="section-head">
+      <h2 id="exp-heading" class="section-title">Experience</h2>
+      <a href="/resume" class="section-link" data-astro-prefetch>
+        View résumé
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </header>
+
+    <ul class="exp-list">
+      {experience.map((e) => (
+        <li>
+          <a
+            class="exp-row"
+            href={e.companyUrl ?? '#'}
+            target={e.companyUrl ? '_blank' : undefined}
+            rel={e.companyUrl ? 'noopener noreferrer' : undefined}
+          >
+            <span class="exp-date">{yearOnly(e.start)} – {yearOnly(e.end)}</span>
+            <span class="exp-role">{e.role}</span>
+            <span class="exp-company">{e.company}</span>
+            <span class="exp-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 7h10v10" />
+                <path d="M7 17 17 7" />
+              </svg>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--gap-block-mobile);
+  }
+  @media (min-width: 640px) {
+    .section-head { margin-bottom: var(--gap-block-desktop); }
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .section-title { font-size: 1.75rem; }
+  }
+  .section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    transition: color var(--duration-fast) ease;
+  }
+  .section-link:hover { color: var(--accent); }
+
+  .exp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .exp-list li + li .exp-row {
+    border-top: 1px solid var(--border);
+  }
+
+  .exp-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+    padding: 1rem 0;
+    color: var(--fg-muted);
+    transition: color var(--duration-fast) ease;
+    position: relative;
+  }
+  @media (min-width: 640px) {
+    .exp-row {
+      grid-template-columns: 13ch 1fr 1fr 1.25rem;
+      gap: 1rem;
+      align-items: baseline;
+      padding: 0.85rem 0.25rem;
+    }
+  }
+  .exp-row:hover {
+    color: var(--fg);
+  }
+
+  .exp-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.02em;
+  }
+  .exp-role {
+    color: var(--fg);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .exp-company {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+  }
+  .exp-row:hover .exp-company {
+    color: var(--accent);
+  }
+  .exp-arrow {
+    color: var(--fg-subtle);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease, color var(--duration-fast) ease;
+    display: none;
+  }
+  @media (min-width: 640px) {
+    .exp-arrow { display: inline-flex; align-items: center; justify-content: flex-end; }
+  }
+  .exp-row:hover .exp-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--accent);
+  }
+</style>
