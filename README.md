@@ -7,7 +7,7 @@ Welcome to my personal portfolio. This site serves as a digital garden for my pr
 *   **Astro**: For top-tier performance and content delivery.
 *   **React**: For interactive UI components.
 *   **Tailwind CSS**: For custom design and typography.
-*   **Nanostores**: For lightweight state management.
+*   **Nanostores**: For lightweight state management..
 
 ## Features
 
