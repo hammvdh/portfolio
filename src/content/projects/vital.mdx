@@ -1,0 +1,38 @@
+---
+title: 'Vital: Remote Patient Monitoring'
+summary: 'A thesis project on continuous remote vital-sign monitoring with predictive ML insights.'
+image: '/images/projects/vital.png'
+year: 2023
+yearRange: '2022 – 2023'
+category: 'research'
+role: 'Final-year researcher'
+stack: ['Flutter', 'Flask', 'Firebase', 'Python', 'TensorFlow', 'BLE']
+featured: true
+caseStudy: true
+status: 'thesis'
+publishedAt: 2023-09-01
+order: 3
+---
+
+## Context
+
+Vital was my final-year research thesis at the **University of Westminster** (2022–2023). The brief: continuous remote monitoring of patient vital signs with proactive insight, not just reactive dashboards. The audience was clinicians who today have to choose between on-site monitoring (high cost, limited reach) and self-reported home check-ins (unreliable, low signal).
+
+## What I built
+
+- **Mobile front-end** in Flutter, paired with OMRON BP monitors over BLE for real-time blood-pressure capture.
+- **Hybrid ML pipeline** on Flask + Python for multivariate vital-sign analysis and time-series forecasting of physiological parameters.
+- **Firebase backend** for clinician–patient sync, alerts, and historic record review.
+- **Predictive insights surface** that flagged patterns suggesting risk of deterioration, before any single reading crossed a threshold.
+
+## How it works
+
+The forecasting model combined classical time-series techniques (ARIMA on slow-moving signals like BP trends) with shallow neural nets for short-horizon multivariate forecasts. It was deliberately lightweight so it could run inference on a small Flask host — the design constraint was that this had to be deployable somewhere a small clinic could afford, not just AWS.
+
+## Outcome
+
+Submitted as final-year thesis; ML pipeline demonstrated successful forecasting on test datasets and the clinical workflow handled real BLE devices end-to-end.
+
+## Reflection
+
+Looking back, the thing I'd change is the data layer. I picked Firebase because it was fastest to ship for the thesis deadline; for a real clinical deployment I'd reach for Postgres + a proper time-series extension. The forecasting model also assumed cleaner signal than real-world wearable data ever produces — anyone shipping this into the field would need a much more aggressive smoothing layer.

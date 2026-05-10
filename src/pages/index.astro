@@ -1,9 +1,82 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Home from '../components/Home';
+import Hero from '../components/Hero.astro';
+import FeaturedWork from '../components/FeaturedWork.astro';
+import Experience from '../components/Experience.astro';
+import RecentWriting from '../components/RecentWriting.astro';
+import TechStack from '../components/TechStack.astro';
+import Connect from '../components/Connect.astro';
+import GitHubHeatmap from '../components/GitHubHeatmap.tsx';
 ---
 
-<Layout title="Hammadh Arquil | Software Engineer">
-	<Home client:load />
+<Layout
+  title="Hammadh Arquil — Software Engineer & Product Designer"
+  description="Full-stack software engineer and founder building scalable web, mobile, and AI-powered systems. Currently developing Requset while delivering production-grade solutions at HT Works."
+>
+  <Hero />
+  <FeaturedWork />
+  <Experience />
+  <RecentWriting />
+
+  <section class="section reveal-on-scroll" id="activity" aria-labelledby="activity-heading">
+    <div class="container-page">
+      <header class="section-head">
+        <h2 id="activity-heading" class="section-title">Activity</h2>
+      </header>
+      <GitHubHeatmap client:visible />
+    </div>
+  </section>
+
+  <TechStack />
+  <Connect />
 </Layout>
 
+<style>
+  .section-head {
+    margin-bottom: var(--gap-block-mobile);
+  }
+  @media (min-width: 640px) {
+    .section-head { margin-bottom: var(--gap-block-desktop); }
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .section-title { font-size: 1.75rem; }
+  }
+  :global(.github-heatmap-container .caption) {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    margin: 0 0 0.5rem;
+  }
+</style>
+
+<script>
+  // IntersectionObserver to fade in below-fold sections once
+  function setupReveal() {
+    const els = document.querySelectorAll('.reveal-on-scroll:not(.is-visible)');
+    if (els.length === 0) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+    );
+    els.forEach((el) => obs.observe(el));
+  }
+  setupReveal();
+  document.addEventListener('astro:page-load', setupReveal);
+</script>

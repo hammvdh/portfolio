@@ -2,6 +2,7 @@
 title: 'Rethinking State with Server Components'
 description: 'My takeaways from refactoring a client-heavy dashboard to React Server Components.'
 pubDate: 'Jan 19 2026'
+tags: ['engineering', 'react']
 ---
 
 React Server Components (RSC) have been the talk of the town for a while now. I finally took the plunge and refactored a portion of our analytics dashboard to use them. Here is what I learned.

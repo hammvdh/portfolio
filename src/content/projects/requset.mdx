@@ -1,0 +1,42 @@
+---
+title: 'Requset'
+summary: 'AI-driven request and approval workflow platform — built solo, launching soon.'
+image: '/images/projects/requset.png'
+year: 2025
+yearRange: '2025 – Present'
+category: 'saas'
+role: 'Founder & solo engineer'
+stack: ['Next.js', 'Supabase', 'Cloudflare R2', 'Python', 'Azure', 'GPT-4o', 'Polar']
+featured: true
+caseStudy: true
+status: 'building'
+links:
+  live: 'https://www.requset.com'
+publishedAt: 2025-01-15
+order: 1
+---
+
+## Context
+
+Every team I've worked at has the same broken pattern: requests live in seven places. PTO in HR, hardware in IT, budget in Slack DMs, expense in a forwarded email chain. When a manager has to approve fifteen things a week, the friction is the loss — not the decision itself.
+
+Requset is the answer to "what if all of those went through one inbox, with AI shaping the workflow per request?" I'm building it solo as a SaaS, owning everything from architecture to GTM.
+
+## What I built
+
+- **Multi-tenant SaaS** on **Next.js + Supabase** with Cloudflare R2 for blob storage and a Python backend on Azure for AI workloads.
+- **AI workflow generation** via GPT-4o and GPT-5 Nano on Azure AI Foundry — teams describe their approval flow in plain English ("PTO over 5 days needs grandboss; otherwise direct manager") and Requset generates the form, routing logic, and reminders.
+- **Three-tier seat-based pricing** with **Polar** including per-seat storage scaling, AI action limits, and overage billing logic.
+- **Zero-infra-cost architecture** through deliberate use of free tiers and Azure credits — runway-friendly for a solo founder pre-revenue.
+
+## How it works
+
+Workflow generation runs server-side: the user prompt becomes a structured JSON form definition (validated against a Zod schema), then renders client-side. The same AI loop handles routing inference: the LLM proposes routing logic, a deterministic validator checks for cycles and orphan branches, and the user gets a previewable diagram before activating.
+
+Per-seat pricing math runs through Polar's metering API, with overage logic written in Python because the billing reconciliation lives next to the AI usage tracking.
+
+## Outcome
+
+Pre-launch. Building toward public launch in 2026.
+
+→ [requset.com](https://www.requset.com)

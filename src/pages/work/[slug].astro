@@ -1,0 +1,248 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const all = await getCollection('projects', ({ data }) => data.caseStudy);
+  return all.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const data = entry.data;
+
+// Build prev/next case-study navigation by publishedAt date
+const all = (await getCollection('projects', ({ data }) => data.caseStudy)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+const idx = all.findIndex((e) => e.slug === entry.slug);
+const next = all[(idx + 1) % all.length];
+
+const categoryLabels: Record<string, string> = {
+  healthcare: 'Healthcare',
+  saas: 'SaaS',
+  islamic: 'Islamic',
+  research: 'Research',
+  design: 'Design',
+};
+const statusLabels: Record<string, string> = {
+  live: 'Live',
+  building: 'Building',
+  archived: 'Archived',
+  thesis: 'Thesis',
+};
+---
+
+<Layout
+  title={`${data.title} — Hammadh Arquil`}
+  description={data.summary}
+  image={data.image}
+  type="article"
+  publishedDate={data.publishedAt}
+  updatedDate={data.updatedAt}
+>
+  <article class="case-study">
+    <header class="container-page case-head">
+      <a href="/#work" class="back-link" data-astro-prefetch>← Selected work</a>
+
+      <p class="meta-row">
+        <span>{data.yearRange ?? data.year}</span>
+        <span aria-hidden="true">·</span>
+        <span>{categoryLabels[data.category] ?? data.category}</span>
+        <span aria-hidden="true">·</span>
+        <span class="status">{statusLabels[data.status]}</span>
+      </p>
+
+      <h1>{data.title}</h1>
+      <p class="summary">{data.summary}</p>
+
+      {data.image && (
+        <figure class="hero-image">
+          <img src={data.image} alt={data.title} loading="eager" decoding="async" />
+        </figure>
+      )}
+
+      <dl class="meta-grid">
+        <div>
+          <dt>Role</dt>
+          <dd>{data.role}</dd>
+        </div>
+        {data.stack.length > 0 && (
+          <div>
+            <dt>Stack</dt>
+            <dd>{data.stack.join(' · ')}</dd>
+          </div>
+        )}
+        {data.yearRange && (
+          <div>
+            <dt>Timeline</dt>
+            <dd>{data.yearRange}</dd>
+          </div>
+        )}
+        {(data.links.live || data.links.repo || data.links.external) && (
+          <div>
+            <dt>Links</dt>
+            <dd class="meta-links">
+              {data.links.live && (
+                <a href={data.links.live} target="_blank" rel="noopener noreferrer">Live ↗</a>
+              )}
+              {data.links.repo && (
+                <a href={data.links.repo} target="_blank" rel="noopener noreferrer">Repo ↗</a>
+              )}
+              {data.links.external && (
+                <a href={data.links.external} target="_blank" rel="noopener noreferrer">External ↗</a>
+              )}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </header>
+
+    <div class="container-page prose body">
+      <Content />
+    </div>
+
+    {next && next.slug !== entry.slug && (
+      <nav class="container-page case-foot" aria-label="Next case study">
+        <a href={`/work/${next.slug}`} class="next-link" data-astro-prefetch>
+          <span class="caption">Next case study</span>
+          <span class="next-title">{next.data.title} →</span>
+        </a>
+      </nav>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .case-study {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .case-study { padding-top: 3rem; }
+  }
+
+  .case-head { margin-bottom: 2.5rem; }
+
+  .back-link {
+    display: block;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    transition: color var(--duration-fast) ease;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .meta-row {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin: 0 0 0.85rem;
+  }
+  .meta-row .status { color: var(--accent); }
+
+  .case-head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 7vw, 3.5rem);
+    font-weight: 600;
+    line-height: var(--leading-display);
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .summary {
+    color: var(--fg-muted);
+    font-size: 1.1rem;
+    line-height: var(--leading-loose);
+    margin: 1rem 0 2rem;
+  }
+
+  .hero-image {
+    margin: 0 0 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    background: var(--bg-elevated);
+  }
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+    margin: 0 0 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .meta-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .meta-grid dt {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    margin-bottom: 0.25rem;
+  }
+  .meta-grid dd {
+    font-size: 0.85rem;
+    color: var(--fg);
+    margin: 0;
+    line-height: var(--leading-body);
+  }
+  .meta-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .meta-links a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast) ease;
+  }
+  .meta-links a:hover { color: var(--accent); }
+
+  .body { margin-top: 2rem; }
+
+  .case-foot {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--fg);
+    transition: color var(--duration-fast) ease;
+  }
+  .next-link:hover { color: var(--accent); }
+  .next-link .caption {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+  }
+  .next-link .next-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+</style>

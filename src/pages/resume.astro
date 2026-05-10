@@ -1,0 +1,302 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { experience } from '../data/experience.ts';
+import { education } from '../data/education.ts';
+import { techStack } from '../data/techStack.ts';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects', ({ data }) => data.caseStudy))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+const summary =
+  'Full-stack software engineer and founder building scalable web, mobile, and AI-powered systems. Currently developing Requset, an AI-driven workflow platform, while delivering production-grade solutions at HT Works.';
+---
+
+<Layout
+  title="Résumé — Hammadh Arquil"
+  description="Résumé of Hammadh Arquil — software engineer and founder based in Colombo, Sri Lanka."
+>
+  <article class="resume container-page">
+    <header class="resume-header resume-section">
+      <div class="resume-id">
+        <h1>Hammadh Arquil</h1>
+        <p class="resume-role">Software Engineer & Product Designer · Colombo, Sri Lanka</p>
+        <p class="resume-contacts">
+          <a href="https://hammadh.dev">hammadh.dev</a>
+          <span aria-hidden="true">·</span>
+          <a href="mailto:hammadharquil@gmail.com">hammadharquil@gmail.com</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/hammvdh" target="_blank" rel="noopener noreferrer">github.com/hammvdh</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://www.linkedin.com/in/hammadharquil/" target="_blank" rel="noopener noreferrer">linkedin.com/in/hammadharquil</a>
+        </p>
+      </div>
+      <button id="print-btn" class="print-btn no-print" type="button">Print or save as PDF</button>
+    </header>
+
+    <section class="resume-section">
+      <h2>Summary</h2>
+      <p class="resume-summary">{summary}</p>
+    </section>
+
+    <section class="resume-section">
+      <h2>Experience</h2>
+      <ul class="resume-list">
+        {experience.map((e) => (
+          <li class="resume-entry">
+            <div class="entry-head">
+              <span class="entry-role">{e.role}</span>
+              <span class="entry-dates">{e.start} – {e.end}</span>
+            </div>
+            <div class="entry-sub">
+              <a
+                href={e.companyUrl ?? '#'}
+                target={e.companyUrl ? '_blank' : undefined}
+                rel={e.companyUrl ? 'noopener noreferrer' : undefined}
+              >
+                {e.company}
+              </a>
+              {e.location && <span class="entry-loc">— {e.location}</span>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Education</h2>
+      <ul class="resume-list">
+        {education.map((ed) => (
+          <li class="resume-entry">
+            <div class="entry-head">
+              <span class="entry-role">{ed.degree}</span>
+              <span class="entry-dates">{ed.start} – {ed.end}</span>
+            </div>
+            <div class="entry-sub">
+              {ed.institutionUrl ? (
+                <a href={ed.institutionUrl} target="_blank" rel="noopener noreferrer">{ed.institution}</a>
+              ) : (
+                <span>{ed.institution}</span>
+              )}
+              <span class="entry-loc">— {ed.location}</span>
+              {ed.highlights && ed.highlights.length > 0 && (
+                <span class="entry-loc">— {ed.highlights.join(', ')}</span>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Selected projects</h2>
+      <ul class="resume-list">
+        {projects.map((p) => (
+          <li class="resume-entry">
+            <div class="entry-head">
+              <a class="entry-role" href={`/work/${p.slug}`}>{p.data.title}</a>
+              <span class="entry-dates">{p.data.yearRange ?? p.data.year}</span>
+            </div>
+            <div class="entry-sub">
+              <span>{p.data.role}</span>
+              {p.data.stack.length > 0 && (
+                <span class="entry-loc">— {p.data.stack.join(' · ')}</span>
+              )}
+            </div>
+            <p class="entry-summary">{p.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Skills</h2>
+      <div class="resume-skills">
+        {Object.entries(techStack).map(([category, techs]) => (
+          <div>
+            <p class="resume-skill-category">{category}</p>
+            <p class="resume-skill-list">{techs.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .resume {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .resume { padding-top: 3rem; }
+  }
+
+  .resume-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 640px) {
+    .resume-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .resume-id h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--fg);
+  }
+  @media (min-width: 640px) {
+    .resume-id h1 { font-size: 2.5rem; }
+  }
+  .resume-role {
+    font-family: var(--font-display);
+    color: var(--fg-muted);
+    margin: 0.25rem 0 0.75rem;
+    font-size: 1rem;
+  }
+  .resume-contacts {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg-subtle);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .resume-contacts a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast) ease;
+  }
+  .resume-contacts a:hover { color: var(--accent); }
+
+  .print-btn {
+    align-self: flex-start;
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+  .print-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .resume-section {
+    margin-bottom: 2rem;
+  }
+  .resume-section h2 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-subtle);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .resume-summary {
+    color: var(--fg);
+    margin: 0;
+    line-height: var(--leading-loose);
+    max-width: var(--max-prose);
+  }
+
+  .resume-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .resume-entry { color: var(--fg); }
+
+  .entry-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-bottom: 0.25rem;
+  }
+  @media (min-width: 640px) {
+    .entry-head {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+  }
+  .entry-role {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  a.entry-role { transition: color var(--duration-fast) ease; }
+  a.entry-role:hover { color: var(--accent); }
+  .entry-dates {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg-subtle);
+  }
+  .entry-sub {
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .entry-sub a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast) ease;
+  }
+  .entry-sub a:hover { color: var(--accent); }
+  .entry-loc { color: var(--fg-subtle); }
+  .entry-summary {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+    line-height: var(--leading-body);
+    max-width: var(--max-prose);
+  }
+
+  .resume-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .resume-skill-category {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    margin: 0 0 0.2rem;
+  }
+  .resume-skill-list {
+    color: var(--fg);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: var(--leading-body);
+  }
+</style>
+
+<script>
+  function setupPrint() {
+    const btn = document.getElementById('print-btn');
+    if (!btn || (btn as HTMLElement).dataset.bound === '1') return;
+    (btn as HTMLElement).dataset.bound = '1';
+    btn.addEventListener('click', () => window.print());
+  }
+  setupPrint();
+  document.addEventListener('astro:page-load', setupPrint);
+</script>

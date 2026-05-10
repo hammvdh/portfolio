@@ -1,0 +1,85 @@
+---
+const links = [
+  { label: 'Email',     href: 'mailto:hammadharquil@gmail.com', primary: true,  external: false },
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/hammadharquil/', external: true },
+  { label: 'X',         href: 'https://x.com/hammvdh', external: true },
+  { label: 'GitHub',    href: 'https://github.com/hammvdh', external: true },
+  { label: 'Instagram', href: 'https://www.instagram.com/hammvdh/', external: true },
+  { label: 'Behance',   href: 'https://www.behance.net/hammadh', external: true },
+  { label: 'Requset',   href: 'https://www.requset.com', external: true },
+  { label: 'Résumé',    href: '/resume', external: false },
+];
+---
+
+<section class="section reveal-on-scroll" id="connect" aria-labelledby="connect-heading">
+  <div class="container-page">
+    <header class="section-head">
+      <h2 id="connect-heading" class="section-title">Let's connect</h2>
+    </header>
+    <p class="lede">
+      Best reached by email — drop me a line about projects, collaborations, or
+      just to say hi. I read everything.
+    </p>
+    <ul class="links">
+      {links.map((l) => (
+        <li>
+          <a
+            class:list={['link', l.primary && 'is-primary', 'animated-underline']}
+            href={l.href}
+            target={l.external ? '_blank' : undefined}
+            rel={l.external ? 'noopener noreferrer' : undefined}
+          >
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-head {
+    margin-bottom: var(--gap-block-mobile);
+  }
+  @media (min-width: 640px) {
+    .section-head { margin-bottom: var(--gap-block-desktop); }
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .section-title { font-size: 1.75rem; }
+  }
+  .lede {
+    color: var(--fg-muted);
+    margin: 0 0 1rem;
+    max-width: var(--max-narrow);
+    line-height: var(--leading-loose);
+  }
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.25rem;
+  }
+  .link {
+    color: var(--fg-muted);
+    font-size: 0.95rem;
+    transition: color var(--duration-fast) ease;
+  }
+  .link:hover { color: var(--fg); }
+  .link.is-primary {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .link.is-primary:hover {
+    color: var(--accent);
+  }
+</style>

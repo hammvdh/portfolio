@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const recent = all
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+---
+
+<section class="section reveal-on-scroll" id="writing" aria-labelledby="writing-heading">
+  <div class="container-page">
+    <header class="section-head">
+      <h2 id="writing-heading" class="section-title">Recent writing</h2>
+      <a href="/blog" class="section-link" data-astro-prefetch>
+        View all
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </header>
+
+    <ul class="posts">
+      {recent.map((p) => (
+        <li>
+          <a class="post" href={`/blog/${p.slug}/`} data-astro-prefetch>
+            <div class="post-head">
+              <h3 class="post-title">{p.data.title}</h3>
+              <time class="post-date" datetime={p.data.pubDate.toISOString()}>
+                {fmtDate(p.data.pubDate)}
+              </time>
+            </div>
+            <p class="post-desc">{p.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--gap-block-mobile);
+  }
+  @media (min-width: 640px) {
+    .section-head { margin-bottom: var(--gap-block-desktop); }
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .section-title { font-size: 1.75rem; }
+  }
+  .section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    transition: color var(--duration-fast) ease;
+  }
+  .section-link:hover { color: var(--accent); }
+
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .posts li + li .post {
+    border-top: 1px solid var(--border);
+  }
+  .post {
+    display: block;
+    padding: 1rem 0;
+    color: inherit;
+    transition: color var(--duration-fast) ease;
+  }
+  .post-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  @media (min-width: 640px) {
+    .post-head {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    transition: color var(--duration-fast) ease;
+  }
+  .post:hover .post-title {
+    color: var(--accent);
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-subtle);
+    flex-shrink: 0;
+  }
+  .post-desc {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+    line-height: var(--leading-body);
+    margin: 0.35rem 0 0;
+  }
+</style>

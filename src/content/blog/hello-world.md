@@ -2,6 +2,7 @@
 title: 'Hello World: Why I Started Writing'
 description: 'Stepping out of my comfort zone to share my journey in engineering and design.'
 pubDate: 'Jan 02 2026'
+tags: ['meta', 'personal']
 ---
 
 I've always been a builder. Whether it was designing extensive UI kits as *ElitePSD* or architecting healthcare platforms at *HTWorks*, my focus has always been on the output. But recently, I've realized that the process is just as valuable as the result.

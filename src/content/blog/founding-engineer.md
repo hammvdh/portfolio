@@ -2,6 +2,7 @@
 title: 'The First 90 Days as a Founding Engineer'
 description: 'Chaos, code, and caffeine: lessons learned building from zero to one.'
 pubDate: 'Jan 08 2026'
+tags: ['startup', 'career']
 ---
 
 Joining a startup as a Founding Engineer is very different from being a Senior Engineer at a scale-up. At Suno Analytics, my first 90 days were a crash course in prioritization. Although the company ultimately sunsetted in early 2026, the lessons I learned in that compressed timeframe were invaluable.

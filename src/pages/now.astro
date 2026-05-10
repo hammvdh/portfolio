@@ -1,0 +1,107 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { nowSnippet } from '../data/now.ts';
+
+const updated = new Date(nowSnippet.lastUpdated);
+const fmt = updated.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+<Layout
+  title="Now — Hammadh Arquil"
+  description="What I'm focused on right now. Updated periodically."
+>
+  <article class="now container-page">
+    <header class="head">
+      <p class="caption">/now</p>
+      <h1>What I'm focused on right now</h1>
+      <p class="updated">Last updated <time datetime={nowSnippet.lastUpdated}>{fmt}</time></p>
+    </header>
+
+    <div class="prose">
+      <p>
+        I'm based in Colombo, Sri Lanka, juggling a few interconnected things —
+        most days touch all of them.
+      </p>
+
+      <h2>Building Requset</h2>
+      <p>
+        <a href="https://www.requset.com" target="_blank" rel="noopener noreferrer">Requset</a>
+        is the main thing on my desk: an AI-driven approval workflow SaaS I'm
+        building solo. Right now I'm mostly heads-down on the workflow generation
+        loop and getting the seat-based pricing math right with Polar before public launch.
+      </p>
+
+      <h2>Engineering at HT Works</h2>
+      <p>
+        I'm shipping cross-platform mobile and web work in Flutter and Angular at
+        HT Works — the day-job that pays for the side project and keeps me close
+        to real users in healthcare.
+      </p>
+
+      <h2>Maintaining Prayr</h2>
+      <p>
+        <a href="https://prayr-app.com" target="_blank" rel="noopener noreferrer">Prayr</a>
+        is in steady-state. I'm shipping smaller fixes and reading user mail rather
+        than starting new features — Requset gets the focus this season.
+      </p>
+
+      <h2>Open to consulting</h2>
+      <p>
+        If you're working on something interesting in healthcare, AI tooling, or
+        SaaS infrastructure and need a senior eye, I'm taking on a small amount of
+        short-engagement work. <a href="mailto:hammadharquil@gmail.com">Email me</a>.
+      </p>
+    </div>
+
+    <p class="footer-note">
+      This is a <a href="https://nownownow.com" target="_blank" rel="noopener noreferrer">/now page</a>,
+      a snapshot of current focus. It changes when I do.
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .now {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .now { padding-top: 3rem; }
+  }
+  .head { margin-bottom: 2rem; }
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-subtle);
+    margin: 0 0 0.5rem;
+  }
+  .head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: var(--leading-display);
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .updated {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg-subtle);
+    margin: 0.5rem 0 0;
+  }
+  .footer-note {
+    color: var(--fg-subtle);
+    font-size: 0.85rem;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-note a { color: var(--fg-muted); text-decoration: underline; text-underline-offset: 2px; }
+  .footer-note a:hover { color: var(--accent); }
+</style>

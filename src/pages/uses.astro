@@ -1,0 +1,149 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Uses — Hammadh Arquil"
+  description="Hardware, software, and tools I use day-to-day."
+>
+  <article class="uses container-page">
+    <header class="head">
+      <p class="caption">/uses</p>
+      <h1>Things I use</h1>
+      <p class="lede">
+        Hardware, software, and tools I lean on day-to-day. Inspired by
+        <a href="https://uses.tech" target="_blank" rel="noopener noreferrer">uses.tech</a>.
+      </p>
+    </header>
+
+    <section>
+      <h2>Hardware</h2>
+      <ul>
+        <li><strong>MacBook Pro 14" (M4)</strong> — primary machine for code and design.</li>
+        <li><strong>Gigabyte G24F</strong> — external display for the second window of code or Figma.</li>
+        <li><strong>Armageddon MBA-61R</strong> — 60% mechanical, tactile switches.</li>
+        <li><strong>Logitech MX Master 4</strong> — daily-driver mouse.</li>
+        <li><strong>SteelSeries Arctis 5</strong> — wired headset, for actual focus.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Editor & terminal</h2>
+      <ul>
+        <li><strong>Cursor</strong> — Tab autocomplete and agent mode; I drive the architecture, the agent does the typing. Small extension set (Prettier, ESLint, Astro, Tailwind IntelliSense).</li>
+        <li><strong>Theme</strong> — default dark themes. I don't customise.</li>
+        <li><strong>Font</strong> — JetBrains Mono in editor and terminal.</li>
+        <li><strong>Terminal</strong> — zsh in Cursor's built-in terminal, default prompt.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Design</h2>
+      <ul>
+        <li><strong>Figma</strong> — UI design, prototyping, design tokens.</li>
+        <li><strong>Adobe Photoshop & Illustrator</strong> — held over from my ElitePSD days; still useful for marks and stills.</li>
+        <li><strong>After Effects</strong> — motion and micro-interactions.</li>
+        <li><strong>CapCut</strong> — quick video edits and reels.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Stack of choice</h2>
+      <ul>
+        <li><strong>Frontend</strong> — Next.js or Astro for SSR, React for interactive surfaces, Tailwind for styling, Flutter for mobile.</li>
+        <li><strong>Backend</strong> — Node or Python depending on the workload, Postgres on Supabase, Cloudflare R2 for object storage.</li>
+        <li><strong>Hosting</strong> — Vercel for apps; Cloudflare for DNS, CDN, and R2.</li>
+        <li><strong>Auth</strong> — Supabase Auth.</li>
+        <li><strong>AI</strong> — Azure AI Foundry, OpenAI APIs.</li>
+        <li><strong>Billing</strong> — Polar.sh.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Productivity</h2>
+      <ul>
+        <li><strong>Notion</strong> — project notes, knowledge base.</li>
+        <li><strong>Linear</strong> — issues, sprint planning.</li>
+        <li><strong>GitHub</strong> — code, occasionally Issues.</li>
+        <li><strong>Browser</strong> — Helium and Zen, depending on the context.</li>
+        <li><strong>Music</strong> — Spotify or YouTube Music while coding.</li>
+        <li><strong>Comms</strong> — Discord and WhatsApp.</li>
+      </ul>
+    </section>
+
+    <p class="footer-note">
+      This page evolves slowly. Anything missing? <a href="mailto:hammadharquil@gmail.com">Tell me</a>.
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .uses {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .uses { padding-top: 3rem; }
+  }
+  .head { margin-bottom: 2rem; }
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-subtle);
+    margin: 0 0 0.5rem;
+  }
+  .head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: var(--leading-display);
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .lede {
+    color: var(--fg-muted);
+    margin: 0.75rem 0 0;
+    line-height: var(--leading-loose);
+  }
+  .lede a, .footer-note a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  section {
+    margin: 2.5rem 0;
+  }
+  section h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  li {
+    color: var(--fg-muted);
+    line-height: var(--leading-loose);
+  }
+  li strong {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .footer-note {
+    color: var(--fg-subtle);
+    font-size: 0.85rem;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
