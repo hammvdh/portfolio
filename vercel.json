@@ -3,6 +3,7 @@
   "redirects": [
     { "source": "/about", "destination": "/#work", "permanent": true },
     { "source": "/contact", "destination": "/#connect", "permanent": true },
-    { "source": "/work", "destination": "/#work", "permanent": true }
+    { "source": "/work", "destination": "/#work", "permanent": true },
+    { "source": "/work/requset", "destination": "/work/requester", "permanent": true }
   ]
 }

@@ -145,7 +145,7 @@
     };
 
     document.querySelectorAll('.theme-switch').forEach((wrap) => {
-      const pill = wrap.querySelector('.theme-pill');
+      const pill = wrap.querySelector<HTMLElement>('.theme-pill');
       if (!pill || pill.dataset.bound === '1') return;
       pill.dataset.bound = '1';
       pill.addEventListener('click', () => {
