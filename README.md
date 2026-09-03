@@ -27,7 +27,7 @@ src/
   components/      Astro components (Hero, FeaturedWork, Experience, etc.) + GitHubHeatmap.tsx
   content/
     blog/          Markdown blog posts (with tags + frontmatter)
-    projects/      MDX case studies (Vital, Prayr, Requset, Onco)
+    projects/      MDX case studies (Vital, Prayr, Requester, Onco)
     config.ts      Collection schemas (zod)
   data/            Typed data files (experience, education, techStack, now)
   layouts/         Layout.astro — shared shell (head, nav, footer, meta, JSON-LD)
@@ -75,7 +75,7 @@ These are file-only blockers — drop them in and the site renders fully.
 2. **OG image** `public/og/default.png` — 1200×630, used by every page until per-page OG generation is wired up.
 
 3. **Project images** in `public/images/projects/`:
-   - `requset.png` — home card and case-study hero (16×10)
+   - `requester.png` — home card and case-study hero (16×10)
    - `onco.png` — home card (16×10)
    - Optional: more screenshots referenced inside the project MDX bodies.
 

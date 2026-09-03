@@ -13,8 +13,8 @@ export const experience: ExperienceEntry[] = [
     start: 'Jan 2025',
     end: 'Present',
     role: 'Founder & Software Engineer',
-    company: 'Requset',
-    companyUrl: 'https://www.requset.com',
+    company: 'Requester',
+    companyUrl: 'https://www.getrequester.com',
     location: 'Remote',
   },
   {

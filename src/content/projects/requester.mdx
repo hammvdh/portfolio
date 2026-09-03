@@ -1,0 +1,78 @@
+---
+title: 'Requester'
+summary: 'The system of record for requests and approvals — a multi-tenant AI SaaS built solo, live and taking users.'
+image: '/images/projects/requester.png'
+year: 2025
+yearRange: '2025 – Present'
+category: 'saas'
+role: 'Founder & solo engineer'
+stack: ['Next.js', 'Supabase', 'Postgres RLS', 'Cloudflare R2', 'Python', 'Azure', 'Microsoft Foundry', 'Polar', 'Vercel']
+featured: true
+caseStudy: true
+status: 'live'
+links:
+  live: 'https://www.getrequester.com'
+publishedAt: 2025-01-15
+updatedAt: 2026-09-03
+order: 1
+---
+
+## Context
+
+Every team I've worked at has the same broken pattern: requests live in seven places. PTO in HR, hardware in IT, budget in Slack DMs, expense in a forwarded email chain. When a manager has to approve fifteen things a week, the friction is the loss — not the decision itself.
+
+Three failures show up over and over. The request nobody can find, buried under two hundred messages in a group chat. The approval with no paper trail, where three months later nobody can say who greenlit the vendor contract or on what basis. And the follow-up that shouldn't be your job — chasing your own manager for a decision you can't see the status of.
+
+Chat tools were built for conversation, not for decisions that need a record attached. Requester is the answer to "what if all of those went through one inbox, with AI shaping the workflow per request?" I build it solo, owning everything from schema to pricing page. It shipped under the name *Requset* and was renamed to **Requester** — the old domain redirects.
+
+## Shipping timeline
+
+The first foundations landed **31 Oct 2025**. Twenty releases later, the product is at **v0.17.0** (17 Jul 2026) and live on a free plan with no card required.
+
+- **v0.1–v0.3** (Nov 2025 – Jan 2026) — requests, templates, auth, then the workflow builder and dashboards.
+- **v0.7–v0.9** (Feb 2026) — the major AI and automation push, usage tracking, custom requests with real-time updates, then the audit trail, search, and exports.
+- **v0.10–v0.12** (Mar 2026) — plans, limits, and billing you can trust; storage that scales per seat; analytics and team controls.
+- **v0.13–v0.14** (Apr 2026) — streaming AI generation, workflow actions, integrations, and audit polish.
+- **v0.15–v0.17** (May – Jul 2026) — two-step activation and a Learn hub, the tactical Overview with approve-from-email, then workspace governance, out-of-office delegation, and custom request statuses.
+
+## What I built
+
+**Intake.** Twenty-seven field types — currency, signature, attachments, ratings, data grids, member pickers — with conditional logic, and six ways a request can arrive: the app, an AI draft, a tokenized public link, inbound email, the API, or a chat integration. The person who will never change how they ask still ends up in the same queue.
+
+**Approvals.** Any, all, or N-of-M quorum. Decided in the app, from a signed one-click email link without signing in, or by an outside guest who has no account and consumes no seat. Out-of-office delegation routes to a backup reviewer automatically.
+
+**Workflow engine.** A visual canvas with nine node types — approvals, conditional branches, delays, emails, webhooks, status changes — plus SLA windows, auto-reminders on stall, and escalation to admins. Custom request statuses let a workspace model lifecycle stages the defaults don't cover.
+
+**AI, natively.** Not a chat box in the corner. It drafts the request, generates the form *and* the workflow from one plain-English sentence, suggests approvers with visible reasoning, summarizes each submission for the reviewer, chases the stalled ones, and writes the decision record at the end.
+
+**Governance.** An append-only history per request — submissions, routing, decisions, comments, reassignments — timestamped and attributed to the person or agent who acted. Three roles (Owner, Admin, Member), restricted teams, and a full workspace export as one JSON file.
+
+## How it works
+
+**Multi-tenancy is enforced by the database, not the app.** Every table holding workspace data is behind Postgres row-level security on Supabase: queries run as the signed-in member and can only return rows from workspaces they belong to. Application bugs can't leak across tenants because the application isn't the thing doing the isolating.
+
+**Generated workflows are validated, not trusted.** The LLM proposes a form definition and a routing graph; the output streams to the client while a deterministic post-processor checks it — schema validation on the form, then a graph pass for cycles and orphan branches — before anything is saved. The user gets a previewable diagram and full edit rights. Nothing is locked to the generator.
+
+**The assistant reads the workspace.** *Rex* reaches the real objects through roughly twenty scoped tools — pending approvals, request details and activity, comments, templates and their fields, workflows, teams, members, usage — all bounded by the caller's existing permissions. Five agent archetypes sit on top: steward (chases stalled reviews), reviewer copilot, intake, workflow step, and coordinator. Each is activated per workspace under an explicit mandate and autonomy setting, and every run emits audit events. The rule the layer is built on: **it drafts, summarizes, suggests, and chases — people decide**, and the log records which was which.
+
+**The AI layer is provider-neutral.** Azure OpenAI, OpenAI, Anthropic, and Google sit behind one model catalog with per-tier routing, so swapping providers doesn't touch product code. Workspaces can bring their own key — encrypted at rest, shown once — and their usage stops being metered by me at all. The Python AI services run on Azure with inference through Microsoft Foundry; the Next.js app runs on Vercel; attachments live in Cloudflare R2.
+
+**Integrations are guarded.** Outbound event webhooks are HMAC-SHA256 signed with a timestamp so receivers can verify origin and reject replays, and integration URLs are validated against private-network targets.
+
+## The pricing decision
+
+The hard call was who pays. Approval software traditionally charges per user, which means the cost scales with the people *asking* — so companies ration access, and the requests go back to the group chat. Requester inverts it: **submitters are free, unlimited, forever, on every plan**, and you pay per approver seat. Free gives three approver seats, 50 requests a month, and multi-step approvals with conditional logic included rather than gated. Pro is $12/approver/mo, Business $25.
+
+AI is metered in weighted credits — chat costs less than generating a full form and workflow, summaries sit in between — pooled across the workspace so one heavy user can't starve everyone else, and billing separates three payers: user-triggered, workspace automation, and vendor-paid onboarding. Past the pool, paid workspaces degrade to a faster, cheaper model at no charge instead of hitting a wall. An approval should never block on a meter.
+
+## Outcome
+
+Live and taking users on the free plan, with the full approval lifecycle available before anyone pays. No SOC 2 certification today — the security page documents the actual controls instead of gesturing at a badge, and the one-file export exists so a buyer can verify the no-lock-in claim themselves.
+
+## Reflection
+
+The instinct I'd keep is building wide on purpose. Approvals fail at the edges — the one field nobody collected, the approver on leave, the outside vendor with no login — so breadth *is* the product, and every one of those edges became a shipped surface rather than a backlog item.
+
+The instinct I'd correct is how long I spent on generation before intake. The AI that builds a workflow from a sentence is the demo, but the thing that decides adoption is whether the person who has always asked in Slack can still ask in Slack. Email intake, public links, and chat decisions should have come earlier than they did.
+
+→ [getrequester.com](https://www.getrequester.com)

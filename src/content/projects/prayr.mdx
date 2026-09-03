@@ -1,41 +1,79 @@
 ---
 title: 'Prayr'
-summary: 'An Islamic companion platform — prayer tracking, podcasts, Quran, articles, duas, and zakat.'
+summary: "An Islamic companion platform — prayer times, tracking, Qur'an, du'as, adhkar, and zakat, rebuilt local-first so it works without an account."
 image: '/images/projects/prayr.png'
 year: 2025
 yearRange: '2025 – Present'
 category: 'islamic'
 role: 'Founder & engineer'
-stack: ['React', 'Tailwind CSS', 'Supabase', 'REST APIs']
+stack: ['React', 'Tailwind CSS', 'Supabase', 'PWA', 'Service Workers', 'REST APIs']
 featured: true
 caseStudy: true
 status: 'live'
 links:
   live: 'https://prayr-app.com'
 publishedAt: 2025-03-01
+updatedAt: 2026-09-03
 order: 2
 ---
 
 ## Context
 
-Prayr started from a simple frustration: the Islamic companion app market is fragmented across five apps that each do one thing — prayer times here, Quran there, duas elsewhere — and none of them get personalisation right. I wanted a single home for the spiritual side of daily life: tracking, listening, reading, and learning.
+Prayr started from a simple frustration: the Islamic companion app market is fragmented across five apps that each do one thing — prayer times here, Qur'an there, du'as elsewhere — and none of them get personalisation right. I wanted a single home for the spiritual side of daily life: tracking, listening, reading, and learning.
 
-## What I built
+The second frustration took longer to name. Almost everything in this category asks you to install an app and make an account before it will tell you when Maghrib is. That is a strange amount of ceremony for a piece of information the sky already knows.
 
-- **Global prayer tracking** — daily salah logging with streaks, location-aware times, and gentle reminders.
-- **Quran recitations & articles CMS** — searchable, bookmarkable, with multiple reciters.
-- **Podcast streaming** — Islamic content hosted in-app, no third-party redirect.
-- **Dua collections** — categorised by occasion, with audio.
-- **Zakat calculator** — properly accounting for the lunar year, debts, and asset categories most calculators get wrong.
+## Shipping timeline
+
+**v1.0.0** shipped 25 Mar 2025 with the core: authentication, prayer times with location and calculation-method settings, prayer tracking with streaks, Qur'an recitations, podcasts, du'as by category, a zakat calculator, and a Hijri calendar.
+
+From there: **v1.3.0** (Jan 2026) added the Qur'an recitation experience properly — multiple reciters, playback speed, repeat modes, verse bookmarks — plus the articles system. **v1.4.0** landed for Ramadan (Feb 2026) with offline prayer times, sunnah tracking alongside fard, a calendar heatmap, in-app feedback, and a full gamification layer. **v2.0.0** (21 Jun 2026) rebuilt the app from the ground up.
+
+## What's in it now
+
+- **Prayer times** for all five prayers anywhere, with the calculation method your community follows and per-masjid manual adjustment on top. They work offline, so travel and dead zones don't break them.
+- **Prayer Journal** — fard and sunnah logging, daily habits, statistics, and a full calendar of prayer history on one page, with streaks that nudge without shaming.
+- **Qur'an** — read and listen together, search any reciter or topic, bookmark verses, control playback speed, set a sleep timer.
+- **Podcasts and articles** — Islamic audio in-app with no third-party redirect, and short plain-English reads with no social feed attached.
+- **Du'as** — browsable by occasion with descriptions, icons, search, and filters, plus bookmarks for the ones you return to.
+- **Guided morning and evening adhkar** — pick a set and tap through at your own pace; the counter plays the audio, advances when you finish, and remembers where you stopped if you walk away.
+- **Tasbih counter** and a **zakat calculator** that walks through gold, silver, cash, and liabilities and checks the total against nisab, using live gold and currency prices when you're online.
+- **Hijri dates** shown alongside the Gregorian calendar you already use.
+
+## The v2.0 rebuild
+
+The headline of v2.0.0 is that **you no longer need an account**. Everything you track — prayers, habits, bookmarks, tasbih, zakat — is written to your own device first. Sign in whenever you like and the entire local history migrates to the account in a single tap, across devices, with nothing lost.
+
+That inverted the data model. Sync stopped being the foundation and became a later stage: local state is the source of truth until an account exists, then it is reconciled upward rather than replaced. It also removed the app's worst moment — the sign-up wall standing between a first-time visitor and the one thing they came for.
+
+The other half of the rebuild was correctness in the domain rather than features. Prayer times in Sri Lanka were retuned to match what people locally actually pray by, not just what the formula returns. The app no longer goes quiet after Isha: the next-prayer card rolls over to tomorrow's Fajr with a live countdown, and moving to a future day highlights that day's Fajr. Small things — but they're the difference between an app you trust at 9pm and one you close.
+
+It runs as an installable PWA with a service worker, so it lives on the home screen and works offline without ever being a download.
+
+## The feature I shipped and then deleted
+
+v1.4.0 went out for Ramadan with achievements, missions, XP, and levels. It was the most engagement-shaped work in the app, and by the metrics people usually cite for this category, it worked.
+
+I removed all of it in v2.0.0.
+
+The reason is in the release notes, and I'd write it the same way again: it was pulling attention toward points rather than the worship itself. A streak that encourages consistency is a nudge. A level that makes you feel you're *winning* at prayer is a category error — it quietly reframes an act of worship as a scoring opportunity, and once you see it you can't unsee it. Gamification is a strong tool that is completely wrong for this particular object.
+
+Deleting shipped, working, well-received features is the hardest editorial call I've had to make on my own product. It's also the one I'm most confident about.
 
 ## How it works
 
-React + Tailwind front-end on top of **Supabase** for auth, database, and storage. External REST APIs feed the Quran / hadith / prayer-time content; the article CMS and tracking data live in our own Postgres tables. The architecture is deliberately modular — each surface (Quran, podcasts, duas, articles) is a self-contained feature module so adding the next one (currently considering halal-finance tools) is a one-folder change, not a refactor.
+React and Tailwind on **Supabase** for auth, database, and storage, with external REST APIs feeding Qur'an, hadith, and prayer-time content while the article CMS and tracking data live in my own Postgres tables. Local-first state is held on-device and reconciled to the account on sign-in.
+
+The architecture is deliberately modular: each surface — Qur'an, podcasts, du'as, adhkar, articles, zakat — is a self-contained feature module, so adding the next one is a one-folder change rather than a refactor.
 
 ## Outcome
 
-Live at [prayr-app.com](https://prayr-app.com). Currently growing organically through community channels — no paid acquisition yet.
+Live at [prayr-app.com](https://prayr-app.com), free, and usable in the browser with no download and no sign-up. Growing organically through community channels — no paid acquisition.
+
+Actively in development: a batch of new features is in progress and a full redesign is planned. The surface has outgrown the shape I first gave it, and the tracking loop deserves to be the thing you land on.
 
 ## Reflection
 
-The biggest call I'd make differently: I should have shipped the lunar-aware streak system before the article CMS. Tracking is the daily-return loop; content is the depth surface. Get the loop right first, then deepen.
+The call I'd make differently is the same one I've made twice now: I should have shipped the lunar-aware streak system before the article CMS, and I should have gone local-first before I built gamification on top of an account requirement. Both times the mistake was the same shape — deepening a surface before the daily-return loop underneath it was right.
+
+Get the loop right first, then deepen. It took a ground-up rebuild to actually learn it.

@@ -9,7 +9,7 @@ I see this pattern often: a design team spends months crafting the perfect Desig
 
 Then the engineering team implements it, and distinct "drifts" start to happen.
 
-## The Translation Lsst
+## The Translation Loss
 
 The problem usually isn't the design; it's the **contract** between design and code.
 
