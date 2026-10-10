@@ -1,0 +1,49 @@
+---
+// PROTOTYPE — throwaway. Three structurally different takes on a "system spec" homepage redesign,
+// switchable via ?variant=A|B|C (or ← / → keys). Run `yarn dev`, open /prototype/redesign.
+// Delete this route + src/components/prototype/ once a direction wins.
+import VariantA from '../../components/prototype/VariantA.astro';
+import VariantB from '../../components/prototype/VariantB.astro';
+import VariantC from '../../components/prototype/VariantC.astro';
+import PrototypeSwitcher from '../../components/prototype/PrototypeSwitcher.astro';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Redesign prototype · hammadh.dev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Caveat&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <VariantA />
+    <VariantB />
+    <VariantC />
+    <PrototypeSwitcher variants={[{ key: 'A', name: 'Spec sheet' }, { key: 'B', name: 'Workspace' }, { key: 'C', name: 'Canvas' }]} />
+  </body>
+</html>
+
+<style is:global>
+  :root { --f-sans: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace; --f-serif: 'Instrument Serif', Georgia, serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { margin: 0; font-family: var(--f-sans); background: #0a0b0d; }
+  [hidden] { display: none !important; }
+</style>
+
+<script>
+  // Live Colombo clock + how far the visitor is from it, shared by every variant.
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const tick = () => document.querySelectorAll('[data-clock-colombo]').forEach((el) => (el.textContent = fmt.format(new Date())));
+  tick(); setInterval(tick, 1000);
+
+  const diff = 330 + new Date().getTimezoneOffset(); // Colombo is UTC+5:30
+  const h = Math.floor(Math.abs(diff) / 60), m = Math.abs(diff) % 60;
+  const span = `${h ? `${h}h` : ''}${m ? ` ${m}m` : ''}`.trim();
+  const text = diff === 0 ? "you're on my clock" : diff > 0 ? `you're ${span} behind me` : `you're ${span} ahead of me`;
+  document.querySelectorAll('[data-tzdiff]').forEach((el) => (el.textContent = text));
+</script>

@@ -1,0 +1,219 @@
+---
+// PROTOTYPE — Variant A "Spec sheet": light drafting paper, hero compiles out of its own wireframe,
+// numbered modules, engineering title block as the footer.
+import Demo from './Demo.astro';
+import Timeline from './Timeline.astro';
+const elite = Array.from({ length: 8 }, (_, i) => `/images/elitepsd/${String(i + 1).padStart(2, '0')}.png`);
+---
+
+<div class="va" data-variant="A" hidden>
+  <header class="va-nav">
+    <a class="va-mark" href="#"><span>H/A</span> Hammadh Arquil</a>
+    <div class="va-nav-r">
+      <span class="va-live"><span class="va-dot"></span>Colombo <span data-clock-colombo>--:--:--</span></span>
+      <a href="mailto:hammadharquil@gmail.com">Email</a>
+      <a href="https://github.com/hammvdh">GitHub</a>
+      <a href="https://x.com/hammvdh">X</a>
+    </div>
+  </header>
+  <div class="va-ruler"><span>REV 2026.10</span><span>SCALE 1:1</span><span>UNITS px</span><span class="va-ruler-fill"></span><span>SHEET 1 OF 4</span></div>
+
+  <section class="va-sheet va-hero compiling" data-compile>
+    <p class="va-eyebrow" data-wire="LABEL">◇ MODULE 01 · IDENTITY</p>
+    <p class="va-hello" data-wire="COPY 01">Hello, I'm</p>
+    <h1 class="va-name" data-wire="TITLE">Hammadh <em>Arquil</em></h1>
+    <p class="va-role" data-wire="COPY 02">Engineer who never stopped designing.</p>
+    <div class="va-bio" data-wire="COPY 03">
+      <p>I build products end to end, from schema to pricing page. Right now that's <a href="https://www.getrequester.com">Requester</a>, an AI-driven approval platform I run solo, alongside production work at <a href="https://htworkslk.com">HT Works</a>.</p>
+      <p>I started in 2016 as a graphic designer called <em>ElitePSD</em>, then walked into engineering and kept the eye. Until early 2026 I was founding engineer at <a href="https://sunoanalytics.com">Suno Analytics</a>. On the side I build <a href="https://prayr-app.com">Prayr</a>, a local-first Islamic companion.</p>
+    </div>
+    <p class="va-meta" data-wire="COPY 04">
+      Based in <u>Colombo</u> <span class="va-coord">6°55′38″ N 79°51′40″ E</span> · <span data-tzdiff>—</span>
+    </p>
+    <div class="va-status" data-status><span>astro build</span><span data-status-text>› compiling identity.astro</span></div>
+    <button class="va-replay" data-replay>↺ recompile</button>
+  </section>
+
+  <section class="va-sheet">
+    <p class="va-fig">Fig 0.1 · Five systems, all still running. Each cell is a live render, not a video.</p>
+    <div class="va-grid">
+      <figure class="va-cell span2"><Demo kind="requester" shot="/images/projects/requester.png" /><figcaption><b>01</b> Requester · approval routing</figcaption></figure>
+      <figure class="va-cell"><Demo kind="prayr" shot="/images/projects/prayr.png" /><figcaption><b>02</b> Prayr · the day, as an arc</figcaption></figure>
+      <figure class="va-cell"><Demo kind="vital" shot="/images/projects/vital.png" /><figcaption><b>03</b> Vital · live vitals</figcaption></figure>
+      <figure class="va-cell"><Demo kind="onco" shot="/images/projects/onco.png" /><figcaption><b>04</b> ONCO · per-modality CNN</figcaption></figure>
+      <figure class="va-cell"><Demo kind="terminal" /><figcaption><b>05</b> Ship log · v0.17.0</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="va-band">
+    <div class="va-sheet">
+      <p class="va-eyebrow dark">◇ MODULE 02 · CHANGELOG</p>
+      <h2 class="va-h2">Everything that shipped</h2>
+      <p class="va-lede">A decade on one track: the freelance design years, two research builds, three companies, and the two products I still run. Every diamond is a release.</p>
+      <Timeline />
+    </div>
+  </section>
+
+  <section class="va-sheet">
+    <p class="va-eyebrow">◇ MODULE 03 · OFF-CUTS</p>
+    <h2 class="va-h2">ElitePSD, 2016 →</h2>
+    <p class="va-lede">Where it started. Brand marks, social kits and posters from the freelance years, before any of it compiled.</p>
+    <div class="va-cuts">
+      {elite.map((src, i) => (
+        <div class="va-cut" style={`--r:${[-4, 3, -2, 5, -3, 2, -5, 4][i]}deg`}>
+          <img src={src} alt="" loading="lazy" onerror="this.remove()" />
+          <span>slot · elitepsd/{src.split('/').pop()}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <footer class="va-sheet va-foot">
+    <table class="va-block">
+      <tr><td colspan="2" class="big">hammadh.dev</td><td>DRAWN BY<b>Hammadh Arquil</b></td><td>REV<b>2026.10</b></td></tr>
+      <tr><td>CONTACT<b><a href="mailto:hammadharquil@gmail.com">hammadharquil@gmail.com</a></b></td><td>STATUS<b>Open to short consulting</b></td><td>LOCAL TIME<b data-clock-colombo>--:--</b></td><td>SHEET<b>4 of 4</b></td></tr>
+    </table>
+  </footer>
+</div>
+
+<style>
+  .va {
+    --paper: #f6f6f3; --ink: #121212; --mut: #6f6f6a; --rule: #dcdcd5; --acc: #4d7c0f; --lime: #c4e069;
+    background: var(--paper);
+    background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 100% 24px, 24px 100%;
+    background-blend-mode: normal;
+    color: var(--ink); min-height: 100vh;
+    --d-bg: #fbfbf9; --d-fg: #141414; --d-muted: #8a8a84; --d-line: #e2e2dc; --d-accent: #5a8a1a; --d-panel: #ffffff;
+  }
+  .va::before { content: ''; position: fixed; inset: 0; background: color-mix(in srgb, var(--paper) 86%, transparent); pointer-events: none; z-index: 0; }
+  .va > * { position: relative; z-index: 1; }
+  .va a { color: inherit; }
+
+  .va-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px clamp(16px, 4vw, 40px); border-bottom: 1px solid var(--rule); background: var(--paper); position: sticky; top: 0; z-index: 5; }
+  .va-mark { font-weight: 600; display: flex; gap: 10px; align-items: center; text-decoration: none; }
+  .va-mark span { font: 600 11px var(--f-mono); background: var(--ink); color: var(--paper); padding: 5px 6px; border-radius: 5px; }
+  .va-nav-r { display: flex; gap: 18px; align-items: center; font-size: 13.5px; }
+  .va-nav-r a { text-decoration: none; color: var(--mut); } .va-nav-r a:hover { color: var(--ink); }
+  .va-live { font: 500 11.5px var(--f-mono); color: var(--mut); display: flex; align-items: center; gap: 6px; }
+  .va-dot { width: 6px; height: 6px; border-radius: 50%; background: #3fa34d; box-shadow: 0 0 0 3px #3fa34d33; }
+  .va-ruler { display: flex; gap: 18px; padding: 6px clamp(16px, 4vw, 40px); font: 500 9.5px var(--f-mono); letter-spacing: .08em; color: var(--mut); border-bottom: 1px solid var(--rule); background: var(--paper); }
+  .va-ruler-fill { flex: 1; border-bottom: 1px dashed var(--rule); margin-bottom: 5px; }
+
+  .va-sheet { max-width: 1040px; margin: 0 auto; padding: 72px clamp(16px, 4vw, 40px); }
+  .va-eyebrow { font: 500 10.5px var(--f-mono); letter-spacing: .1em; color: var(--mut); margin: 0 0 22px; }
+  .va-eyebrow.dark { color: #8b8e96; }
+  .va-hero { position: relative; padding-top: 88px; }
+  .va-hello { font-size: 18px; margin: 0; color: var(--mut); }
+  .va-name { font-size: clamp(44px, 8vw, 84px); line-height: 1; letter-spacing: -.045em; margin: 4px 0 10px; font-weight: 600; }
+  .va-name em { font-family: var(--f-serif); font-weight: 400; font-style: italic; letter-spacing: -.02em; color: var(--mut); }
+  .va-role { font-size: 18px; color: var(--mut); margin: 0 0 30px; }
+  .va-bio { max-width: 620px; font-size: 17px; line-height: 1.65; }
+  .va-bio p { margin: 0 0 14px; }
+  .va-bio a { text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+  .va-meta { color: var(--mut); font-size: 15px; margin: 18px 0 0; }
+  .va-meta u { text-decoration: underline dotted; text-underline-offset: 4px; color: var(--ink); }
+  .va-coord, [data-tzdiff] { font: 500 11.5px var(--f-mono); }
+  .va-status { position: absolute; left: clamp(16px, 4vw, 40px); bottom: 24px; display: flex; gap: 10px; font: 500 10.5px var(--f-mono); color: var(--mut); opacity: 0; transition: opacity .3s; }
+  .va-status span:first-child { background: var(--ink); color: var(--paper); padding: 1px 6px; border-radius: 3px; }
+  .va-status.show { opacity: 1; }
+  .va-replay { position: absolute; right: clamp(16px, 4vw, 40px); bottom: 24px; font: 500 10.5px var(--f-mono); color: var(--mut); background: none; border: 1px dashed var(--rule); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+
+  /* compile intro: overlay boxes are injected by the script */
+  .va-hero.compiling [data-wire] { opacity: 0; }
+  .va-hero [data-wire] { transition: opacity .5s ease, filter .5s ease, transform .5s cubic-bezier(.16,1,.3,1); }
+  .va-hero [data-wire].pre { opacity: 0; filter: blur(6px); transform: translateY(6px); }
+  .va-hero :global(.wire) {
+    position: absolute; border: 1px solid #3b6fe0; color: #3b6fe0; pointer-events: none;
+    background: repeating-linear-gradient(135deg, #3b6fe014 0 6px, transparent 6px 12px);
+    transform-origin: left center; animation: wire-in .55s cubic-bezier(.16,1,.3,1) both;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .va-hero :global(.wire.out) { opacity: 0; transform: scale(1.02); }
+  .va-hero :global(.wire b) { position: absolute; top: -9px; left: 6px; background: #3b6fe0; color: #fff; font: 600 8.5px var(--f-mono); padding: 2px 5px; border-radius: 2px; letter-spacing: .06em; }
+  .va-hero :global(.wire i) { position: absolute; right: 6px; bottom: -8px; font: 500 8.5px var(--f-mono); background: var(--paper); padding: 0 4px; font-style: normal; }
+  @keyframes wire-in { from { transform: scaleX(0); opacity: 0; } }
+
+  .va-fig { font: 500 11px var(--f-mono); color: var(--mut); margin: 0 0 14px; }
+  .va-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--ink); background: var(--ink); gap: 1px; }
+  .va-cell { margin: 0; background: var(--paper); display: flex; flex-direction: column; height: 300px; }
+  .va-cell.span2 { grid-column: span 2; }
+  .va-cell :global(.demo) { flex: 1; }
+  .va-cell figcaption { font: 500 10.5px var(--f-mono); color: var(--mut); padding: 8px 10px; border-top: 1px solid var(--rule); background: #fff; }
+  .va-cell figcaption b { color: var(--ink); margin-right: 6px; }
+  @media (max-width: 760px) { .va-grid { grid-template-columns: 1fr; } .va-cell.span2 { grid-column: auto; } }
+
+  .va-band { background: #0b0c0f; color: #ecedf0; }
+  .va-band .va-lede { color: #8b8e96; }
+  .va-h2 { font-size: clamp(30px, 4vw, 42px); letter-spacing: -.035em; margin: 0 0 12px; font-weight: 600; }
+  .va-lede { max-width: 600px; color: var(--mut); font-size: 16px; line-height: 1.6; margin: 0 0 32px; }
+
+  .va-cuts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  @media (max-width: 760px) { .va-cuts { grid-template-columns: repeat(2, 1fr); } }
+  .va-cut {
+    aspect-ratio: 4/5; background: #fff; border: 1px solid var(--rule); padding: 8px 8px 28px; position: relative;
+    transform: rotate(var(--r)); box-shadow: 0 14px 30px -18px rgba(0,0,0,.35); transition: transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .va-cut:hover { transform: rotate(0) scale(1.04); z-index: 2; }
+  .va-cut img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .va-cut::before { content: ''; position: absolute; inset: 8px 8px 28px; background: repeating-linear-gradient(135deg, #eeeee9 0 8px, #f7f7f3 8px 16px); z-index: -0; }
+  .va-cut img { position: relative; }
+  .va-cut span { position: absolute; bottom: 8px; left: 10px; font: 500 9px var(--f-mono); color: var(--mut); }
+
+  .va-foot { padding-top: 24px; }
+  .va-block { width: 100%; border-collapse: collapse; border: 1.5px solid var(--ink); background: #fff; }
+  .va-block td { border: 1px solid var(--ink); padding: 8px 10px; font: 500 9px var(--f-mono); letter-spacing: .08em; color: var(--mut); vertical-align: top; }
+  .va-block td b { display: block; font: 500 13px var(--f-sans); letter-spacing: 0; color: var(--ink); margin-top: 4px; }
+  .va-block td.big { font: 600 28px var(--f-sans); letter-spacing: -.03em; color: var(--ink); vertical-align: middle; }
+  @media (max-width: 760px) { .va-nav-r a { display: none; } .va-block td { display: block; } }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hero = document.querySelector<HTMLElement>('.va-hero')!;
+  let timers: number[] = [];
+
+  function compile() {
+    timers.forEach(clearTimeout); timers = [];
+    hero.querySelectorAll('.wire').forEach((w) => w.remove());
+    const parts = [...hero.querySelectorAll<HTMLElement>('[data-wire]')];
+    const status = hero.querySelector<HTMLElement>('[data-status]')!, text = hero.querySelector('[data-status-text]')!;
+    hero.classList.remove('compiling');
+    if (reduce) { parts.forEach((p) => p.classList.remove('pre')); return; }
+    parts.forEach((p) => p.classList.remove('pre'));
+    const base = hero.getBoundingClientRect();
+    const rects = parts.map((p) => {
+      // measure the inline extent of text so boxes hug the copy, like a real layout pass
+      const range = document.createRange(); range.selectNodeContents(p);
+      return [range.getBoundingClientRect(), p.getBoundingClientRect()] as const;
+    });
+    parts.forEach((p) => p.classList.add('pre'));
+    const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+    status.classList.add('show'); text.textContent = '› resolving layout…';
+
+    // 1. draw a wireframe box over each part with its label and measured size
+    const wires = parts.map((p, i) => {
+      const [r, pr] = rects[i];
+      const w = Math.min(Math.max(r.width, 60), pr.width);
+      const box = document.createElement('div');
+      box.className = 'wire';
+      Object.assign(box.style, { left: `${pr.left - base.left}px`, top: `${pr.top - base.top}px`, width: `${w}px`, height: `${pr.height}px`, animationDelay: `${i * 110}ms` });
+      box.innerHTML = `<b>${p.dataset.wire}</b><i>${Math.round(w)} × ${Math.round(pr.height)}</i>`;
+      hero.append(box);
+      return box;
+    });
+
+    // 2. compile each box into the real content, top to bottom
+    later(() => (text.textContent = '› compiling identity.astro'), 900);
+    parts.forEach((p, i) => later(() => { wires[i].classList.add('out'); p.classList.remove('pre'); }, 1300 + i * 170));
+    const done = 1300 + parts.length * 170 + 300;
+    later(() => (text.textContent = `✓ built in ${380 + Math.round(Math.random() * 80)}ms`), done);
+    later(() => { wires.forEach((w) => w.remove()); status.classList.remove('show'); }, done + 1600);
+  }
+
+  hero.querySelector('[data-replay]')!.addEventListener('click', compile);
+  // Measure only after web fonts settle, otherwise the wireframe boxes are sized for fallback fonts.
+  const run = () => document.fonts.ready.then(() => requestAnimationFrame(compile));
+  addEventListener('variant:show', (e) => { if ((e as CustomEvent).detail === 'A') run(); });
+  if (document.documentElement.dataset.activeVariant === 'A') run();
+</script>

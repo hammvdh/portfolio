@@ -1,0 +1,61 @@
+---
+// PROTOTYPE — throwaway. Floating variant switcher; renders nothing in production builds.
+interface Props { variants: { key: string; name: string }[] }
+const { variants } = Astro.props;
+---
+
+{import.meta.env.DEV && (
+  <div class="proto-switch" data-proto-switch data-variants={JSON.stringify(variants)}>
+    <button data-dir="-1" aria-label="Previous variant">←</button>
+    <span data-proto-label></span>
+    <button data-dir="1" aria-label="Next variant">→</button>
+  </div>
+)}
+
+<style>
+  .proto-switch {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 9999;
+    display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px;
+    background: #ff3d6e; color: #fff; box-shadow: 0 10px 30px -8px rgba(0,0,0,.45);
+    font: 600 12px/1 ui-monospace, Menlo, monospace;
+  }
+  .proto-switch button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(255,255,255,.18); color: #fff; cursor: pointer; font-size: 14px; }
+  .proto-switch button:hover { background: rgba(255,255,255,.32); }
+  .proto-switch span { padding: 0 10px; white-space: nowrap; }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-proto-switch]');
+  const variants: { key: string; name: string }[] = bar
+    ? JSON.parse(bar.dataset.variants!)
+    : [...document.querySelectorAll<HTMLElement>('[data-variant]')].map((el) => ({ key: el.dataset.variant!, name: '' }));
+
+  const current = () => {
+    const v = new URLSearchParams(location.search).get('variant')?.toUpperCase();
+    return variants.some((x) => x.key === v) ? v! : variants[0].key;
+  };
+  const apply = (key: string) => {
+    document.querySelectorAll<HTMLElement>('[data-variant]').forEach((el) => (el.hidden = el.dataset.variant !== key));
+    document.documentElement.dataset.activeVariant = key;
+    const v = variants.find((x) => x.key === key)!;
+    const label = bar?.querySelector('[data-proto-label]');
+    if (label) label.textContent = `${v.key} (${v.name})`;
+    window.scrollTo(0, 0);
+    window.dispatchEvent(new CustomEvent('variant:show', { detail: key }));
+  };
+  const go = (dir: number) => {
+    const i = variants.findIndex((x) => x.key === current());
+    const next = variants[(i + dir + variants.length) % variants.length].key;
+    const url = new URL(location.href); url.searchParams.set('variant', next);
+    history.replaceState(null, '', url);
+    apply(next);
+  };
+  bar?.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.addEventListener('click', () => go(+b.dataset.dir!)));
+  addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('input, textarea, [contenteditable]')) return;
+    if (e.key === 'ArrowLeft') go(-1);
+    if (e.key === 'ArrowRight') go(1);
+  });
+  apply(current());
+</script>

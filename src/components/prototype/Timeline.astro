@@ -1,0 +1,189 @@
+---
+// PROTOTYPE — throwaway. Draggable changelog timeline built from real release history
+// (src/content/projects/*.mdx + src/data/experience.ts). Themed via --t-* properties.
+const lanes = ['Requester', 'Prayr', 'Work', 'Research', 'Design'] as const;
+type Lane = (typeof lanes)[number];
+interface Entry { lane: Lane; start: string; end?: string; title: string; tag?: string; body: string }
+
+// start/end as YYYY-MM
+const entries: Entry[] = [
+  { lane: 'Design', start: '2016-01', title: 'ElitePSD', tag: 'freelance', body: 'Started as a graphic designer under the alias ElitePSD. Brand marks, social kits, and the visual eye I still build with.' },
+  { lane: 'Research', start: '2020-09', end: '2021-06', title: 'ONCO', tag: 'open source', body: 'AI-assisted diagnosis and prognosis for skin, lung and breast cancer. Deep CNNs per modality behind a Flutter app.' },
+  { lane: 'Work', start: '2021-08', end: '2022-08', title: 'HT Works · Intern', body: 'First production code. Learned what shipping to real clients actually costs.' },
+  { lane: 'Research', start: '2022-09', end: '2023-09', title: 'Vital', tag: 'thesis', body: 'Remote vital-sign monitoring with predictive ML, built to be deployable somewhere a small clinic could afford.' },
+  { lane: 'Work', start: '2023-10', end: '2025-03', title: 'HT Works · Junior SE', body: 'Full-stack delivery across web and mobile for production clients.' },
+  { lane: 'Work', start: '2025-02', end: '2026-02', title: 'Suno Analytics', tag: 'founding eng', body: 'Founding engineer on an AI spreadsheet engine for autonomous workflows.' },
+  { lane: 'Prayr', start: '2025-03', title: 'Prayr', tag: 'v1.0.0', body: 'Prayer times, tracking with streaks, Qur\'an recitations, du\'as, zakat calculator and a Hijri calendar.' },
+  { lane: 'Work', start: '2025-03', end: '2026-10', title: 'HT Works · Software Engineer', body: 'Production solutions, still going.' },
+  { lane: 'Requester', start: '2025-10', title: 'Requester', tag: 'foundations', body: 'First foundations land. One inbox for every request and approval, with AI shaping the workflow per request.' },
+  { lane: 'Requester', start: '2025-11', end: '2026-01', title: 'Requests & workflows', tag: 'v0.1–v0.3', body: 'Requests, templates, auth, then the workflow builder and dashboards.' },
+  { lane: 'Prayr', start: '2026-01', title: 'Recitation', tag: 'v1.3.0', body: 'Multiple reciters, playback speed, repeat modes, verse bookmarks, and the articles system.' },
+  { lane: 'Requester', start: '2026-02', title: 'AI & audit trail', tag: 'v0.7–v0.9', body: 'The AI and automation push, real-time custom requests, then audit trail, search and exports.' },
+  { lane: 'Prayr', start: '2026-02', title: 'Ramadan release', tag: 'v1.4.0', body: 'Offline prayer times, sunnah tracking, a calendar heatmap, and a full gamification layer.' },
+  { lane: 'Requester', start: '2026-03', title: 'Billing you can trust', tag: 'v0.10–v0.12', body: 'Plans, limits and billing; storage that scales per seat; analytics and team controls.' },
+  { lane: 'Requester', start: '2026-04', title: 'Streaming AI', tag: 'v0.13–v0.14', body: 'Streaming AI generation, workflow actions, integrations, audit polish.' },
+  { lane: 'Prayr', start: '2026-06', title: 'Local-first rebuild', tag: 'v2.0.0', body: 'Rebuilt from the ground up. No account needed. And the gamification? Removed on purpose.' },
+  { lane: 'Requester', start: '2026-07', title: 'Governance', tag: 'v0.17.0', body: 'Approve-from-email, workspace governance, out-of-office delegation, custom request statuses.' },
+];
+
+// Piecewise scale [year, %]: the quiet early years are compressed so 2025–26 has room to breathe.
+const KNOTS: [number, number][] = [[2016, 1], [2020.5, 13], [2025, 42], [2027, 100]];
+const T0 = 2016, T1 = 2027;
+const toT = (ym: string) => { const [y, m] = ym.split('-').map(Number); return y + (m - 1) / 12; };
+const scale = (t: number) => { for (let k = 1; k < KNOTS.length; k++) { const [a, pa] = KNOTS[k - 1], [b, pb] = KNOTS[k]; if (t <= b) return pa + ((t - a) / (b - a)) * (pb - pa); } return 100; };
+const pct = (ym: string) => scale(toT(ym));
+const fmt = (ym: string) => new Date(ym + '-01').toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const data = entries.map((e, i) => ({ ...e, i, at: pct(e.start), to: e.end ? pct(e.end) : undefined, when: e.end ? `${fmt(e.start)} – ${fmt(e.end)}` : fmt(e.start) }));
+const years = Array.from({ length: T1 - T0 }, (_, i) => T0 + i);
+---
+
+<div class="tl" data-timeline data-knots={JSON.stringify(KNOTS)} data-entries={JSON.stringify(data.map((d) => ({ at: d.at, lane: d.lane, title: d.title, tag: d.tag ?? '', body: d.body, when: d.when })))}>
+  <div class="tl-detail">
+    <div class="tl-detail-top">
+      <span class="tl-lane" data-d-lane></span>
+      <span class="tl-tag" data-d-tag></span>
+      <span class="tl-when" data-d-when></span>
+    </div>
+    <h3 class="tl-title" data-d-title></h3>
+    <p class="tl-body" data-d-body></p>
+  </div>
+
+  <div class="tl-controls">
+    <button class="tl-btn" data-play aria-label="Play">▶</button>
+    <button class="tl-btn" data-prev aria-label="Previous">←</button>
+    <button class="tl-btn" data-next aria-label="Next">→</button>
+    <span class="tl-count" data-count></span>
+  </div>
+
+  <div class="tl-scroll">
+    <div class="tl-grid">
+      <div class="tl-labels">
+        <div class="tl-yr-spacer"></div>
+        {lanes.map((l) => <div class="tl-label">{l}</div>)}
+      </div>
+      <div class="tl-track" data-track>
+        <div class="tl-years">
+          {years.map((y) => <span style={`left:${scale(y)}%`} class={y < 2021 && y !== 2016 && y !== 2018 ? 'minor' : ''}>{y}</span>)}
+        </div>
+        {lanes.map((l) => (
+          <div class="tl-row">
+            {data.filter((d) => d.lane === l).map((d) => (
+              <>
+                {d.to !== undefined && <span class="tl-bar" data-i={d.i} style={`left:${d.at}%;width:${d.to - d.at}%`} />}
+                <button class="tl-key" data-i={d.i} style={`left:${d.at}%`} aria-label={`${d.title}, ${d.when}`} />
+              </>
+            ))}
+          </div>
+        ))}
+        <div class="tl-head" data-head><span class="tl-head-knob"></span><span class="tl-head-date" data-head-date></span></div>
+      </div>
+    </div>
+  </div>
+  <p class="tl-nb"><span>N.B.</span> drag the playhead. every diamond is something that shipped.</p>
+</div>
+
+<style>
+  .tl {
+    --_bg: var(--t-bg, #0d0e11); --_fg: var(--t-fg, #ecedf0); --_mut: var(--t-muted, #7c7f88);
+    --_line: var(--t-line, #23252c); --_acc: var(--t-accent, #c4e069); --_panel: var(--t-panel, #121318);
+    color: var(--_fg); font-family: var(--f-sans, system-ui);
+    border: 1px solid var(--_line); border-radius: 14px; background: var(--_panel); overflow: hidden;
+  }
+  .tl-detail { padding: 22px 22px 16px; min-height: 148px; }
+  .tl-detail-top { display: flex; gap: 10px; align-items: center; font: 500 10.5px var(--f-mono, monospace); text-transform: uppercase; letter-spacing: .06em; color: var(--_mut); }
+  .tl-tag:not(:empty) { background: var(--_acc); color: #18200a; padding: 3px 8px; border-radius: 99px; text-transform: none; letter-spacing: 0; }
+  .tl-when { margin-left: auto; }
+  .tl-title { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin: 10px 0 6px; }
+  .tl-body { margin: 0; color: var(--_mut); max-width: 56ch; font-size: 14.5px; line-height: 1.55; }
+  .tl-detail.flip .tl-title, .tl-detail.flip .tl-body { animation: tl-in .45s cubic-bezier(.16,1,.3,1); }
+  @keyframes tl-in { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+
+  .tl-controls { display: flex; gap: 6px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--_line); }
+  .tl-btn { width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--_line); color: var(--_fg); font-size: 12px; background: transparent; cursor: pointer; }
+  .tl-btn:hover { border-color: var(--_mut); }
+  .tl-count { margin-left: auto; font: 500 10.5px var(--f-mono, monospace); color: var(--_mut); }
+
+  .tl-scroll { overflow-x: auto; border-top: 1px solid var(--_line); }
+  .tl-grid { display: grid; grid-template-columns: 96px 1fr; min-width: 760px; padding: 0 18px 16px 0; }
+  .tl-labels { font-size: 12.5px; color: var(--_mut); }
+  .tl-yr-spacer { height: 30px; }
+  .tl-label { height: 34px; display: flex; align-items: center; padding-left: 16px; }
+  .tl-track { position: relative; cursor: ew-resize; touch-action: pan-y; user-select: none; }
+  .tl-years { height: 30px; position: relative; border-bottom: 1px solid var(--_line); }
+  .tl-years span { position: absolute; bottom: 6px; font: 500 9.5px var(--f-mono, monospace); color: var(--_mut); transform: translateX(-50%); }
+  .tl-years span::after { content: ''; position: absolute; left: 50%; top: 16px; height: 5px; border-left: 1px solid var(--_line); }
+  .tl-row { position: relative; height: 34px; border-bottom: 1px solid color-mix(in srgb, var(--_line) 60%, transparent); }
+  .tl-bar { position: absolute; top: 50%; height: 3px; margin-top: -1.5px; background: var(--_line); border-radius: 2px; transition: background .25s; }
+  .tl-bar.on { background: var(--_acc); box-shadow: 0 0 12px color-mix(in srgb, var(--_acc) 60%, transparent); }
+  .tl-key {
+    position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; transform: rotate(45deg);
+    background: var(--_mut); border: 0; border-radius: 2px; cursor: pointer; transition: transform .25s cubic-bezier(.16,1,.3,1), background .25s; padding: 0;
+  }
+  .tl-key:hover { transform: rotate(45deg) scale(1.35); }
+  .tl-key.past { background: color-mix(in srgb, var(--_acc) 55%, var(--_mut)); }
+  .tl-key.on { background: var(--_acc); transform: rotate(45deg) scale(1.45); box-shadow: 0 0 0 4px color-mix(in srgb, var(--_acc) 25%, transparent); }
+  .tl-head { position: absolute; top: 18px; bottom: 0; width: 0; border-left: 1.5px solid var(--_acc); pointer-events: none; transition: left .45s cubic-bezier(.16,1,.3,1); }
+  .tl-head.drag { transition: none; }
+  .tl-head-knob { position: absolute; top: -6px; left: -7px; width: 12px; height: 12px; border-radius: 50%; background: var(--_acc); }
+  .tl-head-date { position: absolute; bottom: -15px; left: 6px; font: 600 9.5px var(--f-mono, monospace); color: var(--_acc); white-space: nowrap; }
+  .tl-head.flip .tl-head-date { left: auto; right: 6px; }
+  .tl-years span.minor { display: none; }
+  .tl-nb { margin: 0; padding: 10px 18px 14px; font: 400 15px 'Caveat', cursive; color: var(--_mut); border-top: 1px dashed var(--_line); }
+  .tl-nb span { color: var(--_acc); }
+</style>
+
+<script>
+  interface E { at: number; lane: string; title: string; tag: string; body: string; when: string }
+  document.querySelectorAll<HTMLElement>('[data-timeline]').forEach((root) => {
+    const list: E[] = JSON.parse(root.dataset.entries!);
+    const order = list.map((e, i) => ({ ...e, i })).sort((a, b) => a.at - b.at);
+    const track = root.querySelector<HTMLElement>('[data-track]')!, head = root.querySelector<HTMLElement>('[data-head]')!;
+    const $ = (s: string) => root.querySelector<HTMLElement>(s)!;
+    const keys = [...root.querySelectorAll<HTMLElement>('.tl-key')], bars = [...root.querySelectorAll<HTMLElement>('.tl-bar')];
+    const detail = $('.tl-detail');
+    let cur = order.length - 1, playT: number | undefined;
+
+    const knots: [number, number][] = JSON.parse(root.dataset.knots!);
+    const unscale = (p: number) => { for (let k = 1; k < knots.length; k++) { const [a, pa] = knots[k - 1], [b, pb] = knots[k]; if (p <= pb) return a + (Math.max(p - pa, 0) / (pb - pa)) * (b - a); } return 2027; };
+    const dateAt = (p: number) => { const t = unscale(p); const d = new Date(Math.floor(t), Math.round((t % 1) * 12)); return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }); };
+    const show = (k: number, moveHead = true) => {
+      const changed = k !== cur; cur = k;
+      const e = order[k];
+      $('[data-d-lane]').textContent = e.lane; $('[data-d-tag]').textContent = e.tag;
+      $('[data-d-when]').textContent = e.when; $('[data-d-title]').textContent = e.title; $('[data-d-body]').textContent = e.body;
+      $('[data-count]').textContent = `${k + 1} / ${order.length}`;
+      keys.forEach((el) => { const i = +el.dataset.i!; el.classList.toggle('on', i === e.i); el.classList.toggle('past', list[i].at <= e.at && i !== e.i); });
+      bars.forEach((el) => el.classList.toggle('on', +el.dataset.i! === e.i));
+      if (moveHead) placeHead(e.at);
+      if (changed) { detail.classList.remove('flip'); void detail.offsetWidth; detail.classList.add('flip'); }
+    };
+    function placeHead(p: number) { head.style.left = `${p}%`; head.classList.toggle('flip', p > 85); $('[data-head-date]').textContent = dateAt(p); }
+    const nearest = (p: number) => order.reduce((best, e, k) => (Math.abs(e.at - p) < Math.abs(order[best].at - p) ? k : best), 0);
+
+    // Drag the playhead anywhere on the track; it snaps to the nearest release on release.
+    let dragging = false;
+    const pAt = (x: number) => { const r = track.getBoundingClientRect(); return Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100)); };
+    track.addEventListener('pointerdown', (ev) => {
+      if ((ev.target as HTMLElement).classList.contains('tl-key')) return;
+      dragging = true; stop(); track.setPointerCapture(ev.pointerId); head.classList.add('drag'); move(ev);
+    });
+    const move = (ev: PointerEvent) => {
+      if (!dragging) return;
+      const p = pAt(ev.clientX); placeHead(p);
+      show(nearest(p), false);
+    };
+    track.addEventListener('pointermove', move);
+    track.addEventListener('pointerup', () => { if (!dragging) return; dragging = false; head.classList.remove('drag'); show(cur); });
+    keys.forEach((el) => el.addEventListener('click', () => { stop(); show(order.findIndex((e) => e.i === +el.dataset.i!)); }));
+    $('[data-prev]').addEventListener('click', () => { stop(); show((cur - 1 + order.length) % order.length); });
+    $('[data-next]').addEventListener('click', () => { stop(); show((cur + 1) % order.length); });
+    const stop = () => { clearInterval(playT); playT = undefined; $('[data-play]').textContent = '▶'; };
+    $('[data-play]').addEventListener('click', () => {
+      if (playT) return stop();
+      if (cur === order.length - 1) show(0);
+      $('[data-play]').textContent = '❚❚';
+      playT = window.setInterval(() => (cur === order.length - 1 ? stop() : show(cur + 1)), 1600);
+    });
+    show(cur);
+  });
+</script>

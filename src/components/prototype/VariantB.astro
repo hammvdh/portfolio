@@ -1,0 +1,215 @@
+---
+// PROTOTYPE — Variant B "Workspace": the site as an editor. File-tree sidebar, boot log intro,
+// one big live demo you pick from a process list instead of a grid.
+import Demo from './Demo.astro';
+import Timeline from './Timeline.astro';
+const procs = [
+  { kind: 'requester', pid: 1042, name: 'requester', desc: 'Approvals, routed by AI', file: 'requester.tsx', since: 'Oct 2025', shot: '/images/projects/requester.png' },
+  { kind: 'prayr', pid: 2025, name: 'prayr', desc: 'Local-first prayer companion', file: 'prayr.tsx', since: 'Mar 2025', shot: '/images/projects/prayr.png' },
+  { kind: 'vital', pid: 2223, name: 'vital', desc: 'Remote patient monitoring', file: 'vital.py', since: 'thesis', shot: '/images/projects/vital.png' },
+  { kind: 'onco', pid: 2021, name: 'onco', desc: 'Cancer diagnosis CNNs', file: 'onco.py', since: 'archived', shot: '/images/projects/onco.png' },
+  { kind: 'terminal', pid: 1, name: 'ship', desc: 'Deploy log', file: 'ship.sh', since: 'always' },
+] as const;
+const elite = Array.from({ length: 10 }, (_, i) => `/images/elitepsd/${String(i + 1).padStart(2, '0')}.png`);
+---
+
+<div class="vb" data-variant="B" hidden>
+  <div class="vb-boot" data-boot><pre data-boot-log></pre></div>
+
+  <aside class="vb-side">
+    <div class="vb-lights"><i></i><i></i><i></i></div>
+    <p class="vb-ws">HAMMADH.DEV</p>
+    <nav class="vb-tree">
+      <p>▾ about</p>
+      <a href="#vb-identity" class="on">identity.md</a>
+      <a href="/now">now.md</a>
+      <p>▾ work</p>
+      {procs.map((p) => <a href="#vb-work" data-pick={p.kind}>{p.file}</a>)}
+      <p>▾ history</p>
+      <a href="#vb-log">changelog.log</a>
+      <a href="#vb-elite">elitepsd/</a>
+      <p>▾ bin</p>
+      <a href="#vb-contact">contact.sh</a>
+    </nav>
+    <div class="vb-statusbar">
+      <span>⎇ main ✓</span><span data-clock-colombo>--:--</span><span>LKT</span>
+    </div>
+  </aside>
+
+  <main class="vb-main">
+    <div class="vb-tabs"><span class="on">identity.md</span><span>requester.tsx</span><span>changelog.log</span></div>
+
+    <section id="vb-identity" class="vb-doc">
+      <ol class="vb-gutter">{Array.from({ length: 14 }, (_, i) => <li>{i + 1}</li>)}</ol>
+      <div class="vb-docbody">
+        <p class="vb-c"># identity.md · last edited Oct 2026</p>
+        <h1 class="vb-name">Hammadh Arquil<span class="vb-caret"></span></h1>
+        <p class="vb-role">Founder, full-stack engineer, recovering graphic designer.</p>
+        <p class="vb-p">I run <a href="https://www.getrequester.com">Requester</a>, a multi-tenant AI approvals platform I build solo, and ship production work at <a href="https://htworkslk.com">HT Works</a>. Before that I was founding engineer at <a href="https://sunoanalytics.com">Suno Analytics</a>. Before <em>that</em>, from 2016, I was ElitePSD, designing for whoever would pay me.</p>
+        <p class="vb-kv"><span>location</span> Colombo, LK <span class="vb-dim">6°55′38″N 79°51′40″E</span></p>
+        <p class="vb-kv"><span>you</span> <span data-tzdiff>—</span></p>
+        <p class="vb-kv"><span>status</span> <i class="vb-ok">●</i> open to short consulting</p>
+      </div>
+    </section>
+
+    <section id="vb-work" class="vb-sec">
+      <p class="vb-h">$ ps aux --sort=-shipped</p>
+      <div class="vb-procs">
+        <ul class="vb-list">
+          {procs.map((p, i) => (
+            <li>
+              <button data-proc={p.kind} class={i === 0 ? 'on' : ''}>
+                <span class="vb-pid">{p.pid}</span>
+                <span class="vb-pname">{p.name}<small>{p.desc}</small></span>
+                <span class="vb-since">{p.since}</span>
+                <svg class="vb-spark" viewBox="0 0 40 12"><polyline points={Array.from({ length: 10 }, (_, k) => `${k * 4.4},${2 + ((k * 7 + i * 5) % 9)}`).join(' ')} /></svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div class="vb-stage">
+          {procs.map((p, i) => <div class="vb-pane" data-pane={p.kind} hidden={i !== 0}><Demo kind={p.kind} shot={'shot' in p ? p.shot : undefined} /></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section id="vb-log" class="vb-sec">
+      <p class="vb-h">$ tail -f changelog.log</p>
+      <Timeline />
+    </section>
+
+    <section id="vb-elite" class="vb-sec">
+      <p class="vb-h">$ open elitepsd/ <span class="vb-dim"># 2016 → the design years</span></p>
+      <div class="vb-strip">
+        {elite.map((src) => <div class="vb-thumb"><img src={src} alt="" loading="lazy" onerror="this.remove()" /><span>{src.split('/').pop()}</span></div>)}
+      </div>
+    </section>
+
+    <section id="vb-contact" class="vb-sec vb-contact">
+      <p class="vb-h">$ ./contact.sh</p>
+      <p><span class="vb-dim">→</span> <a href="mailto:hammadharquil@gmail.com">mail hammadharquil@gmail.com</a></p>
+      <p><span class="vb-dim">→</span> <a href="https://github.com/hammvdh">open github.com/hammvdh</a></p>
+      <p><span class="vb-dim">→</span> <a href="https://www.linkedin.com/in/hammadharquil/">open linkedin/hammadharquil</a></p>
+      <p><span class="vb-dim">→</span> <a href="https://x.com/hammvdh">open x.com/hammvdh</a></p>
+      <p class="vb-dim">exit 0</p>
+    </section>
+  </main>
+</div>
+
+<style>
+  .vb {
+    --bg: #0a0b0d; --side: #0f1013; --line: #1f2127; --fg: #e8e9ec; --mut: #6e727c; --acc: #c4e069;
+    --d-bg: #0d0e11; --d-panel: #15161b; --d-line: #262830;
+    --t-panel: #0f1013;
+    background: var(--bg); color: var(--fg); min-height: 100vh;
+    display: grid; grid-template-columns: 240px 1fr; font-size: 15px;
+  }
+  .vb[hidden] { display: none; }
+  .vb a { color: var(--acc); text-decoration: none; }
+  .vb a:hover { text-decoration: underline; }
+
+  .vb-boot { position: fixed; inset: 0; z-index: 50; background: var(--bg); padding: 40px; transition: opacity .5s ease, visibility .5s; }
+  .vb-boot.gone { opacity: 0; visibility: hidden; }
+  .vb-boot pre { font: 400 13px/1.8 var(--f-mono); color: var(--mut); margin: 0; }
+  .vb-boot pre :global(b) { color: var(--acc); font-weight: 400; }
+
+  .vb-side { position: sticky; top: 0; height: 100vh; background: var(--side); border-right: 1px solid var(--line); display: flex; flex-direction: column; font: 400 12.5px var(--f-mono); }
+  .vb-lights { display: flex; gap: 7px; padding: 14px 16px; } .vb-lights i { width: 11px; height: 11px; border-radius: 50%; background: #2a2c33; }
+  .vb-lights i:nth-child(1) { background: #ff5f57; } .vb-lights i:nth-child(2) { background: #febc2e; } .vb-lights i:nth-child(3) { background: #28c840; }
+  .vb-ws { margin: 8px 16px 10px; font-size: 10.5px; letter-spacing: .1em; color: var(--mut); }
+  .vb-tree { flex: 1; overflow: auto; }
+  .vb-tree p { margin: 10px 0 2px; padding: 0 16px; color: var(--mut); }
+  .vb-tree a { display: block; padding: 3px 16px 3px 34px; color: #b9bcc4 !important; text-decoration: none !important; }
+  .vb-tree a:hover, .vb-tree a.on { background: #1a1c21; color: var(--fg) !important; }
+  .vb-statusbar { display: flex; gap: 12px; padding: 8px 16px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--mut); }
+
+  .vb-main { min-width: 0; }
+  .vb-tabs { position: sticky; top: 0; z-index: 4; display: flex; background: var(--side); border-bottom: 1px solid var(--line); font: 400 12px var(--f-mono); }
+  .vb-tabs span { padding: 10px 16px; color: var(--mut); border-right: 1px solid var(--line); }
+  .vb-tabs span.on { color: var(--fg); background: var(--bg); box-shadow: inset 0 2px 0 var(--acc); }
+
+  .vb-doc { display: grid; grid-template-columns: 48px 1fr; padding: 56px 0 40px; }
+  .vb-gutter { list-style: none; margin: 0; padding: 6px 12px 0 0; text-align: right; font: 400 12px/2.15 var(--f-mono); color: #3a3d45; }
+  .vb-docbody { max-width: 720px; padding-right: 24px; }
+  .vb-c { font: 400 12.5px var(--f-mono); color: var(--mut); margin: 0 0 18px; }
+  .vb-name { font-size: clamp(40px, 6.5vw, 72px); line-height: 1; letter-spacing: -.045em; margin: 0; font-weight: 600; }
+  .vb-caret { display: inline-block; width: .08em; height: .85em; background: var(--acc); margin-left: .06em; vertical-align: -.05em; animation: vbb 1s steps(1) infinite; }
+  @keyframes vbb { 50% { opacity: 0; } }
+  .vb-role { font-size: 19px; color: var(--mut); margin: 14px 0 26px; }
+  .vb-p { font-size: 17px; line-height: 1.65; margin: 0 0 26px; color: #c9cbd1; }
+  .vb-p em { font-family: var(--f-serif); font-size: 1.1em; }
+  .vb-kv { font: 400 13px var(--f-mono); margin: 4px 0; color: #c9cbd1; }
+  .vb-kv > span:first-child { display: inline-block; width: 90px; color: #7aa2f7; }
+  .vb-dim { color: var(--mut); }
+  .vb-ok { color: #28c840; font-style: normal; }
+
+  .vb-sec { padding: 40px 48px 40px; border-top: 1px solid var(--line); }
+  .vb-h { font: 400 13px var(--f-mono); color: var(--fg); margin: 0 0 20px; }
+  .vb-procs { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-height: 380px; }
+  .vb-list { list-style: none; margin: 0; padding: 6px; border-right: 1px solid var(--line); background: var(--side); }
+  .vb-list button { width: 100%; display: grid; grid-template-columns: 44px 1fr auto; grid-template-rows: auto auto; align-items: center; gap: 2px 10px; text-align: left; padding: 10px; border-radius: 8px; border: 0; background: none; color: var(--fg); cursor: pointer; font: inherit; }
+  .vb-list button:hover { background: #17181d; }
+  .vb-list button.on { background: #1c1e24; box-shadow: inset 2px 0 0 var(--acc); }
+  .vb-pid { font: 400 11px var(--f-mono); color: var(--mut); grid-row: span 2; }
+  .vb-pname { font: 500 13.5px var(--f-mono); }
+  .vb-pname small { display: block; font: 400 12px var(--f-sans); color: var(--mut); margin-top: 2px; }
+  .vb-since { font: 400 10.5px var(--f-mono); color: var(--mut); }
+  .vb-spark { width: 40px; height: 12px; grid-column: 3; }
+  .vb-spark polyline { fill: none; stroke: var(--mut); stroke-width: 1; }
+  .vb-list button.on .vb-spark polyline { stroke: var(--acc); }
+  .vb-stage { position: relative; background: var(--d-bg); }
+  .vb-pane { position: absolute; inset: 0; animation: vbp .4s cubic-bezier(.16,1,.3,1); }
+  .vb-pane[hidden] { display: none; }
+  @keyframes vbp { from { opacity: 0; transform: scale(.985); } }
+
+  .vb-strip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+  .vb-thumb { flex: 0 0 200px; aspect-ratio: 4/5; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; position: relative; scroll-snap-align: start; background: repeating-linear-gradient(135deg, #111216 0 8px, #0d0e11 8px 16px); }
+  .vb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .vb-thumb span { position: absolute; left: 8px; bottom: 8px; font: 400 10.5px var(--f-mono); color: var(--mut); }
+
+  .vb-contact p { font: 400 14px/1.9 var(--f-mono); margin: 0; }
+
+  @media (max-width: 820px) {
+    .vb { grid-template-columns: 1fr; }
+    .vb-side { display: none; }
+    .vb-sec { padding: 32px 16px; }
+    .vb-doc { grid-template-columns: 0 1fr; padding-left: 16px; } .vb-gutter { visibility: hidden; }
+    .vb-procs { grid-template-columns: 1fr; } .vb-stage { min-height: 320px; } .vb-list { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.vb')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Process list → one big stage
+  const pick = (kind: string) => {
+    root.querySelectorAll<HTMLElement>('[data-proc]').forEach((b) => b.classList.toggle('on', b.dataset.proc === kind));
+    root.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== kind));
+  };
+  root.querySelectorAll<HTMLElement>('[data-proc]').forEach((b) => b.addEventListener('click', () => pick(b.dataset.proc!)));
+  root.querySelectorAll<HTMLElement>('[data-pick]').forEach((a) => a.addEventListener('click', () => pick(a.dataset.pick!)));
+
+  // Boot log intro
+  const boot = root.querySelector<HTMLElement>('[data-boot]')!, log = root.querySelector('[data-boot-log]')!;
+  let timers: number[] = [];
+  const lines = [
+    'hammadh.dev boot sequence',
+    '[ <b>ok</b> ] mounting /about ........ identity.md',
+    '[ <b>ok</b> ] spawning requester ..... pid 1042',
+    '[ <b>ok</b> ] spawning prayr ......... pid 2025',
+    '[ <b>ok</b> ] restoring vital, onco .. from archive',
+    '[ <b>ok</b> ] replaying changelog .... 17 releases, 2016 → 2026',
+    '[ <b>ok</b> ] clock synced ........... Asia/Colombo',
+    'ready.',
+  ];
+  function runBoot() {
+    timers.forEach(clearTimeout); timers = [];
+    if (reduce) { boot.classList.add('gone'); return; }
+    boot.classList.remove('gone'); log.innerHTML = '';
+    lines.forEach((l, i) => timers.push(window.setTimeout(() => (log.innerHTML += l + '\n'), 120 + i * 150)));
+    timers.push(window.setTimeout(() => boot.classList.add('gone'), 120 + lines.length * 150 + 450));
+  }
+  addEventListener('variant:show', (e) => { if ((e as CustomEvent).detail === 'B') runBoot(); else boot.classList.add('gone'); });
+  if (document.documentElement.dataset.activeVariant === 'B') runBoot();
+</script>

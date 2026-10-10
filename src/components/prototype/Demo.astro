@@ -1,0 +1,353 @@
+---
+// PROTOTYPE — throwaway. Code-driven motion "videos" for the redesign prototype.
+// Each demo animates only while on screen (IntersectionObserver in the script below).
+// `shot` is a screenshot slot: if the file exists it crossfades in on hover.
+interface Props {
+  kind: 'requester' | 'prayr' | 'vital' | 'onco' | 'terminal';
+  shot?: string;
+}
+const { kind, shot } = Astro.props;
+---
+
+<div class="demo" data-demo={kind}>
+  {kind === 'requester' && (
+    <div class="req">
+      <div class="req-card">
+        <div class="req-top">
+          <span class="req-id" data-id>REQ-1042</span>
+          <span class="req-chip" data-chip>Submitted</span>
+        </div>
+        <div class="req-title" data-title>MacBook Pro for new hire</div>
+        <div class="req-meta" data-meta>IT · $2,499 · from Amaya</div>
+        <ol class="req-steps">
+          <li>Submitted</li><li>AI routed</li><li>Manager</li><li>Finance</li><li>Approved</li>
+        </ol>
+        <div class="req-ai" data-ai>✦ Routed to IT → Finance (amount &gt; $1k)</div>
+      </div>
+    </div>
+  )}
+
+  {kind === 'prayr' && (
+    <div class="pr">
+      <svg viewBox="0 0 300 170" class="pr-svg" aria-hidden="true">
+        <line x1="8" y1="140" x2="292" y2="140" class="pr-horizon" />
+        <path d="M20 140 A130 130 0 0 1 280 140" class="pr-arc" />
+        <path d="M20 140 A130 130 0 0 1 280 140" class="pr-arc-done" data-done />
+        <g data-marks></g>
+        <circle r="7" class="pr-sun" data-sun cx="20" cy="140" />
+      </svg>
+      <div class="pr-read">
+        <span class="pr-clock" data-clock>05:00</span>
+        <span class="pr-next" data-next>Next · Dhuhr 12:09</span>
+      </div>
+    </div>
+  )}
+
+  {kind === 'vital' && (
+    <div class="vt">
+      <canvas class="vt-canvas" data-canvas></canvas>
+      <div class="vt-stats">
+        <div><span class="vt-k">HR</span><span class="vt-v" data-bpm>72</span><span class="vt-u">bpm</span></div>
+        <div><span class="vt-k">BP</span><span class="vt-v" data-bp>118/76</span></div>
+        <div><span class="vt-k">SpO₂</span><span class="vt-v" data-spo>98</span><span class="vt-u">%</span></div>
+      </div>
+    </div>
+  )}
+
+  {kind === 'onco' && (
+    <div class="on">
+      <div class="on-scan">
+        <div class="on-tissue"></div>
+        <div class="on-line"></div>
+        <div class="on-box" data-box><span data-label>benign · 0.94</span></div>
+      </div>
+      <div class="on-read"><span data-mod>MODALITY · dermoscopy</span><span data-step>inference…</span></div>
+    </div>
+  )}
+
+  {kind === 'terminal' && (
+    <div class="tm"><pre class="tm-pre" data-term></pre></div>
+  )}
+
+  {shot && <img class="demo-shot" src={shot} alt="" loading="lazy" onerror="this.remove()" />}
+  {shot && <span class="demo-slot">slot · {shot.split('/').pop()}</span>}
+</div>
+
+<style>
+  /* Variants theme these via --d-* custom properties on any ancestor. */
+  .demo {
+    --_bg: var(--d-bg, #0d0e11);
+    --_fg: var(--d-fg, #ecedf0);
+    --_mut: var(--d-muted, #7c7f88);
+    --_line: var(--d-line, #262830);
+    --_acc: var(--d-accent, #c4e069);
+    --_panel: var(--d-panel, #15161b);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    background: var(--_bg);
+    color: var(--_fg);
+    overflow: hidden;
+    font-family: var(--f-sans, system-ui);
+    display: grid;
+    place-items: center;
+  }
+  .demo-shot {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0; transition: opacity .4s ease;
+  }
+  .demo:hover .demo-shot { opacity: 1; }
+  .demo-slot {
+    position: absolute; right: 8px; top: 8px;
+    font: 500 9px/1 var(--f-mono, monospace); letter-spacing: .06em; text-transform: uppercase;
+    color: var(--_mut); opacity: .55; border: 1px dashed currentColor; padding: 3px 5px; border-radius: 3px;
+  }
+
+  /* Requester */
+  .req { width: min(300px, 86%); }
+  .req-card {
+    background: var(--_panel); border: 1px solid var(--_line); border-radius: 12px; padding: 14px 14px 12px;
+    box-shadow: 0 20px 40px -24px rgba(0,0,0,.5);
+    transition: transform .5s cubic-bezier(.16,1,.3,1), opacity .4s;
+  }
+  .req-card.swap { transform: translateY(10px) scale(.98); opacity: 0; }
+  .req-top { display: flex; justify-content: space-between; align-items: center; font: 500 10px var(--f-mono, monospace); color: var(--_mut); }
+  .req-chip { padding: 2px 8px; border-radius: 99px; border: 1px solid var(--_line); color: var(--_fg); transition: all .3s; }
+  .req-chip.ok { background: var(--_acc); color: #18200a; border-color: transparent; }
+  .req-title { margin-top: 10px; font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+  .req-meta { font-size: 12px; color: var(--_mut); margin-top: 2px; }
+  .req-steps { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .req-steps li {
+    font: 500 8.5px var(--f-mono, monospace); text-transform: uppercase; letter-spacing: .04em; color: var(--_mut);
+    padding-top: 7px; border-top: 2px solid var(--_line); transition: border-color .3s, color .3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .req-steps li.done { border-color: var(--_acc); color: var(--_fg); }
+  .req-steps li.now { border-color: var(--_fg); color: var(--_fg); }
+  .req-ai { margin-top: 10px; font-size: 11px; color: var(--_acc); opacity: 0; transform: translateY(4px); transition: all .4s; }
+  .req-ai.show { opacity: 1; transform: none; }
+
+  /* Prayr */
+  .pr { width: 92%; }
+  .pr-svg { width: 100%; display: block; overflow: visible; }
+  .pr-horizon { stroke: var(--_line); stroke-dasharray: 3 4; }
+  .pr-arc { fill: none; stroke: var(--_line); stroke-width: 1.5; }
+  .pr-arc-done { fill: none; stroke: var(--_acc); stroke-width: 1.5; stroke-dasharray: 409; stroke-dashoffset: 409; }
+  .pr-sun { fill: var(--_acc); filter: drop-shadow(0 0 10px var(--_acc)); }
+  .pr-svg :global(.pr-mark) { fill: var(--_bg); stroke: var(--_mut); stroke-width: 1.2; transition: all .3s; }
+  .pr-svg :global(.pr-mark.passed) { stroke: var(--_acc); fill: var(--_acc); }
+  .pr-svg :global(.pr-lbl) { font: 500 8px var(--f-mono, monospace); fill: var(--_mut); text-transform: uppercase; letter-spacing: .06em; }
+  .pr-read { display: flex; justify-content: space-between; font: 500 11px var(--f-mono, monospace); color: var(--_mut); margin-top: 6px; padding: 0 4px; }
+  .pr-clock { color: var(--_fg); font-variant-numeric: tabular-nums; }
+
+  /* Vital */
+  .vt { width: 100%; height: 100%; display: grid; grid-template-rows: 1fr auto; }
+  .vt-canvas { width: 100%; height: 100%; min-height: 150px; display: block; }
+  .vt-stats { display: flex; gap: 18px; padding: 8px 14px 12px; font: 500 10px var(--f-mono, monospace); color: var(--_mut); }
+  .vt-k { margin-right: 6px; }
+  .vt-v { color: var(--_fg); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .vt-u { margin-left: 3px; }
+
+  /* ONCO */
+  .on { width: min(260px, 80%); }
+  .on-scan { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid var(--_line); }
+  .on-tissue {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(28% 24% at 56% 48%, color-mix(in srgb, var(--_fg) 38%, transparent), transparent 70%),
+      radial-gradient(14% 12% at 50% 52%, color-mix(in srgb, var(--_fg) 55%, transparent), transparent 70%),
+      repeating-radial-gradient(circle at 30% 70%, transparent 0 6px, color-mix(in srgb, var(--_fg) 6%, transparent) 6px 7px),
+      var(--_panel);
+    filter: blur(.4px);
+  }
+  .on-line {
+    position: absolute; left: 0; right: 0; height: 30%; top: -30%;
+    background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--_acc) 35%, transparent));
+    border-bottom: 1px solid var(--_acc);
+    animation: on-sweep 2.6s cubic-bezier(.6,0,.4,1) infinite;
+    animation-play-state: var(--play, paused);
+  }
+  @keyframes on-sweep { to { top: 100%; } }
+  .on-box {
+    position: absolute; left: 33%; top: 30%; width: 42%; height: 40%;
+    border: 1.5px solid var(--_acc); border-radius: 4px; opacity: 0; transform: scale(1.15); transition: all .35s cubic-bezier(.16,1,.3,1);
+  }
+  .on-box.show { opacity: 1; transform: none; }
+  .on-box span {
+    position: absolute; top: -18px; left: -1.5px; background: var(--_acc); color: #18200a;
+    font: 600 9px var(--f-mono, monospace); padding: 2px 5px; border-radius: 3px 3px 3px 0; white-space: nowrap;
+  }
+  .on-read { display: flex; justify-content: space-between; margin-top: 8px; font: 500 9.5px var(--f-mono, monospace); color: var(--_mut); text-transform: uppercase; letter-spacing: .05em; }
+
+  /* Terminal */
+  .tm { width: 100%; height: 100%; padding: 16px 18px; align-self: start; }
+  .tm-pre { margin: 0; font: 400 11.5px/1.7 var(--f-mono, monospace); color: var(--_mut); white-space: pre-wrap; }
+  .tm-pre :global(b) { color: var(--_fg); font-weight: 500; }
+  .tm-pre :global(i) { color: var(--_acc); font-style: normal; }
+  .tm-pre :global(.cur) { display: inline-block; width: 7px; height: 13px; background: var(--_fg); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
+
+<script>
+  type Ctl = { start: () => void; stop: () => void };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function requester(el: HTMLElement): Ctl {
+    const reqs = [
+      ['REQ-1042', 'MacBook Pro for new hire', 'IT · $2,499 · from Amaya', '✦ Routed to IT → Finance (amount > $1k)'],
+      ['REQ-1043', 'PTO · 12–16 Dec', 'HR · 5 days · from Kasun', '✦ Auto-checked balance: 9 days left'],
+      ['REQ-1044', 'Vendor contract renewal', 'Legal · $18k/yr · from Dinithi', '✦ Added Legal review (contract > $10k)'],
+    ];
+    const card = el.querySelector('.req-card')!, steps = [...el.querySelectorAll('.req-steps li')];
+    const chip = el.querySelector('[data-chip]')!, ai = el.querySelector('[data-ai]')!;
+    let r = 0, s = 0, t: number | undefined;
+    const paint = () => {
+      steps.forEach((li, i) => { li.classList.toggle('done', i < s || s === 4); li.classList.toggle('now', i === s && s < 4); });
+      chip.textContent = steps[s].textContent!;
+      chip.classList.toggle('ok', s === 4);
+      ai.classList.toggle('show', s >= 1);
+    };
+    const tick = () => {
+      if (s < 4) { s++; paint(); t = window.setTimeout(tick, s === 4 ? 1800 : 1000); return; }
+      card.classList.add('swap');
+      t = window.setTimeout(() => {
+        r = (r + 1) % reqs.length; s = 0;
+        const [id, title, meta, note] = reqs[r];
+        el.querySelector('[data-id]')!.textContent = id;
+        el.querySelector('[data-title]')!.textContent = title;
+        el.querySelector('[data-meta]')!.textContent = meta;
+        ai.textContent = note;
+        paint(); card.classList.remove('swap');
+        t = window.setTimeout(tick, 1000);
+      }, 450);
+    };
+    paint();
+    return { start: () => { if (!t) t = window.setTimeout(tick, 800); }, stop: () => { clearTimeout(t); t = undefined; } };
+  }
+
+  function prayr(el: HTMLElement): Ctl {
+    // Approximate Colombo times; the sun sweeps a compressed day.
+    const P: [string, number][] = [['Fajr', 4 * 60 + 52], ['Dhuhr', 12 * 60 + 9], ['Asr', 15 * 60 + 21], ['Maghrib', 18 * 60 + 11], ['Isha', 19 * 60 + 22]];
+    const D0 = 4 * 60 + 40, D1 = 19 * 60 + 40;
+    const pos = (m: number) => { const t = (m - D0) / (D1 - D0); return [150 - 130 * Math.cos(Math.PI * t), 140 - 130 * Math.sin(Math.PI * t), t] as const; };
+    const NS = 'http://www.w3.org/2000/svg', g = el.querySelector('[data-marks]')!;
+    const marks = P.map(([name, m]) => {
+      const [x, y] = pos(m);
+      const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', `${x}`); c.setAttribute('cy', `${y}`); c.setAttribute('r', '3.5'); c.setAttribute('class', 'pr-mark');
+      const l = document.createElementNS(NS, 'text'); l.textContent = name; l.setAttribute('class', 'pr-lbl');
+      l.setAttribute('x', `${x}`); l.setAttribute('y', `${y < 100 ? y - 10 : y + 18}`); l.setAttribute('text-anchor', 'middle');
+      g.append(c, l); return c;
+    });
+    const sun = el.querySelector('[data-sun]')!, done = el.querySelector<SVGPathElement>('[data-done]')!;
+    const clock = el.querySelector('[data-clock]')!, next = el.querySelector('[data-next]')!;
+    const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(Math.floor(m % 60)).padStart(2, '0')}`;
+    let raf = 0, t0 = 0;
+    const frame = (now: number) => {
+      if (!t0) t0 = now;
+      const m = D0 + (((now - t0) / 9000) % 1) * (D1 - D0);
+      const [x, y, t] = pos(m);
+      sun.setAttribute('cx', `${x}`); sun.setAttribute('cy', `${y}`);
+      done.style.strokeDashoffset = `${409 * (1 - t)}`;
+      marks.forEach((c, i) => c.classList.toggle('passed', m >= P[i][1]));
+      clock.textContent = fmt(m) + ' Colombo';
+      const n = P.find(([, pm]) => pm > m) ?? P[0];
+      next.textContent = `Next · ${n[0]} ${fmt(n[1])}`;
+      raf = requestAnimationFrame(frame);
+    };
+    return { start: () => { if (!raf) raf = requestAnimationFrame(frame); }, stop: () => { cancelAnimationFrame(raf); raf = 0; } };
+  }
+
+  function vital(el: HTMLElement): Ctl {
+    const cv = el.querySelector<HTMLCanvasElement>('[data-canvas]')!, ctx = cv.getContext('2d')!;
+    const bpmEl = el.querySelector('[data-bpm]')!, spoEl = el.querySelector('[data-spo]')!;
+    const css = getComputedStyle(el);
+    let raf = 0, x = 0, last = 0, phase = 0, prevY = 0, bpm = 72;
+    // PQRST-ish waveform for one beat, phase 0..1
+    const wave = (p: number) =>
+      0.08 * Math.exp(-((p - 0.18) ** 2) / 0.0012) - 0.12 * Math.exp(-((p - 0.36) ** 2) / 0.00008)
+      + 1 * Math.exp(-((p - 0.4) ** 2) / 0.00012) - 0.22 * Math.exp(-((p - 0.44) ** 2) / 0.0001)
+      + 0.18 * Math.exp(-((p - 0.68) ** 2) / 0.003);
+    const size = () => { const r = cv.getBoundingClientRect(); cv.width = r.width * devicePixelRatio; cv.height = r.height * devicePixelRatio; ctx.scale(devicePixelRatio, devicePixelRatio); x = 0; };
+    const frame = (now: number) => {
+      const dt = last ? Math.min(now - last, 50) : 16; last = now;
+      const W = cv.clientWidth, H = cv.clientHeight, speed = 0.11 * dt;
+      phase += (dt / 1000) * (bpm / 60);
+      if (phase > 1) { phase -= 1; bpm = Math.round(68 + Math.random() * 9); bpmEl.textContent = `${bpm}`; spoEl.textContent = `${97 + Math.round(Math.random() * 2)}`; }
+      const y = H * 0.62 - wave(phase) * H * 0.45;
+      ctx.clearRect(x + 1, 0, 26, H);
+      ctx.strokeStyle = css.getPropertyValue('--_acc').trim() || '#c4e069';
+      ctx.lineWidth = 1.8; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(x, prevY || y); ctx.lineTo(x + speed, y); ctx.stroke();
+      x += speed; prevY = y;
+      if (x > W) { x = 0; prevY = 0; }
+      raf = requestAnimationFrame(frame);
+    };
+    size();
+    return { start: () => { if (!raf) { last = 0; size(); raf = requestAnimationFrame(frame); } }, stop: () => { cancelAnimationFrame(raf); raf = 0; } };
+  }
+
+  function onco(el: HTMLElement): Ctl {
+    const runs = [['dermoscopy', 'benign · 0.94'], ['chest x-ray', 'nodule · 0.81'], ['mammography', 'clear · 0.97']];
+    const box = el.querySelector('[data-box]')!, lbl = el.querySelector('[data-label]')!;
+    const mod = el.querySelector('[data-mod]')!, step = el.querySelector('[data-step]')!;
+    let i = 0, t: number | undefined;
+    const cycle = () => {
+      box.classList.remove('show'); step.textContent = 'inference…';
+      mod.textContent = `MODALITY · ${runs[i][0]}`;
+      t = window.setTimeout(() => { lbl.textContent = runs[i][1]; box.classList.add('show'); step.textContent = 'cnn · 212ms'; i = (i + 1) % runs.length; t = window.setTimeout(cycle, 2600); }, 2400);
+    };
+    return {
+      start: () => { el.style.setProperty('--play', 'running'); if (!t) cycle(); },
+      stop: () => { el.style.setProperty('--play', 'paused'); clearTimeout(t); t = undefined; },
+    };
+  }
+
+  function terminal(el: HTMLElement): Ctl {
+    const pre = el.querySelector('[data-term]')!;
+    const script: [string, number][] = [
+      ['<b>~/requester</b> $ git push origin main', 40],
+      ['<i>✓</i> 14 files · 3 migrations', 0],
+      ['<b>~/requester</b> $ supabase db push', 40],
+      ['<i>✓</i> rls policies verified (42/42)', 0],
+      ['<b>~/requester</b> $ vercel deploy --prod', 40],
+      ['  building… <i>Next.js 15</i>', 0],
+      ['  edge functions · 6 regions', 0],
+      ['<i>✓</i> v0.17.0 live → getrequester.com', 0],
+    ];
+    let t: number | undefined, line = 0, ch = 0, out = '';
+    const visible = (html: string, n: number) => {
+      // type through the text while keeping tags whole
+      let res = '', count = 0;
+      for (const part of html.split(/(<[^>]+>)/)) {
+        if (part.startsWith('<')) { res += part; continue; }
+        const take = Math.max(0, Math.min(part.length, n - count)); res += part.slice(0, take); count += part.length;
+      }
+      return res;
+    };
+    const tick = () => {
+      if (line >= script.length) { t = window.setTimeout(() => { line = 0; ch = 0; out = ''; tick(); }, 2600); return; }
+      const [html, speed] = script[line];
+      const plain = html.replace(/<[^>]+>/g, '').length;
+      if (speed && ch < plain) { ch++; pre.innerHTML = out + visible(html, ch) + '<span class="cur"></span>'; t = window.setTimeout(tick, speed + Math.random() * 40); return; }
+      out += html + '\n'; line++; ch = 0;
+      pre.innerHTML = out + '<span class="cur"></span>';
+      t = window.setTimeout(tick, speed ? 380 : 260);
+    };
+    return { start: () => { if (!t) tick(); }, stop: () => { clearTimeout(t); t = undefined; } };
+  }
+
+  const makers = { requester, prayr, vital, onco, terminal } as const;
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const ctl = (e.target as any).__ctl as Ctl | undefined;
+      if (!ctl) continue;
+      e.isIntersecting && !reduce ? ctl.start() : ctl.stop();
+    }
+  }, { threshold: 0.2 });
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach((el) => {
+    const make = makers[el.dataset.demo as keyof typeof makers];
+    if (!make) return;
+    (el as any).__ctl = make(el);
+    io.observe(el);
+  });
+</script>
