@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+
+const date = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+// rough read time, shown where `ls -l` would show a file size
+const minutes = (body: string) => Math.max(1, Math.round(body.split(/\s+/).length / 220));
+---
+
+<section id="writing" class="ws-section" data-section="writing" aria-labelledby="writing-title">
+  <p class="ws-cmd">ls -lt writing/</p>
+  <h2 id="writing-title" class="ws-title">Writing</h2>
+  <ul class="ls">
+    {posts.map((p) => (
+      <li>
+        <a href={`/blog/${p.slug}/`}>
+          <span class="meta mono"><time datetime={p.data.pubDate.toISOString()}>{date(p.data.pubDate)}</time><span>{minutes(p.body)} min</span></span>
+          <span class="title">{p.data.title}</span>
+          <span class="desc">{p.data.description}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <a class="all mono" href="/blog">cd writing/ → all posts</a>
+</section>
+
+<style>
+  .ls { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ws-line); }
+  .ls li { border-bottom: 1px solid var(--ws-line); }
+  .ls a { display: grid; grid-template-columns: 170px 1fr; gap: 2px 20px; padding: 14px 4px; color: var(--ws-fg); text-decoration: none; transition: background 0.15s; }
+  .ls a:hover { background: var(--ws-hover); }
+  .ls a:hover .title { color: var(--ws-accent); }
+  .meta { grid-row: span 2; display: flex; gap: 12px; font-size: 11.5px; color: var(--ws-muted); padding-top: 3px; }
+  .title { font-weight: 500; font-size: 16px; transition: color 0.15s; }
+  .desc { font-size: 14px; color: var(--ws-muted); line-height: 1.5; }
+  .all { display: inline-block; margin-top: 16px; font-size: 12.5px; }
+  @media (max-width: 640px) {
+    .ls a { grid-template-columns: 1fr; }
+    .meta { grid-row: auto; }
+  }
+</style>

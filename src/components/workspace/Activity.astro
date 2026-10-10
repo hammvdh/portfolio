@@ -1,0 +1,16 @@
+---
+import GitHubHeatmap from '../GitHubHeatmap.tsx';
+---
+
+<section id="activity" class="ws-section" data-section="activity" aria-labelledby="activity-title">
+  <p class="ws-cmd">git log --author=hammvdh --since="1 year"</p>
+  <h2 id="activity-title" class="ws-title">Activity</h2>
+  <div class="heatmap">
+    <GitHubHeatmap client:only="react" />
+  </div>
+</section>
+
+<style>
+  .heatmap { padding: 20px 22px; border: 1px solid var(--ws-line); border-radius: 12px; background: var(--ws-side); overflow-x: auto; color: var(--ws-muted); }
+  .heatmap :global(.caption) { font: 400 11px var(--font-mono); color: var(--ws-muted); margin: 0 0 10px; }
+</style>

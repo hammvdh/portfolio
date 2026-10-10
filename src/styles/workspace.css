@@ -1,0 +1,101 @@
+/* Workspace theme tokens. Dark is the default; html[data-theme="light"] swaps the palette.
+   Components only use these tokens (or color-mix of them), never raw colours. */
+.ws {
+  --ws-bg: #0a0b0d;
+  --ws-side: #0f1013;
+  --ws-panel: #15161b;
+  --ws-demo: #0d0e11;
+  --ws-hover: #17181d;
+  --ws-active: #1c1e24;
+  --ws-line: #1f2127;
+  --ws-line-strong: #2a2c33;
+  --ws-fg: #e8e9ec;
+  --ws-body: #c9cbd1;
+  --ws-tree: #b9bcc4;
+  --ws-muted: #80848e; /* 5:1 on --ws-bg */
+  --ws-faint: #3a3d45;
+  --ws-accent: #c4e069;
+  --ws-accent-fg: #18200a;
+  --ws-key: #7aa2f7;
+  --ws-string: #9ece6a;
+  --ws-ok: #28c840;
+  --ws-error: #ff6b6b;
+  --ws-shadow: rgb(0 0 0 / 0.6);
+
+  --ws-side-w: 248px;
+  --ws-tabs-h: 40px;
+  --ws-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--ws-bg);
+  color: var(--ws-fg);
+  font-family: var(--font-sans);
+}
+
+/* Light: warm paper with the lime darkened enough to pass AA as link text on it. */
+[data-theme="light"] .ws {
+  --ws-bg: #f7f7f5;
+  --ws-side: #efefec;
+  --ws-panel: #ffffff;
+  --ws-demo: #ffffff;
+  --ws-hover: #e7e7e3;
+  --ws-active: #e0e0db;
+  --ws-line: #e0e0db;
+  --ws-line-strong: #cdcdc6;
+  --ws-fg: #16171a;
+  --ws-body: #3a3c42;
+  --ws-tree: #45484f;
+  --ws-muted: #686b73; /* 5:1 on --ws-bg */
+  --ws-faint: #c4c6cb;
+  --ws-accent: #4d7c0f; /* 4.9:1 on --ws-bg */
+  --ws-accent-fg: #ffffff;
+  --ws-key: #2f55c4;
+  --ws-string: #3d7a1c;
+  --ws-ok: #1f9d3a;
+  --ws-error: #d63c3c;
+  --ws-shadow: rgb(20 20 15 / 0.14);
+}
+
+.ws .mono { font-family: var(--font-mono); }
+.ws a { color: var(--ws-accent); }
+.ws a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Home sections share the content column of the other pages (.container-page:
+   60rem minus its side padding), so every page lines up on the same edge. */
+.ws {
+  --ws-column: 912px;
+  --ws-gutter: 16px;
+}
+@media (min-width: 640px) { .ws { --ws-gutter: 24px; } }
+
+/* Section chrome: a shell command, then a title, then the content, like every other page */
+.ws-section {
+  padding: 56px max(var(--ws-gutter), calc((100% - var(--ws-column)) / 2));
+  border-top: 1px solid var(--ws-line);
+  scroll-margin-top: var(--ws-tabs-h);
+}
+.ws-cmd {
+  font: 400 13px var(--font-mono);
+  color: var(--ws-fg);
+  margin: 0 0 10px;
+}
+.ws-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 24px;
+}
+.ws-cmd::before { content: '$ '; color: var(--ws-muted); }
+.ws-dim { color: var(--ws-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ws *, .ws *::before, .ws *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Page titles match the home page's display type (Tailwind's preflight resets heading weight). */
+.ws main h1 { font-weight: 600; letter-spacing: -0.035em; }

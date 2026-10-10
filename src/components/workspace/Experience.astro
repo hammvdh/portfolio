@@ -1,0 +1,54 @@
+---
+import { experience } from '../../data/experience';
+
+// Roles, newest first (the order of src/data/experience.ts, which the résumé shares).
+const short = (d: string) => (d === 'Present' ? 'now' : d);
+---
+
+<section id="experience" class="ws-section" data-section="experience" aria-labelledby="experience-title">
+  <p class="ws-cmd">cat experience.md</p>
+  <h2 id="experience-title" class="ws-title">Experience</h2>
+
+  <ol class="roles">
+    {experience.map((e) => (
+      <li class="role">
+        <span class="when mono">{e.start} – {short(e.end)}</span>
+        <div class="what">
+          <p class="title">
+            {e.role}
+            {e.end === 'Present' && <span class="now mono">current</span>}
+          </p>
+          <p class="where">
+            {e.companyUrl ? (
+              <a href={e.companyUrl} target="_blank" rel="noopener noreferrer">{e.company}</a>
+            ) : (
+              <span>{e.company}</span>
+            )}
+            {e.location && <span class="ws-dim"> · {e.location}</span>}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ol>
+  <a class="resume mono" href="/resume">cat resume.pdf → full résumé</a>
+</section>
+
+<style>
+  .roles { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ws-line); }
+  .role {
+    display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 4px 24px; align-items: baseline;
+    padding: 18px 0; border-bottom: 1px solid var(--ws-line);
+  }
+  .when { font-size: 12px; color: var(--ws-muted); white-space: nowrap; }
+  .title { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .now { font-size: 10.5px; font-weight: 400; color: var(--ws-ok); }
+  .now::before { content: '● '; }
+  .where { margin: 4px 0 0; font-size: 14.5px; color: var(--ws-body); }
+  .where a { color: var(--ws-body); text-decoration: underline; text-decoration-color: var(--ws-line-strong); text-underline-offset: 3px; }
+  .where a:hover { color: var(--ws-accent); text-decoration-color: currentColor; }
+  .resume { display: inline-block; margin-top: 16px; font-size: 12.5px; }
+
+  @media (max-width: 640px) {
+    .role { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

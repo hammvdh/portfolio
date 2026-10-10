@@ -1,0 +1,203 @@
+---
+// ONCO has no product screenshots, so it's shown as what it was: a research ML system.
+// An architecture figure with one lane per model; a pulse runs each lane in turn,
+// lighting the stages it passes, then the (example) output fills in.
+import TourHud from './TourHud.astro';
+
+const lanes = [
+  { name: 'skin', op: 'normalise', icon: 'skin', blocks: [34, 30, 22, 14], out: 'benign', p: 0.94, caption: 'Skin · dermoscopy → CNN' },
+  { name: 'lung', op: 'segment', icon: 'lung', blocks: [34, 30, 22, 14], out: 'nodule', p: 0.81, caption: 'Lung · chest X-ray → CNN' },
+  { name: 'breast', op: 'roi crop', icon: 'breast', blocks: [34, 30, 22, 14], out: 'clear', p: 0.97, caption: 'Breast · mammography → CNN' },
+  { name: 'notes', op: 'tokenise', icon: 'text', blocks: [24, 24, 24], out: 'low risk', p: 0.18, caption: 'Prognosis · symptoms → NLTK → risk model' },
+];
+
+// Geometry in viewBox units (480 × 360, the 4:3 media frame)
+const TOP = 82, GAP = 56;
+const X = { icon: 40, pre: 92, preW: 80, blocks: 198, blockW: 14, blockGap: 8, out: 318, barW: 100, end: 462 };
+const laneY = (i: number) => TOP + i * GAP;
+const blockX = (k: number) => X.blocks + k * (X.blockW + X.blockGap);
+---
+
+<div
+  class="pipe"
+  data-onco
+  data-lanes={JSON.stringify(lanes.map((l) => ({ p: l.p, caption: l.caption })))}
+  data-from={X.icon + 20}
+  data-to={X.out - 4}
+>
+  <svg viewBox="0 0 480 360" role="img" aria-label="ONCO architecture: skin, lung and breast images each pass through pre-processing and a dedicated convolutional network to a diagnosis; symptom notes pass through NLTK and a risk model to a prognosis. Outputs shown are examples.">
+    <g class="head mono">
+      <text x={X.icon - 18} y="40">input</text>
+      <text x={X.pre} y="40">pre-process</text>
+      <text x={X.blocks} y="40">model</text>
+      <text x={X.out} y="40">output <tspan class="dim">(example)</tspan></text>
+    </g>
+
+    {lanes.map((l, i) => {
+      const y = laneY(i);
+      const lastBlock = blockX(l.blocks.length - 1) + X.blockW;
+      return (
+        <g class="lane" data-lane={i}>
+          {/* wires */}
+          <line class="wire" x1={X.icon + 20} y1={y} x2={X.pre} y2={y} />
+          <line class="wire" x1={X.pre + X.preW} y1={y} x2={X.blocks} y2={y} />
+          <line class="wire" x1={lastBlock} y1={y} x2={X.out - 4} y2={y} />
+
+          {/* input icon */}
+          <g class="stage icon" data-x={X.icon} transform={`translate(${X.icon} ${y})`}>
+            <rect x="-18" y="-18" width="36" height="36" rx="7" />
+            {l.icon === 'skin' && (<><circle r="10" class="glyph" /><circle r="4.5" cx="1" cy="1" class="glyph fill" /></>)}
+            {l.icon === 'lung' && (<><path class="glyph" d="M-2 -9 C-11 -8 -12 6 -7 10 C-3 12 -2 8 -2 4 Z" /><path class="glyph" d="M2 -9 C11 -8 12 6 7 10 C3 12 2 8 2 4 Z" /><path class="glyph" d="M0 -13 V-6" /></>)}
+            {l.icon === 'breast' && (<><path class="glyph" d="M-9 10 C-13 -2 -4 -12 9 -11" /><circle r="2.5" cx="2" cy="1" class="glyph fill" /></>)}
+            {l.icon === 'text' && (<><path class="glyph" d="M-9 -6 H9 M-9 0 H9 M-9 6 H4" /></>)}
+          </g>
+
+          {/* pre-processing */}
+          <g class="stage" data-x={X.pre}>
+            <rect class="box" x={X.pre} y={y - 17} width={X.preW} height="34" rx="6" />
+            <text class="name mono" x={X.pre + 9} y={y - 3}>{l.name}</text>
+            <text class="op mono" x={X.pre + 9} y={y + 9}>{l.op}</text>
+          </g>
+
+          {/* model: shrinking feature maps (CNN) or flat stages (prognosis) */}
+          {l.blocks.map((h, k) => (
+            <rect class="stage block" data-x={blockX(k)} x={blockX(k)} y={y - h / 2} width={X.blockW} height={h} rx="2.5" />
+          ))}
+
+          {/* output */}
+          <g class="stage out" data-x={X.out}>
+            <text class="label" x={X.out} y={y - 5}>{l.out}</text>
+            <text class="value mono" x={X.end} y={y - 5} text-anchor="end" data-value>{l.p.toFixed(2)}</text>
+            <rect class="track" x={X.out} y={y + 3} width={X.barW + 44} height="4" rx="2" />
+            <rect class="fill" x={X.out} y={y + 3} width={(X.barW + 44) * l.p} height="4" rx="2" />
+          </g>
+
+          <circle class="pulse" cx={X.icon + 20} cy={y} r="3.2" />
+        </g>
+      );
+    })}
+  </svg>
+
+  <TourHud steps={lanes.length} caption={lanes[0].caption} />
+</div>
+
+<style>
+  .pipe { position: absolute; inset: 0; background: var(--ws-demo); }
+  /* leave the bottom strip to the caption overlay so it never covers a lane */
+  svg { position: absolute; inset: 0 0 46px; width: 100%; height: calc(100% - 46px); }
+
+  .head text { font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--ws-muted); }
+  .head .dim { fill: var(--ws-faint); text-transform: none; letter-spacing: 0; }
+
+  .lane { transition: opacity 0.4s; }
+  /* Idle (no JS / reduced motion): every lane shown complete. While playing: the active
+     lane is full strength, finished lanes dim, pending lanes faint. */
+  .pipe[data-playing] .lane { opacity: 0.32; }
+  .pipe[data-playing] .lane.done { opacity: 0.6; }
+  .pipe[data-playing] .lane.active { opacity: 1; }
+
+  .wire { stroke: var(--ws-line-strong); stroke-width: 1; }
+  .icon rect, .box { fill: var(--ws-panel); stroke: var(--ws-line-strong); stroke-width: 1; transition: stroke 0.3s; }
+  .glyph { fill: none; stroke: var(--ws-muted); stroke-width: 1.3; stroke-linecap: round; transition: stroke 0.3s; }
+  .glyph.fill { fill: var(--ws-muted); stroke: none; }
+  .name { font-size: 9.5px; fill: var(--ws-fg); }
+  .op { font-size: 8.5px; fill: var(--ws-muted); }
+  .block { fill: var(--ws-line-strong); transition: fill 0.3s; }
+
+  .label { font-size: 10.5px; font-weight: 600; fill: var(--ws-fg); }
+  .value { font-size: 10px; fill: var(--ws-muted); }
+  .track { fill: var(--ws-line); }
+  .fill { fill: var(--ws-accent); transform-box: fill-box; transform-origin: left center; transition: transform 0.9s var(--ws-ease); }
+
+  .pulse { fill: var(--ws-accent); opacity: 0; filter: drop-shadow(0 0 4px var(--ws-accent)); }
+
+  /* Lit stages while the pulse passes */
+  .icon.lit rect, .stage.lit .box { stroke: var(--ws-accent); }
+  .icon.lit .glyph { stroke: var(--ws-fg); }
+  .icon.lit .glyph.fill { fill: var(--ws-fg); stroke: none; }
+  .block.lit { fill: var(--ws-accent); }
+
+  /* While playing, outputs start empty and fill when their lane finishes */
+  .pipe[data-playing] .lane:not(.done):not(.filled) .fill { transform: scaleX(0); }
+</style>
+
+<script>
+  import { whenVisible } from '../../scripts/whenVisible';
+  import { tourHud } from '../../scripts/tourHud';
+
+  const TRAVEL_MS = 1500;
+  const STEP_MS = 3600;
+
+  document.querySelectorAll<HTMLElement>('[data-onco]').forEach((root) => {
+    const lanesData: { p: number; caption: string }[] = JSON.parse(root.dataset.lanes!);
+    const from = Number(root.dataset.from), to = Number(root.dataset.to);
+    const lanes = [...root.querySelectorAll<SVGGElement>('.lane')];
+    const hud = tourHud(root);
+    let index = 0;
+    let timers: number[] = [];
+    let raf = 0;
+    let running = false;
+
+    const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+    const reset = () => lanes.forEach((l) => {
+      l.classList.remove('active', 'done', 'filled');
+      l.querySelectorAll('.lit').forEach((s) => s.classList.remove('lit'));
+    });
+
+    const countUp = (el: Element, to: number) => {
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / 900);
+        el.textContent = (to * p).toFixed(2);
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+
+    const play = (i: number) => {
+      index = i;
+      if (i === 0) reset();
+      const lane = lanes[i];
+      lanes.forEach((l, k) => l.classList.toggle('active', k === i));
+      hud.show(i, lanesData[i].caption, STEP_MS);
+
+      // pulse travels the lane; each stage lights as the pulse reaches it
+      const pulse = lane.querySelector<SVGCircleElement>('.pulse')!;
+      pulse.animate(
+        [{ opacity: 0, transform: 'translateX(0)' }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.92 }, { opacity: 0, transform: `translateX(${to - from}px)` }],
+        { duration: TRAVEL_MS, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' }
+      );
+      lane.querySelectorAll<SVGElement>('.stage').forEach((s) => {
+        const x = Number(s.dataset.x);
+        later(() => s.classList.add('lit'), Math.max(0, ((x - from) / (to - from)) * TRAVEL_MS));
+      });
+      later(() => {
+        lane.classList.add('filled');
+        const value = lane.querySelector('[data-value]')!;
+        countUp(value, lanesData[i].p);
+      }, TRAVEL_MS);
+
+      later(() => {
+        lane.classList.add('done');
+        lane.querySelectorAll('.lit').forEach((s) => s.classList.remove('lit'));
+        play((i + 1) % lanes.length);
+      }, STEP_MS);
+    };
+
+    whenVisible(root, {
+      start: () => {
+        if (running) return;
+        running = true;
+        root.dataset.playing = '';
+        play(index);
+      },
+      stop: () => {
+        running = false;
+        timers.forEach(clearTimeout);
+        timers = [];
+        cancelAnimationFrame(raf);
+        hud.pause();
+      },
+    });
+  });
+</script>

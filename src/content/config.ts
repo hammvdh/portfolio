@@ -46,6 +46,13 @@ const projects = defineCollection({
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
     order: z.number().optional(),
+    /** Most recent release, shown on the home page Work row */
+    release: z
+      .object({
+        version: z.string(),
+        date: z.coerce.date(),
+      })
+      .optional(),
   }),
 });
 

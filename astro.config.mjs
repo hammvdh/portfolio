@@ -9,6 +9,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://hammadh.dev',
   integrations: [react(), mdx(), sitemap()],
+  markdown: {
+    // Both themes are emitted; global.css picks one from html[data-theme].
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },
+  },
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {

@@ -1,0 +1,42 @@
+---
+// Light/dark switch. The theme is applied before first paint by the inline script in
+// Layout.astro; this only flips it, saves the choice, and tells listeners (GitHub heatmap,
+// canvas demos) via a `themechange` event.
+---
+
+<button class="theme-toggle mono" type="button" data-theme-toggle aria-label="Switch to light theme">
+  <span class="to-light" aria-hidden="true">☀ light</span>
+  <span class="to-dark" aria-hidden="true">☾ dark</span>
+</button>
+
+<style>
+  .theme-toggle { color: var(--ws-muted); font-size: inherit; padding: 2px 4px; border-radius: 4px; transition: color 0.15s; }
+  .theme-toggle:hover { color: var(--ws-fg); }
+  .to-dark { display: none; }
+  :global([data-theme='light']) .to-light { display: none; }
+  :global([data-theme='light']) .to-dark { display: inline; }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const label = () => `Switch to ${root.dataset.theme === 'light' ? 'dark' : 'light'} theme`;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const apply = (theme: string, save: boolean) => {
+    root.dataset.theme = theme;
+    if (save) try { localStorage.setItem('theme', theme); } catch {}
+    buttons.forEach((b) => b.setAttribute('aria-label', label()));
+    window.dispatchEvent(new Event('themechange'));
+  };
+
+  buttons.forEach((b) => {
+    b.setAttribute('aria-label', label());
+    b.addEventListener('click', () => apply(root.dataset.theme === 'light' ? 'dark' : 'light', true));
+  });
+
+  // Follow the system setting until the visitor picks a theme themselves.
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('theme'); } catch {}
+    if (!saved) apply(e.matches ? 'light' : 'dark', false);
+  });
+</script>

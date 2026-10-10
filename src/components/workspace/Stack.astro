@@ -1,0 +1,33 @@
+---
+import { techStack } from '../../data/techStack';
+
+// Tech stack rendered as a syntax-highlighted package.json. Built as a string because
+// JSX expressions collapse the whitespace a <pre> needs.
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const key = (k: string) => `<span class="k">"${esc(k)}"</span>`;
+const str = (v: string) => `<span class="s">"${esc(v)}"</span>`;
+const toKey = (s: string) => s.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
+
+const fields = [
+  `${key('name')}: ${str('hammadh-arquil')}`,
+  `${key('version')}: ${str('2026.10.0')}`,
+  `${key('license')}: ${str('open to short consulting')}`,
+  ...Object.entries(techStack).map(([group, items]) => `${key(toKey(group))}: [${items.map(str).join(', ')}]`),
+];
+const json = `{\n${fields.map((f) => `  ${f}`).join(',\n')}\n}`;
+---
+
+<section id="stack" class="ws-section" data-section="stack" aria-labelledby="stack-title">
+  <p class="ws-cmd">cat package.json</p>
+  <h2 id="stack-title" class="ws-title">Stack</h2>
+  <pre class="json mono"><code set:html={json} /></pre>
+</section>
+
+<style>
+  .json {
+    margin: 0; padding: 20px 22px; border: 1px solid var(--ws-line); border-radius: 12px; background: var(--ws-side);
+    font-size: 13px; line-height: 1.9; color: var(--ws-muted); white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .json :global(.k) { color: var(--ws-key); }
+  .json :global(.s) { color: var(--ws-string); }
+</style>

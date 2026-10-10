@@ -1,48 +1,12 @@
 @import "tailwindcss";
+/* Self-hosted fonts (@fontsource) */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource/instrument-serif/400-italic.css";
+@import "@fontsource/caveat/400.css";
 
 /* ── Theming variant ─────────────────────────────────────────────────────── */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
-/* ── Fonts ───────────────────────────────────────────────────────────────── */
-/* PP Neue Montreal — self-hosted woff2 (Pangram Pangram, free for personal/commercial) */
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('/fonts/PPNeueMontreal-Book.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('/fonts/PPNeueMontreal-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('/fonts/PPNeueMontreal-SemiBolditalic.woff2') format('woff2');
-  font-weight: 600;
-  font-display: swap;
-  font-style: italic;
-}
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('/fonts/PPNeueMontreal-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-display: swap;
-}
 
 /* ── Design tokens ───────────────────────────────────────────────────────── */
 :root {
@@ -95,37 +59,39 @@
   --duration-slow:   400ms;
 }
 
-/* Dark tokens apply only with html[data-theme="dark"] so toggle thumb/global styles agree */
+/* Page tokens (used by /now, /blog, case studies…) match the workspace palette in workspace.css. */
+[data-theme="light"] {
+  --bg:           #f7f7f5;
+  --bg-elevated:  #ffffff;
+  --fg:           #16171a;
+  --fg-muted:     #45484f;
+  --fg-subtle:    #686b73;
+  --border:       #e0e0db;
+  --border-hover: #cdcdc6;
+  --accent:       #4d7c0f;
+  color-scheme: light;
+}
+
 [data-theme="dark"] {
-  --bg:           var(--neutral-1000);
-  --bg-elevated: var(--neutral-800);
-  --fg:           var(--neutral-0);
-  --fg-muted:     var(--neutral-300);
-  --fg-subtle:    var(--neutral-500);
-  --border:       var(--neutral-700);
-  --border-hover: var(--neutral-600);
+  --bg:           #0a0b0d;
+  --bg-elevated:  #15161b;
+  --fg:           #e8e9ec;
+  --fg-muted:     #a3a7b0;
+  --fg-subtle:    #80848e;
+  --border:       #1f2127;
+  --border-hover: #2a2c33;
   --accent:       var(--accent-dark-mode);
   color-scheme: dark;
 }
 
-[data-theme="light"] {
-  --bg:           var(--neutral-50);
-  --bg-elevated:  var(--neutral-0);
-  --fg:           var(--neutral-1000);
-  --fg-muted:     var(--neutral-500);
-  --fg-subtle:    var(--neutral-400);
-  --border:       var(--neutral-200);
-  --border-hover: var(--neutral-300);
-  --accent:       var(--accent-light-mode);
-  color-scheme: light;
-}
-
 /* ── Tailwind v4 theme bindings ─────────────────────────────────────────── */
 @theme {
-  --font-sans: 'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  --font-sans: 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --font-display: 'PP Neue Montreal', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-display: 'Geist Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-hand: 'Caveat', cursive;
 
   --color-bg: var(--bg);
   --color-bg-elevated: var(--bg-elevated);
@@ -477,6 +443,13 @@ button,
   text-align: center;
 }
 
+/* Code blocks: Shiki emits light colours inline plus --shiki-dark vars; switch on dark. */
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
 /* ── Print stylesheet (for /resume) ──────────────────────────────────────── */
 @media print {
   :root {
@@ -488,7 +461,7 @@ button,
     --accent:    #2a4d0d;
   }
   body { background: white !important; color: black !important; }
-  nav, .no-print, [data-print-hide] { display: none !important; }
+  nav, .no-print, .ws-cmd, [data-print-hide] { display: none !important; }
   a { color: black !important; text-decoration: none !important; }
   a[href^="http"]::after,
   a[href^="mailto"]::after {

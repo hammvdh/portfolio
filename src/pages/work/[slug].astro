@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { projectFileName } from '../../data/projectFiles';
 
 export async function getStaticPaths() {
   const all = await getCollection('projects', ({ data }) => data.caseStudy);
@@ -44,10 +45,11 @@ const statusLabels: Record<string, string> = {
   type="article"
   publishedDate={data.publishedAt}
   updatedDate={data.updatedAt}
+  file={`work/${projectFileName(entry.slug)}`}
 >
   <article class="case-study">
     <header class="container-page case-head">
-      <a href="/#work" class="back-link" data-astro-prefetch>← Selected work</a>
+      <p class="ws-cmd">open work/{projectFileName(entry.slug)}</p>
 
       <p class="meta-row">
         <span>{data.yearRange ?? data.year}</span>
@@ -128,14 +130,6 @@ const statusLabels: Record<string, string> = {
 
   .case-head { margin-bottom: 2.5rem; }
 
-  .back-link {
-    display: block;
-    color: var(--fg-muted);
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-    transition: color var(--duration-fast) ease;
-  }
-  .back-link:hover { color: var(--accent); }
 
   .meta-row {
     font-family: var(--font-mono);

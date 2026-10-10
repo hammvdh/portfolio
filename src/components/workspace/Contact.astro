@@ -1,0 +1,38 @@
+---
+const links = [
+  { cmd: 'mail', label: 'hammadharquil@gmail.com', href: 'mailto:hammadharquil@gmail.com' },
+  { cmd: 'open', label: 'github.com/hammvdh', href: 'https://github.com/hammvdh' },
+  { cmd: 'open', label: 'linkedin.com/in/hammadharquil', href: 'https://www.linkedin.com/in/hammadharquil/' },
+  { cmd: 'open', label: 'x.com/hammvdh', href: 'https://x.com/hammvdh' },
+  { cmd: 'open', label: 'behance.net/hammadh', href: 'https://www.behance.net/hammadh' },
+  { cmd: 'open', label: 'instagram.com/hammvdh', href: 'https://www.instagram.com/hammvdh/' },
+  { cmd: 'cat', label: 'resume', href: '/resume' },
+];
+---
+
+<section id="contact" class="ws-section contact" data-section="contact" aria-labelledby="contact-title">
+  <p class="ws-cmd">./contact.sh</p>
+  <h2 id="contact-title" class="ws-title">Contact</h2>
+  <p class="lede">Building something, hiring, or just want to talk shop? Email is fastest.</p>
+  <ul class="mono">
+    {links.map((l) => {
+      const external = l.href.startsWith('http');
+      return (
+        <li>
+          <span class="ws-dim">→</span> <span class="cmd">{l.cmd}</span>{' '}
+          <a href={l.href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{l.label}</a>
+        </li>
+      );
+    })}
+  </ul>
+  <p class="exit mono ws-dim">exit 0 · © {new Date().getFullYear()} Hammadh Arquil · <a href="/rss.xml">rss</a> · <a href="/uses">uses</a></p>
+</section>
+
+<style>
+  .contact { padding-bottom: 72px; }
+  .lede { margin: 0 0 18px; color: var(--ws-body); font-size: 16px; }
+  ul { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 2; }
+  .cmd { color: var(--ws-fg); }
+  .exit { margin: 28px 0 0; font-size: 12px; }
+  .exit a { color: var(--ws-muted); }
+</style>

@@ -27,11 +27,11 @@ const fmtDate = (d: Date) =>
   title={`#${tag} — Writing — Hammadh Arquil`}
   description={`Posts tagged #${tag}.`}
   noIndex={posts.length < 2}
+  file={`writing/#${tag}`}
 >
   <div class="tag-page container-page">
     <header class="head">
-      <a href="/blog" class="back-link" data-astro-prefetch>← All writing</a>
-      <p class="caption">Tag</p>
+      <p class="ws-cmd">grep -l "#{tag}" writing/*.md</p>
       <h1>#{tag}</h1>
       <p class="lede">{posts.length} {posts.length === 1 ? 'post' : 'posts'}.</p>
     </header>
@@ -63,22 +63,6 @@ const fmtDate = (d: Date) =>
     .tag-page { padding-top: 3rem; }
   }
   .head { margin-bottom: 2.5rem; }
-  .back-link {
-    display: inline-block;
-    color: var(--fg-muted);
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    transition: color var(--duration-fast) ease;
-  }
-  .back-link:hover { color: var(--accent); }
-  .caption {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--fg-subtle);
-    margin: 0 0 0.5rem;
-  }
   h1 {
     font-family: var(--font-display);
     font-size: clamp(2rem, 6vw, 3rem);
