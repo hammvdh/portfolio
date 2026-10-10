@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import { elitepsdImages } from '../../data/elitepsd';
+---
+
+{elitepsdImages.length > 0 && (
+  <section id="elitepsd" class="ws-section" data-section="elitepsd" aria-labelledby="elitepsd-title">
+    <p class="ws-cmd">open elitepsd/ <span class="ws-dim"># 2016 →, the design years</span></p>
+    <h2 id="elitepsd-title" class="ws-title">ElitePSD archive</h2>
+    <ul class="strip">
+      {elitepsdImages.map(({ name, image }) => (
+        <li>
+          <Image src={image} alt={`ElitePSD work: ${name}`} width={480} loading="lazy" />
+          <span class="mono">{name}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .strip { list-style: none; margin: 0; padding: 0 0 8px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
+  li { flex: 0 0 220px; aspect-ratio: 4 / 5; position: relative; border: 1px solid var(--ws-line); border-radius: 8px; overflow: hidden; scroll-snap-align: start; background: var(--ws-panel); }
+  li :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s var(--ws-ease); }
+  li:hover :global(img) { transform: scale(1.04); }
+  span { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 8px 6px; font-size: 10.5px; color: var(--ws-body); background: linear-gradient(transparent, color-mix(in srgb, var(--ws-bg) 88%, transparent)); }
+</style>

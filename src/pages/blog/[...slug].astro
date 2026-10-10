@@ -37,10 +37,11 @@ const fmtDate = (d: Date) =>
   publishedDate={data.pubDate}
   updatedDate={data.updatedDate}
   tags={data.tags}
+  file={`writing/${post.slug}.md`}
 >
   <article class="post">
     <header class="container-page post-head">
-      <a href="/blog" class="back-link" data-astro-prefetch>← All writing</a>
+      <p class="ws-cmd">cat writing/{post.slug}.md</p>
       <h1>{data.title}</h1>
       <p class="post-meta">
         <time datetime={data.pubDate.toISOString()}>{fmtDate(data.pubDate)}</time>
@@ -101,14 +102,6 @@ const fmtDate = (d: Date) =>
     .post { padding-top: 3rem; }
   }
   .post-head { margin-bottom: 2rem; }
-  .back-link {
-    display: inline-block;
-    color: var(--fg-muted);
-    font-size: 0.85rem;
-    margin-bottom: 1.25rem;
-    transition: color var(--duration-fast) ease;
-  }
-  .back-link:hover { color: var(--accent); }
 
   h1 {
     font-family: var(--font-display);

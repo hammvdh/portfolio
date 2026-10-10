@@ -1,173 +1,164 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+// Site shell: every page is a "file" open in an editor workspace (sidebar file tree,
+// editor tabs, status bar). The home page passes `home` for the boot log and section tabs.
 import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
-import Footer from '../components/Footer.astro';
+import '../styles/workspace.css';
+import BaseHead from '../components/BaseHead.astro';
+import Sidebar from '../components/workspace/Sidebar.astro';
+import Tabs from '../components/workspace/Tabs.astro';
+import BootLog from '../components/workspace/BootLog.astro';
+import ThemeToggle from '../components/workspace/ThemeToggle.astro';
 
-interface Props {
-  title: string;
-  description?: string;
-  image?: string;
-  canonical?: string;
-  type?: 'website' | 'article';
-  publishedDate?: Date;
-  updatedDate?: Date;
-  tags?: string[];
-  noIndex?: boolean;
-}
-
-const SITE = 'https://hammadh.dev';
-const DEFAULT_DESC =
-  'Full-stack software engineer and founder building scalable web, mobile, and AI-powered systems. Currently running Requester, a live AI-driven approval workflow platform, while delivering production-grade solutions at HT Works.';
-
-const {
-  title,
-  description = DEFAULT_DESC,
-  image = '/og/default.png',
-  canonical,
-  type = 'website',
-  publishedDate,
-  updatedDate,
-  tags = [],
-  noIndex = false,
-} = Astro.props;
-
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE).toString();
-const ogImage = image.startsWith('http') ? image : new URL(image, SITE).toString();
-
-const personJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Hammadh Arquil',
-  jobTitle: 'Software Engineer & Product Designer',
-  url: SITE,
-  image: `${SITE}/images/avatar.jpg`,
-  email: 'hammadharquil@gmail.com',
-  description: DEFAULT_DESC,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Colombo',
-    addressCountry: 'LK',
-  },
-  alumniOf: {
-    '@type': 'CollegeOrUniversity',
-    name: 'University of Westminster',
-    url: 'https://www.westminster.ac.uk',
-  },
-  sameAs: [
-    'https://github.com/hammvdh',
-    'https://www.linkedin.com/in/hammadharquil/',
-    'https://x.com/hammvdh',
-    'https://www.instagram.com/hammvdh/',
-    'https://www.behance.net/hammadh',
-  ],
+type Props = import('astro/types').ComponentProps<typeof BaseHead> & {
+  /** Home page: boot log + one tab per section */
+  home?: boolean;
+  /** Path of the "file" this page represents, shown as the open tab, e.g. 'about/now.md' */
+  file?: string;
 };
-
-const articleJsonLd = type === 'article' && publishedDate ? {
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: title,
-  description,
-  image: ogImage,
-  datePublished: publishedDate.toISOString(),
-  ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
-  author: {
-    '@type': 'Person',
-    name: 'Hammadh Arquil',
-    url: SITE,
-  },
-  keywords: tags.join(', '),
-  url: canonicalUrl,
-} : null;
+const { home = false, file, ...head } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" data-theme="dark">
   <head>
     <script is:inline>
-      (function () {
-        function applyStoredTheme(doc) {
-          const root = doc.documentElement;
-          try {
-            const stored = localStorage.getItem('theme');
-            const system = window.matchMedia('(prefers-color-scheme: light)').matches
-              ? 'light'
-              : 'dark';
-            root.dataset.theme = stored === 'light' || stored === 'dark' ? stored : system;
-          } catch (_) {
-            root.dataset.theme = 'dark';
-          }
-        }
-        applyStoredTheme(document);
-        document.addEventListener('astro:before-swap', (event) => {
-          applyStoredTheme(event.newDocument);
-        });
-      })();
+      // Apply the saved theme (or the system one) before first paint, so there's no flash.
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = t;
+      } catch (_) {}
     </script>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
-    {noIndex && <meta name="robots" content="noindex,nofollow" />}
-
-    <meta property="og:type" content={type} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="Hammadh Arquil" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:creator" content="@hammvdh" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-
-    {publishedDate && <meta property="article:published_time" content={publishedDate.toISOString()} />}
-    {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
-    {tags.map((tag) => <meta property="article:tag" content={tag} />)}
-
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#08080b" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
-
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="Hammadh Arquil — Writing"
-      href="/rss.xml"
-    />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-
-    <link rel="preload" href="/fonts/PPNeueMontreal-Book.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/PPNeueMontreal-Medium.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
-    {articleJsonLd && (
-      <script is:inline type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+    {home && (
+      <script is:inline>
+        // Boot log only on the first home visit of a session, and never under reduced motion.
+        // Added before first paint so the page doesn't flash underneath the overlay.
+        try {
+          if (!sessionStorage.getItem('ws-booted') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('ws-boot');
+            // Safety net: never leave the overlay up if the boot script fails to load.
+            setTimeout(function () { document.documentElement.classList.remove('ws-boot'); }, 4000);
+          }
+        } catch (_) {}
+      </script>
     )}
-
-    <ClientRouter />
+    <BaseHead {...head} />
   </head>
-  <body>
+  <body class="ws">
     <a href="#main" class="skip-to-content">Skip to content</a>
-    <Navigation />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer />
+    {home && <BootLog />}
+
+    <header class="topbar mono" data-print-hide>
+      <a href="/" class="brand">hammadh.dev</a>
+      <span class="ws-dim"><time data-clock-colombo>--:--</time> LKT</span>
+      <ThemeToggle />
+      <button class="menu" data-menu aria-controls="ws-sidebar" aria-expanded="false">files ☰</button>
+    </header>
+
+    <div class="shell">
+      <Sidebar />
+      <div class="scrim" data-scrim></div>
+      <main id="main" class:list={['main', { 'is-home': home }]}>
+        <Tabs file={home ? undefined : file} />
+        <slot />
+        {!home && (
+          <footer class="page-foot mono" data-print-hide>
+            <span>exit 0</span>
+            <span>© {new Date().getFullYear()} Hammadh Arquil</span>
+            <a href="/rss.xml">rss</a>
+            <a href="mailto:hammadharquil@gmail.com">email</a>
+          </footer>
+        )}
+      </main>
+    </div>
+
     <Analytics />
     <SpeedInsights />
   </body>
 </html>
+
+<style>
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  .shell { display: grid; grid-template-columns: var(--ws-side-w) minmax(0, 1fr); min-height: 100vh; }
+  .main { min-width: 0; display: flex; flex-direction: column; }
+  .topbar, .scrim { display: none; }
+
+  .page-foot {
+    margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px 18px;
+    padding: 18px clamp(16px, 4vw, 48px); border-top: 1px solid var(--ws-line);
+    font-size: 11.5px; color: var(--ws-muted);
+  }
+  .page-foot a { color: var(--ws-muted); }
+  .page-foot a:hover { color: var(--ws-fg); }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      position: sticky; top: 0; z-index: 30; height: 48px; padding: 0 16px;
+      background: var(--ws-side); border-bottom: 1px solid var(--ws-line); font-size: 12.5px;
+    }
+    .topbar > * { white-space: nowrap; }
+    .brand { color: var(--ws-fg) !important; font-weight: 500; }
+    .menu { color: var(--ws-fg); padding: 6px 10px; border: 1px solid var(--ws-line-strong); border-radius: 6px; font-size: 12px; }
+    .shell :global(#ws-sidebar) {
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; width: min(300px, 84vw);
+      transform: translateX(-100%); transition: transform 0.3s var(--ws-ease);
+    }
+    :global(body.nav-open) .shell :global(#ws-sidebar) { transform: none; }
+    .scrim { display: block; position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / 0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    :global(body.nav-open) .scrim { opacity: 1; pointer-events: auto; }
+    /* The section tabs duplicate the drawer on phones, and the top bar takes their sticky slot.
+       Other pages keep their single file tab, scrolling with the page. */
+    .main.is-home :global(.tabs) { display: none; }
+    .main:not(.is-home) :global(.tabs) { position: static; }
+    .main :global(.ws-section) { scroll-margin-top: 48px; }
+  }
+  @media (max-width: 400px) {
+    /* clock gives way to the theme toggle and menu on the narrowest phones */
+    .topbar .ws-dim { display: none; }
+  }
+
+  /* Résumé prints black on white whatever the theme (see the print block in global.css). */
+  @media print {
+    .shell { display: block; }
+    :global(body.ws) { background: white !important; color: black !important; }
+  }
+</style>
+
+<script>
+  // Live Colombo clock (top bar, status bar, identity section).
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const tick = () => document.querySelectorAll('[data-clock-colombo]').forEach((el) => (el.textContent = fmt.format(new Date())));
+  tick();
+  setInterval(tick, 1000);
+
+  // Mobile drawer
+  const body = document.body;
+  const menu = document.querySelector<HTMLButtonElement>('[data-menu]')!;
+  const setOpen = (open: boolean) => {
+    body.classList.toggle('nav-open', open);
+    menu.setAttribute('aria-expanded', String(open));
+  };
+  menu.addEventListener('click', () => setOpen(!body.classList.contains('nav-open')));
+  document.querySelector('[data-scrim]')!.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('#ws-sidebar a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+
+  // Scrollspy (home page): highlight the tab and sidebar file for the section in view.
+  const sections = document.querySelectorAll<HTMLElement>('[data-section]');
+  if (sections.length) {
+    const links = [...document.querySelectorAll<HTMLElement>('[data-section-link]')];
+    const setActive = (id: string) =>
+      links.forEach((l) => (l.dataset.sectionLink === id ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
+    const spy = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive((e.target as HTMLElement).dataset.section!)),
+      { rootMargin: '-35% 0px -60% 0px' }
+    );
+    sections.forEach((s) => spy.observe(s));
+  }
+</script>

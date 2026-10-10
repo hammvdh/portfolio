@@ -1,0 +1,63 @@
+---
+import { elitepsdImages } from '../../data/elitepsd';
+
+interface Props {
+  /**
+   * The file this page represents, e.g. 'writing/rsc-learnings.md'. When set, the bar shows
+   * the home tab plus this file as the active tab. When omitted (home page), it shows one
+   * tab per home section and the active one follows scroll.
+   */
+  file?: string;
+}
+const { file } = Astro.props;
+
+const tabs = file
+  ? [
+      { name: 'identity.md', href: '/' },
+      { name: file, href: Astro.url.pathname, current: true },
+    ]
+  : [
+      { name: 'identity.md', section: 'identity' },
+      { name: 'work/', section: 'work' },
+      { name: 'experience.md', section: 'experience' },
+      ...(elitepsdImages.length ? [{ name: 'elitepsd/', section: 'elitepsd' }] : []),
+      { name: 'writing/', section: 'writing' },
+      { name: '.git/', section: 'activity' },
+      { name: 'package.json', section: 'stack' },
+      { name: 'contact.sh', section: 'contact' },
+    ].map((t, i) => ({ ...t, href: `#${t.section}`, current: i === 0 }));
+---
+
+<nav class="tabs mono" aria-label={file ? 'Open files' : 'Sections'} data-print-hide>
+  {tabs.map((t) =>
+    file && t.current ? (
+      <span class="tab-open">
+        <a href={t.href} aria-current="page">{t.name}</a>
+        <a href="/" class="close" aria-label={`Close ${t.name}`}>×</a>
+      </span>
+    ) : (
+      <a href={t.href} data-section-link={'section' in t ? t.section : undefined} aria-current={t.current ? 'true' : undefined}>
+        {t.name}
+      </a>
+    )
+  )}
+</nav>
+
+<style>
+  .tabs {
+    position: sticky; top: 0; z-index: 10; height: var(--ws-tabs-h);
+    display: flex; overflow-x: auto; scrollbar-width: none;
+    background: var(--ws-side); border-bottom: 1px solid var(--ws-line); font-size: 12px;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  a {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 16px;
+    color: var(--ws-muted); border-right: 1px solid var(--ws-line); text-decoration: none !important;
+    transition: color 0.15s, background 0.15s;
+  }
+  a:hover { color: var(--ws-fg); }
+  a[aria-current] { color: var(--ws-fg); background: var(--ws-bg); box-shadow: inset 0 2px 0 var(--ws-accent); }
+  .tab-open { display: flex; background: var(--ws-bg); box-shadow: inset 0 2px 0 var(--ws-accent); border-right: 1px solid var(--ws-line); }
+  .tab-open a { border-right: 0; box-shadow: none; }
+  .tab-open .close { padding: 0 12px 0 0; font-size: 14px; }
+</style>

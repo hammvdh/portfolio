@@ -1,0 +1,158 @@
+---
+// Brings a static screenshot to life: the camera pans/zooms between points of interest,
+// a cursor moves and clicks, and a caption explains each stop. Steps come from
+// src/data/projectTours.ts. Runs only while on screen; under reduced motion it shows
+// the first step as a still.
+import type { Tour } from '../../data/projectTours';
+import TourHud from './TourHud.astro';
+
+interface Props {
+  tour: Tour;
+}
+const { tour } = Astro.props;
+const first = tour.steps[0];
+---
+
+<div
+  class="tour"
+  data-tour
+  data-steps={JSON.stringify(tour.steps)}
+  data-w={tour.width}
+  data-h={tour.height}
+>
+  <img
+    class="shot"
+    src={tour.src}
+    alt={tour.alt}
+    width={tour.width}
+    height={tour.height}
+    loading="lazy"
+    decoding="async"
+    data-shot
+  />
+
+  <svg class="cursor" data-cursor viewBox="0 0 20 24" aria-hidden="true">
+    <path d="M2 2 L2 19 L6.5 14.8 L9.6 21.6 L12.6 20.3 L9.6 13.6 L15.8 13.6 Z" />
+  </svg>
+  <span class="ripple" data-ripple aria-hidden="true"></span>
+
+  <TourHud steps={tour.steps.length} caption={first.caption} />
+</div>
+
+<style>
+  .tour { position: absolute; inset: 0; overflow: hidden; background: var(--ws-demo); }
+
+  .shot {
+    position: absolute; top: 0; left: 0; max-width: none; transform-origin: 0 0;
+    transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .tour.instant .shot, .tour.instant .cursor { transition: none; }
+
+  .cursor {
+    position: absolute; top: 0; left: 0; width: 20px; height: 24px; z-index: 2;
+    opacity: 0; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.35));
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.3s;
+  }
+  .cursor path { fill: #111; stroke: #fff; stroke-width: 1.4; stroke-linejoin: round; }
+  .cursor.on { opacity: 1; }
+  .cursor.press path { fill: #333; }
+
+  .ripple {
+    position: absolute; top: 0; left: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px; z-index: 1;
+    border-radius: 50%; border: 2px solid var(--ws-accent); opacity: 0; pointer-events: none;
+  }
+  .ripple.go { animation: ripple 0.6s ease-out; }
+  @keyframes ripple { from { opacity: 0.9; transform: scale(0.3); } to { opacity: 0; transform: scale(1.4); } }
+
+</style>
+
+<script>
+  import { whenVisible } from '../../scripts/whenVisible';
+  import type { TourStep } from '../../data/projectTours';
+  import { tourHud } from '../../scripts/tourHud';
+
+  const CAMERA_MS = 1400;
+  const CURSOR_MS = 900;
+  const DEFAULT_HOLD = 3200;
+
+  document.querySelectorAll<HTMLElement>('[data-tour]').forEach((root) => {
+    const steps: TourStep[] = JSON.parse(root.dataset.steps!);
+    const iw = Number(root.dataset.w), ih = Number(root.dataset.h);
+    const shot = root.querySelector<HTMLImageElement>('[data-shot]')!;
+    const cursor = root.querySelector<SVGElement>('[data-cursor]')!;
+    const ripple = root.querySelector<HTMLElement>('[data-ripple]')!;
+    const hud = tourHud(root);
+
+    let index = 0;
+    let timers: number[] = [];
+    let running = false;
+    let camera = { tx: 0, ty: 0, s: 1 };
+
+    // Camera: scale so the image covers the frame, times the step's zoom, then centre the
+    // focus point without ever showing past the image edges.
+    const frame = (step: TourStep) => {
+      const W = root.clientWidth, H = root.clientHeight;
+      const s = Math.max(W / iw, H / ih) * step.zoom;
+      const dw = iw * s, dh = ih * s;
+      const clamp = (v: number, min: number) => Math.min(0, Math.max(min, v));
+      return { tx: clamp(W / 2 - step.x * dw, W - dw), ty: clamp(H / 2 - step.y * dh, H - dh), s };
+    };
+    const toFrame = (p: { x: number; y: number }) => ({ x: camera.tx + p.x * iw * camera.s, y: camera.ty + p.y * ih * camera.s });
+
+    const setCamera = (step: TourStep) => {
+      camera = frame(step);
+      shot.style.transform = `translate(${camera.tx}px, ${camera.ty}px) scale(${camera.s})`;
+    };
+    const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+    const moveCursor = (x: number, y: number) => (cursor.style.transform = `translate(${x - 2}px, ${y - 2}px)`);
+
+    const play = (i: number) => {
+      index = i;
+      const step = steps[i];
+      const hold = step.hold ?? DEFAULT_HOLD;
+      const duration = CAMERA_MS + (step.click ? CURSOR_MS : 0) + hold;
+      setCamera(step);
+      hud.show(i, step.caption, duration);
+      if (!step.click) cursor.classList.remove('on');
+
+      if (step.click) {
+        const click = step.click;
+        later(() => {
+          const p = toFrame(click);
+          cursor.classList.add('on');
+          moveCursor(p.x, p.y);
+          later(() => {
+            cursor.classList.add('press');
+            ripple.style.transform = `translate(${p.x}px, ${p.y}px)`;
+            ripple.classList.remove('go'); void ripple.offsetWidth; ripple.classList.add('go');
+            later(() => cursor.classList.remove('press'), 160);
+          }, CURSOR_MS);
+        }, CAMERA_MS);
+      }
+      later(() => play((i + 1) % steps.length), duration);
+    };
+
+    const stop = () => {
+      running = false;
+      timers.forEach(clearTimeout);
+      timers = [];
+      hud.pause();
+    };
+
+    // Initial still frame; park the cursor bottom-right, out of the way.
+    const place = () => {
+      root.classList.add('instant');
+      setCamera(steps[index]);
+      moveCursor(root.clientWidth * 0.78, root.clientHeight * 0.7);
+      void root.offsetWidth;
+      root.classList.remove('instant');
+    };
+    place();
+    new ResizeObserver(() => { if (!running) place(); else setCamera(steps[index]); }).observe(root);
+
+    whenVisible(root, {
+      start: () => { if (!running) { running = true; play(index); } },
+      stop,
+    });
+  });
+</script>

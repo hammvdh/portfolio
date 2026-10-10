@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Not found — Hammadh Arquil" description="This page doesn't exist." file="404" noIndex>
+  <section class="nf">
+    <p class="ws-cmd">cd <span data-path>this-page</span></p>
+    <h1 class="mono"><span class="err">zsh:</span> no such file or directory</h1>
+    <p class="hint">The page you're after moved or never existed. Try the file tree, or:</p>
+    <ul class="mono">
+      <li><span class="ws-dim">→</span> <a href="/">cd ~</a></li>
+      <li><span class="ws-dim">→</span> <a href="/#work">ls work/</a></li>
+      <li><span class="ws-dim">→</span> <a href="/blog">ls writing/</a></li>
+    </ul>
+  </section>
+</Layout>
+
+<style>
+  .nf { padding: 72px clamp(16px, 4vw, 48px); max-width: 720px; }
+  h1 { font-size: clamp(18px, 3vw, 24px); font-weight: 500; margin: 0 0 14px; }
+  .err { color: var(--ws-error); }
+  .hint { color: var(--ws-body); margin: 0 0 18px; }
+  ul { list-style: none; margin: 0; padding: 0; line-height: 2; font-size: 14px; }
+</style>
+
+<script>
+  // Echo the path the visitor actually asked for.
+  const el = document.querySelector('[data-path]');
+  if (el) el.textContent = location.pathname;
+</script>

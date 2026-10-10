@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/about", "destination": "/#work", "permanent": true },
-    { "source": "/contact", "destination": "/#connect", "permanent": true },
+    { "source": "/about", "destination": "/#identity", "permanent": true },
+    { "source": "/contact", "destination": "/#contact", "permanent": true },
     { "source": "/work", "destination": "/#work", "permanent": true },
     { "source": "/work/requset", "destination": "/work/requester", "permanent": true }
   ]

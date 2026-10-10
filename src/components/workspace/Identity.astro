@@ -1,0 +1,72 @@
+---
+import { nowSnippet } from '../../data/now';
+
+const updated = new Date(nowSnippet.lastUpdated).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+---
+
+<section id="identity" class="identity" data-section="identity" aria-labelledby="identity-title">
+  <div class="body">
+    <ol class="gutter mono" aria-hidden="true">{Array.from({ length: 40 }, (_, i) => <li>{i + 1}</li>)}</ol>
+    <p class="comment mono"># identity.md · last edited {updated}</p>
+    <h1 id="identity-title" class="name">Hammadh Arquil<span class="caret" aria-hidden="true"></span></h1>
+    <p class="role">Founder, full-stack engineer, recovering graphic designer.</p>
+    <p class="bio">
+      I run <a href="https://www.getrequester.com" target="_blank" rel="noopener noreferrer">Requester</a>,
+      a multi-tenant AI approvals platform I build solo, and ship production work at
+      <a href="https://htworkslk.com" target="_blank" rel="noopener noreferrer">HT Works</a>.
+      Until early 2026 I was founding engineer at
+      <a href="https://sunoanalytics.com" target="_blank" rel="noopener noreferrer">Suno Analytics</a>.
+      Before <em>that</em>, from 2016, I was ElitePSD, designing for whoever would pay me.
+    </p>
+    <p class="bio">
+      On the side I build <a href="https://prayr-app.com" target="_blank" rel="noopener noreferrer">Prayr</a>,
+      a local-first Islamic companion for prayer, learning and reflection.
+    </p>
+    <dl class="kv mono">
+      <div><dt>location</dt><dd>Colombo, LK <span class="ws-dim">6°55′38″N 79°51′40″E</span></dd></div>
+      <div><dt>local</dt><dd><time data-clock-colombo>--:--</time> <span class="ws-dim" data-tzdiff></span></dd></div>
+      <div><dt>now</dt><dd><a href="/now">{nowSnippet.summary}</a></dd></div>
+      {nowSnippet.available && <div><dt>status</dt><dd><span class="ok" aria-hidden="true">●</span> open to work</dd></div>}
+    </dl>
+  </div>
+</section>
+
+<style>
+  /* Same content column as the sections below and the other pages */
+  .identity { padding: 72px max(var(--ws-gutter), calc((100% - var(--ws-column)) / 2)) 56px; overflow: hidden; }
+  .body { position: relative; max-width: 740px; }
+  /* Line numbers hang in the left margin, so the name lines up with every other heading.
+     Hidden until the margin is wide enough to hold them. */
+  .gutter {
+    display: none; list-style: none; margin: 0; padding: 4px 0 0; position: absolute; top: 0; bottom: -56px; right: calc(100% + 18px);
+    text-align: right; font-size: 12px; line-height: 2.15; color: var(--ws-faint); overflow: hidden;
+  }
+  @media (min-width: 1300px) { .gutter { display: block; } }
+  .comment { font-size: 12.5px; color: var(--ws-muted); margin: 0 0 18px; }
+  .name { font-size: clamp(42px, 7vw, 80px); line-height: 1; letter-spacing: -0.045em; margin: 0; font-weight: 600; }
+  .caret { display: inline-block; width: 0.08em; height: 0.85em; background: var(--ws-accent); margin-left: 0.06em; vertical-align: -0.05em; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .role { font-size: clamp(17px, 2vw, 20px); color: var(--ws-muted); margin: 16px 0 28px; }
+  .bio { font-size: 17px; line-height: 1.7; margin: 0 0 16px; color: var(--ws-body); }
+  .bio em { font-family: var(--font-serif); font-size: 1.12em; }
+  .kv { margin: 28px 0 0; font-size: 13px; color: var(--ws-body); }
+  .kv div { display: flex; gap: 12px; margin: 5px 0; }
+  .kv dt { flex: 0 0 76px; color: var(--ws-key); }
+  .kv dd { margin: 0; }
+  .ok { color: var(--ws-ok); }
+
+  @media (max-width: 640px) {
+    .identity { padding-top: 40px; padding-bottom: 40px; }
+    .kv div { flex-direction: column; gap: 0; margin: 10px 0; }
+    .kv dt { flex: none; }
+  }
+</style>
+
+<script>
+  // How far the visitor's clock is from Colombo's (the clock itself ticks in Layout).
+  const diff = 330 + new Date().getTimezoneOffset(); // Colombo is UTC+5:30
+  const h = Math.floor(Math.abs(diff) / 60), m = Math.abs(diff) % 60;
+  const span = [h && `${h}h`, m && `${m}m`].filter(Boolean).join(' ');
+  const text = diff === 0 ? '· same clock as you' : diff > 0 ? `· ${span} ahead of you` : `· ${span} behind you`;
+  document.querySelectorAll('[data-tzdiff]').forEach((el) => (el.textContent = text));
+</script>

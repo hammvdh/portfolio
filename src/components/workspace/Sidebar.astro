@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content';
+import { elitepsdImages } from '../../data/elitepsd';
+import { projectFileName } from '../../data/projectFiles';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface File {
+  name: string;
+  href: string;
+  /** home-page section this file scrolls to; drives scrollspy highlighting */
+  section?: string;
+}
+
+// Highlight the file for the page being viewed. Home-page sections are handled by scrollspy.
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => !href.includes('#') && (href.replace(/\/$/, '') || '/') === here;
+
+const projects = (await getCollection('projects', ({ data }) => data.featured))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Newest few posts, plus the one being read if it's older than that.
+const RECENT = 5;
+const posts = allPosts.filter((p, i) => i < RECENT || isCurrent(`/blog/${p.slug}/`));
+
+const tree: { folder: string; files: File[] }[] = [
+  {
+    folder: 'about',
+    files: [
+      { name: 'identity.md', href: '/#identity', section: 'identity' },
+      { name: 'experience.md', href: '/#experience', section: 'experience' },
+      { name: 'now.md', href: '/now' },
+      { name: 'uses.md', href: '/uses' },
+      { name: 'resume.pdf', href: '/resume' },
+    ],
+  },
+  {
+    folder: 'work',
+    files: [
+      ...projects.map((p) => ({ name: projectFileName(p.slug), href: p.data.caseStudy ? `/work/${p.slug}/` : '/#work' })),
+    ],
+  },
+  {
+    folder: 'history',
+    files: [
+      ...(elitepsdImages.length ? [{ name: 'elitepsd/', href: '/#elitepsd', section: 'elitepsd' }] : []),
+      { name: '.git/', href: '/#activity', section: 'activity' },
+    ],
+  },
+  {
+    folder: 'writing',
+    files: [
+      ...posts.map((p) => ({ name: `${p.slug}.md`, href: `/blog/${p.slug}/` })),
+      { name: '…all posts', href: '/blog' },
+    ],
+  },
+  { folder: 'config', files: [{ name: 'package.json', href: '/#stack', section: 'stack' }] },
+  { folder: 'bin', files: [{ name: 'contact.sh', href: '/#contact', section: 'contact' }] },
+];
+---
+
+<aside class="side" id="ws-sidebar" aria-label="Site files" data-print-hide>
+  <div class="lights" aria-hidden="true"><i></i><i></i><i></i></div>
+  <a class="workspace mono" href="/" aria-label="Hammadh Arquil, home">
+    <svg viewBox="0 0 1282.84 900" fill="currentColor" aria-hidden="true">
+      <polygon points="441.42 400 441.42 700 1182.84 700 1282.84 600 1141.42 600 1141.42 0 500 0 400 100 1041.42 100 1041.42 600 541.42 600 541.42 500 941.41 500 941.41 200 300 200 0 500 241.42 500 241.42 900 982.84 900 1082.84 800 341.42 800 341.42 400 241.42 400 341.42 300 841.41 300 841.41 400 441.42 400" />
+    </svg>
+    HAMMADH.DEV
+  </a>
+  <nav class="tree mono">
+    {tree.map(({ folder, files }) => (
+      <details open>
+        <summary>{folder}</summary>
+        <ul>
+          {files.map((f) => (
+            <li>
+              <a
+                href={f.href}
+                data-section-link={f.section}
+                aria-current={isCurrent(f.href) ? 'page' : undefined}
+                title={f.name}
+              >{f.name}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    ))}
+  </nav>
+  <div class="statusbar mono">
+    <span>⎇ main ✓</span>
+    <ThemeToggle />
+    <span><time data-clock-colombo>--:--</time> LKT</span>
+  </div>
+</aside>
+
+<style>
+  .side {
+    position: sticky; top: 0; height: 100vh; height: 100dvh;
+    background: var(--ws-side); border-right: 1px solid var(--ws-line);
+    display: flex; flex-direction: column; font-size: 12.5px;
+  }
+  .lights { display: flex; gap: 7px; padding: 14px 16px; }
+  .lights i { width: 11px; height: 11px; border-radius: 50%; }
+  .lights i:nth-child(1) { background: #ff5f57; }
+  .lights i:nth-child(2) { background: #febc2e; }
+  .lights i:nth-child(3) { background: #28c840; }
+  .workspace { display: flex; align-items: center; gap: 8px; margin: 8px 16px 6px; font-size: 10.5px; letter-spacing: 0.1em; color: var(--ws-muted) !important; text-decoration: none !important; }
+  .workspace:hover { color: var(--ws-fg) !important; }
+  .workspace svg { width: 18px; height: auto; color: var(--ws-accent); }
+  .tree { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+  summary { list-style: none; cursor: pointer; padding: 3px 16px; margin-top: 8px; color: var(--ws-muted); user-select: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: '▸'; display: inline-block; width: 14px; transition: transform 0.15s; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  summary:hover { color: var(--ws-fg); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  .tree a {
+    display: block; padding: 3px 16px 3px 34px; color: var(--ws-tree);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;
+  }
+  .tree a:hover { background: var(--ws-hover); color: var(--ws-fg); }
+  .tree a[aria-current] { background: var(--ws-active); color: var(--ws-fg); box-shadow: inset 2px 0 0 var(--ws-accent); }
+  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-top: 1px solid var(--ws-line); font-size: 10.5px; color: var(--ws-muted); }
+</style>

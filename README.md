@@ -5,10 +5,10 @@ Astro + React + Tailwind v4 + content collections, deployed to Vercel.
 
 ## Stack
 
-- **Astro 5** — static site, view transitions, content collections
-- **Tailwind CSS v4** — design tokens via `@theme`, `data-theme` driven dark/light mode
-- **React** — used only for `GitHubHeatmap` (lazy-hydrated via `client:visible`)
-- **Vercel** — hosting, Analytics, Speed Insights
+- **Astro 5** — static site, content collections, build-time OG/favicon generation (satori + resvg)
+- **Tailwind CSS v4** + plain scoped CSS — design tokens for a light and a dark theme
+- **React** — used only for `GitHubHeatmap` (client-only island)
+- **Vercel** — hosting, Analytics, Speed Insights (installs with Yarn 4)
 
 ## Local development
 
@@ -24,68 +24,55 @@ yarn astro check  # type-check pages and components
 
 ```
 src/
-  components/      Astro components (Hero, FeaturedWork, Experience, etc.) + GitHubHeatmap.tsx
+  components/
+    BaseHead.astro       Shared <head>: SEO, Open Graph, icons, JSON-LD
+    GitHubHeatmap.tsx    Contribution heatmap (React island)
+    workspace/           The site shell and home sections:
+                           Sidebar (file tree), Tabs, ThemeToggle, BootLog,
+                           Identity, Work, Experience, Writing, Activity, Stack, Contact,
+                           ScreenTour + TourHud (animated screenshot tours), OncoPipeline
   content/
-    blog/          Markdown blog posts (with tags + frontmatter)
-    projects/      MDX case studies (Vital, Prayr, Requester, Onco)
-    config.ts      Collection schemas (zod)
-  data/            Typed data files (experience, education, techStack, now)
-  layouts/         Layout.astro — shared shell (head, nav, footer, meta, JSON-LD)
+    blog/                Markdown posts
+    projects/            MDX case studies (frontmatter drives the home Work rows)
+    config.ts            Collection schemas (zod)
+  data/                  experience, education, techStack, now, projectTours, projectFiles, elitepsd
+  lib/brand.ts           Logo mark + icon/PNG helpers used by the generated images
+  layouts/Layout.astro   Every page: workspace shell (sidebar, tabs, top bar on phones)
   pages/
-    index.astro          One-page home (hero, work, experience, writing, activity, tech, connect)
-    resume.astro         Live résumé with print stylesheet
-    now.astro            What I'm focused on right now
-    uses.astro           Hardware, software, and tools
-    rss.xml.ts           RSS feed
-    blog/                Index, [...slug], tags/[tag]
-    work/[slug].astro    Project case studies
-  styles/global.css      Design tokens, theme, base, animations, prose
+    index.astro          Home (`home` mode: boot log + one tab per section)
+    resume.astro, now.astro, uses.astro, 404.astro
+    blog/, work/[slug].astro
+    favicon-[size].png.ts, apple-touch-icon.png.ts, og/default.png.ts   Generated at build
+    rss.xml.ts
+  scripts/               Small client helpers (whenVisible, tourHud)
+  styles/
+    global.css           Page tokens (light + dark), base, prose, print
+    workspace.css        Workspace tokens (light + dark) and section chrome
+  assets/elitepsd/       Drop ElitePSD images here; the home section appears automatically
 public/
-  fonts/                 PP Neue Montreal + JetBrains Mono woff2 (must be supplied)
-  images/                Avatar, project images, project case-study screenshots
-  og/                    OG images (default.png, per-page generated PNGs)
+  images/projects/       Screenshots used by the Work tours and case studies
   favicon.svg, robots.txt, site.webmanifest
 ```
 
 ## Theming
 
-`<html data-theme="dark|light">` is set by an inline `<head>` script *before paint*,
-defaulting to `prefers-color-scheme` and overridden by `localStorage('theme')`.
-Tailwind v4's `@custom-variant dark` makes `dark:` utilities target the attribute,
-and CSS custom properties (`--bg`, `--fg`, `--accent`, etc.) handle the rest.
+Every page is a "file" open in an editor workspace. `<html data-theme="dark|light">` is set
+by an inline `<head>` script before paint: the saved choice from the toggle if there is one,
+otherwise `prefers-color-scheme`. Components only use semantic tokens (`--ws-*` in
+`workspace.css`, `--bg`/`--fg`/`--accent` in `global.css`), each defined for both themes.
 
-There are **no per-component theme branches** — components reference semantic tokens
-and the variables flip on theme change.
+## Content you'll want to update
 
-## Assets you still need to supply
-
-These are file-only blockers — drop them in and the site renders fully.
-
-1. **Fonts** in `public/fonts/`:
-   - `PPNeueMontreal-Book.woff2`
-   - `PPNeueMontreal-Medium.woff2`
-   - `PPNeueMontreal-Bold.woff2`
-   - `PPNeueMontreal-SemiBolditalic.woff2`
-   - `JetBrainsMono-Regular.woff2`
-   - `JetBrainsMono-Medium.woff2`
-
-   PP Neue Montreal: download from [Pangram Pangram](https://pangrampangram.com/products/neue-montreal) (free for commercial use).
-   JetBrains Mono: download from [jetbrains.com/mono](https://www.jetbrains.com/lp/mono/) or Google Fonts.
-
-2. **OG image** `public/og/default.png` — 1200×630, used by every page until per-page OG generation is wired up.
-
-3. **Project images** in `public/images/projects/`:
-   - `requester.png` — home card and case-study hero (16×10)
-   - `onco.png` — home card (16×10)
-   - Optional: more screenshots referenced inside the project MDX bodies.
-
-4. **Favicons** in `public/`:
-   - `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` — generate from the existing `favicon.svg`.
+- **Work rows** come from `src/content/projects/*.mdx` (`featured`, `order`, `release`).
+- **Screenshot tours**: steps per project in `src/data/projectTours.ts` (coordinates are
+  fractions of the image). Higher-resolution screenshots (~2048px wide) zoom more crisply.
+- **Experience** comes from `src/data/experience.ts` (also used by the résumé).
+- **Now** blurb: `src/data/now.ts`.
 
 ## Deployment
 
-Deploys to Vercel as a static site. `vercel.json` redirects deleted routes
-(`/about`, `/contact`, `/work`) to home anchors. Set the custom domain to
+Deploys to Vercel as a static site on push to `main`. `vercel.json` redirects old
+routes (`/about`, `/contact`, `/work`) to home anchors. Set the custom domain to
 `hammadh.dev` in Vercel project settings.
 
 ---

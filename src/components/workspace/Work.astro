@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import ScreenTour from './ScreenTour.astro';
+import OncoPipeline from './OncoPipeline.astro';
+import { projectTours } from '../../data/projectTours';
+
+// Media per project: a drawn figure, else a screenshot tour, else the plain screenshot.
+const illustrations: Record<string, any> = { onco: OncoPipeline };
+const MAX_STACK = 5;
+
+const projects = (await getCollection('projects', ({ data }) => data.featured))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+  .map((p) => ({
+    slug: p.slug,
+    ...p.data,
+    href: p.data.caseStudy ? `/work/${p.slug}/` : p.data.links.live,
+    Illustration: illustrations[p.slug],
+    tour: projectTours[p.slug],
+  }));
+---
+
+<section id="work" class="ws-section" data-section="work" aria-labelledby="work-title">
+  <p class="ws-cmd">ps aux --sort=-shipped</p>
+  <h2 id="work-title" class="ws-title">Work</h2>
+
+  <ol class="rows">
+    {projects.map((p, i) => (
+      <li class="row">
+        <div class="media">
+          {p.Illustration ? <p.Illustration /> : p.tour ? <ScreenTour tour={p.tour} /> : p.image && <img src={p.image} alt="" loading="lazy" />}
+        </div>
+
+        <div class="info">
+          <div class="top mono">
+            <span class="ws-dim">{String(i + 1).padStart(2, '0')}</span>
+            <span class={`status ${p.status}`}>{p.status}</span>
+            {p.release && (
+              <span class="release">
+                latest <b>{p.release.version}</b> · {p.release.date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+              </span>
+            )}
+            <span class="ws-dim when">{p.yearRange ?? p.year}</span>
+          </div>
+
+          <h3>
+            {p.href ? <a class="title" href={p.href}>{p.title}</a> : <span class="title">{p.title}</span>}
+          </h3>
+          <p class="summary">{p.summary}</p>
+
+          <dl class="meta">
+            <div><dt class="mono">role</dt><dd>{p.role}</dd></div>
+            {p.stack.length > 0 && (
+              <div>
+                <dt class="mono">stack</dt>
+                <dd>
+                  {p.stack.slice(0, MAX_STACK).join(' · ')}
+                  {p.stack.length > MAX_STACK && <span class="ws-dim"> +{p.stack.length - MAX_STACK}</span>}
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          <div class="links mono">
+            {p.caseStudy && <a class="primary" href={`/work/${p.slug}/`}>Open case study →</a>}
+            {p.links.live && <a href={p.links.live} target="_blank" rel="noopener noreferrer">Live ↗</a>}
+            {p.links.repo && <a href={p.links.repo} target="_blank" rel="noopener noreferrer">Source ↗</a>}
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ws-line); }
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--ws-line);
+  }
+
+  .media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--ws-line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--ws-demo);
+    transition: border-color 0.2s;
+  }
+  .media img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+
+  .info { display: flex; flex-direction: column; min-width: 0; padding-top: 4px; }
+  .top { display: flex; align-items: center; gap: 12px; font-size: 11px; }
+  .when { margin-left: auto; }
+  .status { color: var(--ws-muted); }
+  .status.live::before { content: '● '; color: var(--ws-ok); }
+  .release { color: var(--ws-muted); }
+  .release b { font-weight: 500; color: var(--ws-accent); }
+
+  h3 { margin: 14px 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; }
+  .title { color: var(--ws-fg) !important; text-decoration: none !important; }
+  /* The whole row opens the case study; links inside the row sit above this overlay. */
+  a.title::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+  .row:hover .title { color: var(--ws-accent) !important; }
+  .row:hover .media { border-color: var(--ws-line-strong); }
+
+  .summary { margin: 0 0 18px; color: var(--ws-body); font-size: 15.5px; line-height: 1.6; }
+
+  .meta { margin: 0 0 20px; font-size: 13.5px; color: var(--ws-body); }
+  .meta div { display: flex; gap: 12px; margin: 4px 0; }
+  .meta dt { flex: 0 0 48px; font-size: 12px; color: var(--ws-key); padding-top: 1px; }
+  .meta dd { margin: 0; }
+
+  .links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12.5px; }
+  .links a { position: relative; z-index: 2; }
+  .links a:not(.primary) { color: var(--ws-muted); }
+  .links a:not(.primary):hover { color: var(--ws-fg); }
+
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 1fr; gap: 20px; }
+  }
+</style>

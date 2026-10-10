@@ -5,10 +5,11 @@ import Layout from '../layouts/Layout.astro';
 <Layout
   title="Uses — Hammadh Arquil"
   description="Hardware, software, and tools I use day-to-day."
+  file="about/uses.md"
 >
   <article class="uses container-page">
     <header class="head">
-      <p class="caption">/uses</p>
+      <p class="ws-cmd">cat about/uses.md</p>
       <h1>Things I use</h1>
       <p class="lede">
         Hardware, software, and tools I lean on day-to-day. Inspired by
@@ -86,14 +87,6 @@ import Layout from '../layouts/Layout.astro';
     .uses { padding-top: 3rem; }
   }
   .head { margin-bottom: 2rem; }
-  .caption {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--fg-subtle);
-    margin: 0 0 0.5rem;
-  }
   .head h1 {
     font-family: var(--font-display);
     font-size: clamp(1.75rem, 5vw, 2.5rem);

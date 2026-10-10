@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import { experience } from '../../data/experience';
+
+// A short boot sequence shown on the first home-page visit of a session.
+// Layout.astro's inline head script (home only) adds `html.ws-boot` before first paint
+// (skipped for reduced motion and repeat visits); this component removes it.
+const projects = (await getCollection('projects', ({ data }) => data.featured))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+const pad = (s: string, n = 22) => `${s} `.padEnd(n, '.');
+
+const lines = [
+  'hammadh.dev boot sequence',
+  `[ <b>ok</b> ] ${pad('mounting /about')} identity.md`,
+  ...projects.slice(0, 2).map((p) => `[ <b>ok</b> ] ${pad(`spawning ${p.slug}`)} ${p.data.status}`),
+  `[ <b>ok</b> ] ${pad('restoring archive')} ${projects.slice(2).map((p) => p.slug).join(', ')}`,
+  `[ <b>ok</b> ] ${pad('loading experience')} ${experience.length} roles, 2016 → now`,
+  `[ <b>ok</b> ] ${pad('clock synced')} Asia/Colombo`,
+  'ready.',
+];
+---
+
+<div class="boot" data-boot data-lines={JSON.stringify(lines)} aria-hidden="true"><pre class="mono" data-boot-log></pre></div>
+
+<style>
+  .boot { display: none; position: fixed; inset: 0; z-index: 100; background: var(--ws-bg); padding: 40px; transition: opacity 0.5s ease, visibility 0.5s; }
+  :global(html.ws-boot) .boot { display: block; }
+  .boot.done { opacity: 0; visibility: hidden; }
+  pre { margin: 0; font-size: 13px; line-height: 1.8; color: var(--ws-muted); white-space: pre-wrap; }
+  pre :global(b) { color: var(--ws-accent); font-weight: 400; }
+</style>
+
+<script>
+  const html = document.documentElement;
+  const boot = document.querySelector<HTMLElement>('[data-boot]');
+
+  if (boot && html.classList.contains('ws-boot')) {
+    const log = boot.querySelector('[data-boot-log]')!;
+    const lines: string[] = JSON.parse(boot.dataset.lines!);
+    const STEP = 140;
+    lines.forEach((l, i) => setTimeout(() => (log.innerHTML += `${l}\n`), 100 + i * STEP));
+    setTimeout(() => {
+      boot.classList.add('done');
+      try { sessionStorage.setItem('ws-booted', '1'); } catch {}
+      setTimeout(() => html.classList.remove('ws-boot'), 500);
+    }, 100 + lines.length * STEP + 400);
+  }
+</script>

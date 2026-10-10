@@ -1,0 +1,35 @@
+---
+// Caption chip + step progress shared by the animated project media (ScreenTour and
+// illustrations). Driven from script via tourHud() in src/scripts/tourHud.ts.
+interface Props {
+  steps: number;
+  caption: string;
+}
+const { steps, caption } = Astro.props;
+---
+
+<div class="hud" aria-hidden="true">
+  <span class="count mono" data-hud-count>01/{String(steps).padStart(2, '0')}</span>
+  <span class="caption" data-hud-caption>{caption}</span>
+</div>
+<div class="progress" aria-hidden="true" data-hud-progress>
+  {Array.from({ length: steps }, () => <i><b></b></i>)}
+</div>
+
+<style>
+  .hud {
+    position: absolute; left: 12px; bottom: 18px; z-index: 3; max-width: calc(100% - 24px);
+    display: flex; align-items: center; gap: 10px; padding: 7px 12px 7px 10px; border-radius: 8px;
+    background: color-mix(in srgb, var(--ws-panel) 88%, transparent); border: 1px solid var(--ws-line-strong);
+    backdrop-filter: blur(8px); box-shadow: 0 8px 24px -12px var(--ws-shadow);
+  }
+  .count { font-size: 10.5px; color: var(--ws-muted); }
+  .caption { font-size: 13px; font-weight: 500; color: var(--ws-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .caption:global(.swap) { animation: caption-in 0.45s var(--ws-ease); }
+  @keyframes caption-in { from { opacity: 0; transform: translateY(4px); filter: blur(2px); } }
+
+  .progress { position: absolute; left: 12px; right: 12px; bottom: 8px; z-index: 3; display: flex; gap: 4px; }
+  .progress i { flex: 1; height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--ws-fg) 18%, transparent); overflow: hidden; }
+  .progress b { display: block; height: 100%; width: 0; background: var(--ws-accent); }
+  .progress i:global(.done) b { width: 100%; }
+</style>
