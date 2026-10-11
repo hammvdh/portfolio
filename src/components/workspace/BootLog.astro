@@ -12,8 +12,8 @@ const pad = (s: string, n = 22) => `${s} `.padEnd(n, '.');
 const lines = [
   'hammadh.dev boot sequence',
   `[ <b>ok</b> ] ${pad('mounting /about')} identity.md`,
-  ...projects.slice(0, 2).map((p) => `[ <b>ok</b> ] ${pad(`spawning ${p.slug}`)} ${p.data.status}`),
-  `[ <b>ok</b> ] ${pad('restoring archive')} ${projects.slice(2).map((p) => p.slug).join(', ')}`,
+  ...projects.slice(0, 2).map((p) => `[ <b>ok</b> ] ${pad(`spawning ${p.id}`)} ${p.data.status}`),
+  `[ <b>ok</b> ] ${pad('restoring archive')} ${projects.slice(2).map((p) => p.id).join(', ')}`,
   `[ <b>ok</b> ] ${pad('loading experience')} ${experience.length} roles, 2016 → now`,
   `[ <b>ok</b> ] ${pad('clock synced')} Asia/Colombo`,
   'ready.',

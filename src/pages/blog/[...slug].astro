@@ -1,17 +1,17 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
 interface Props {
   post: CollectionEntry<'blog'>;
 }
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 const data = post.data;
 
 const body = post.body ?? '';
@@ -21,7 +21,7 @@ const readingMin = Math.max(1, Math.round(words / 225));
 const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-const idx = all.findIndex((p) => p.slug === post.slug);
+const idx = all.findIndex((p) => p.id === post.id);
 const prev = idx < all.length - 1 ? all[idx + 1] : null;
 const next = idx > 0 ? all[idx - 1] : null;
 
@@ -37,11 +37,11 @@ const fmtDate = (d: Date) =>
   publishedDate={data.pubDate}
   updatedDate={data.updatedDate}
   tags={data.tags}
-  file={`writing/${post.slug}.md`}
+  file={`writing/${post.id}.md`}
 >
   <article class="post">
     <header class="container-page post-head">
-      <p class="ws-cmd">cat writing/{post.slug}.md</p>
+      <p class="ws-cmd">cat writing/{post.id}.md</p>
       <h1>{data.title}</h1>
       <p class="post-meta">
         <time datetime={data.pubDate.toISOString()}>{fmtDate(data.pubDate)}</time>
@@ -76,13 +76,13 @@ const fmtDate = (d: Date) =>
       {(prev || next) && (
         <nav class="related" aria-label="Related posts">
           {prev && (
-            <a class="related-link prev" href={`/blog/${prev.slug}/`} data-astro-prefetch>
+            <a class="related-link prev" href={`/blog/${prev.id}/`} data-astro-prefetch>
               <span class="caption">← Older</span>
               <span class="title">{prev.data.title}</span>
             </a>
           )}
           {next && (
-            <a class="related-link next" href={`/blog/${next.slug}/`} data-astro-prefetch>
+            <a class="related-link next" href={`/blog/${next.id}/`} data-astro-prefetch>
               <span class="caption">Newer →</span>
               <span class="title">{next.data.title}</span>
             </a>

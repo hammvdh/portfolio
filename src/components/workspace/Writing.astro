@@ -16,8 +16,8 @@ const minutes = (body: string) => Math.max(1, Math.round(body.split(/\s+/).lengt
   <ul class="ls">
     {posts.map((p) => (
       <li>
-        <a href={`/blog/${p.slug}/`}>
-          <span class="meta mono"><time datetime={p.data.pubDate.toISOString()}>{date(p.data.pubDate)}</time><span>{minutes(p.body)} min</span></span>
+        <a href={`/blog/${p.id}/`}>
+          <span class="meta mono"><time datetime={p.data.pubDate.toISOString()}>{date(p.data.pubDate)}</time><span>{minutes(p.body ?? '')} min</span></span>
           <span class="title">{p.data.title}</span>
           <span class="desc">{p.data.description}</span>
         </a>

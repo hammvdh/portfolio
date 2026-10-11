@@ -22,7 +22,7 @@ const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
 
 // Newest few posts, plus the one being read if it's older than that.
 const RECENT = 5;
-const posts = allPosts.filter((p, i) => i < RECENT || isCurrent(`/blog/${p.slug}/`));
+const posts = allPosts.filter((p, i) => i < RECENT || isCurrent(`/blog/${p.id}/`));
 
 const tree: { folder: string; files: File[] }[] = [
   {
@@ -38,7 +38,7 @@ const tree: { folder: string; files: File[] }[] = [
   {
     folder: 'work',
     files: [
-      ...projects.map((p) => ({ name: projectFileName(p.slug), href: p.data.caseStudy ? `/work/${p.slug}/` : '/#work' })),
+      ...projects.map((p) => ({ name: projectFileName(p.id), href: p.data.caseStudy ? `/work/${p.id}/` : '/#work' })),
     ],
   },
   {
@@ -51,7 +51,7 @@ const tree: { folder: string; files: File[] }[] = [
   {
     folder: 'writing',
     files: [
-      ...posts.map((p) => ({ name: `${p.slug}.md`, href: `/blog/${p.slug}/` })),
+      ...posts.map((p) => ({ name: `${p.id}.md`, href: `/blog/${p.id}/` })),
       { name: '…all posts', href: '/blog' },
     ],
   },
