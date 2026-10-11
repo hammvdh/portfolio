@@ -5,7 +5,7 @@ Astro + React + Tailwind v4 + content collections, deployed to Vercel.
 
 ## Stack
 
-- **Astro 5** — static site, content collections, build-time OG/favicon generation (satori + resvg)
+- **Astro 7** — static site, content collections, build-time OG/favicon generation (satori + resvg)
 - **Tailwind CSS v4** + plain scoped CSS — design tokens for a light and a dark theme
 - **React** — used only for `GitHubHeatmap` (client-only island)
 - **Vercel** — hosting, Analytics, Speed Insights (installs with Yarn 4)
@@ -34,7 +34,7 @@ src/
   content/
     blog/                Markdown posts
     projects/            MDX case studies (frontmatter drives the home Work rows)
-    config.ts            Collection schemas (zod)
+  content.config.ts      Collection loaders + schemas (zod)
   data/                  experience, education, techStack, now, projectTours, projectFiles, elitepsd
   lib/brand.ts           Logo mark + icon/PNG helpers used by the generated images
   layouts/Layout.astro   Every page: workspace shell (sidebar, tabs, top bar on phones)

@@ -1,11 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { projectFileName } from '../../data/projectFiles';
 
 export async function getStaticPaths() {
   const all = await getCollection('projects', ({ data }) => data.caseStudy);
-  return all.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
 interface Props {
@@ -13,14 +13,14 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const data = entry.data;
 
 // Build prev/next case-study navigation by publishedAt date
 const all = (await getCollection('projects', ({ data }) => data.caseStudy)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
-const idx = all.findIndex((e) => e.slug === entry.slug);
+const idx = all.findIndex((e) => e.id === entry.id);
 const next = all[(idx + 1) % all.length];
 
 const categoryLabels: Record<string, string> = {
@@ -45,11 +45,11 @@ const statusLabels: Record<string, string> = {
   type="article"
   publishedDate={data.publishedAt}
   updatedDate={data.updatedAt}
-  file={`work/${projectFileName(entry.slug)}`}
+  file={`work/${projectFileName(entry.id)}`}
 >
   <article class="case-study">
     <header class="container-page case-head">
-      <p class="ws-cmd">open work/{projectFileName(entry.slug)}</p>
+      <p class="ws-cmd">open work/{projectFileName(entry.id)}</p>
 
       <p class="meta-row">
         <span>{data.yearRange ?? data.year}</span>
@@ -108,9 +108,9 @@ const statusLabels: Record<string, string> = {
       <Content />
     </div>
 
-    {next && next.slug !== entry.slug && (
+    {next && next.id !== entry.id && (
       <nav class="container-page case-foot" aria-label="Next case study">
-        <a href={`/work/${next.slug}`} class="next-link" data-astro-prefetch>
+        <a href={`/work/${next.id}`} class="next-link" data-astro-prefetch>
           <span class="caption">Next case study</span>
           <span class="next-title">{next.data.title} →</span>
         </a>

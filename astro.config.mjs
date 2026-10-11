@@ -8,6 +8,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://hammadh.dev',
+  // Astro 7 defaults to JSX-style whitespace, which would glue inline text together
+  // (e.g. "Requester· Remote"); keep the HTML-style collapsing the templates assume.
+  compressHTML: true,
   integrations: [react(), mdx(), sitemap()],
   markdown: {
     // Both themes are emitted; global.css picks one from html[data-theme].

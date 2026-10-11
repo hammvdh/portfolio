@@ -53,7 +53,7 @@ const fmtDate = (d: Date) =>
     <ul class="posts">
       {posts.map((p) => (
         <li>
-          <a class="post" href={`/blog/${p.slug}/`} data-astro-prefetch>
+          <a class="post" href={`/blog/${p.id}/`} data-astro-prefetch>
             <div class="post-head">
               <h2 class="post-title">{p.data.title}</h2>
               <time class="post-date" datetime={p.data.pubDate.toISOString()}>

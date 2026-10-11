@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# old pre-Astro site, kept locally only (still in git at archive/pre-workspace-redesign)
+_backup/

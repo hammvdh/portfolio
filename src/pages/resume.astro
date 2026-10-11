@@ -96,7 +96,7 @@ const summary =
         {projects.map((p) => (
           <li class="resume-entry">
             <div class="entry-head">
-              <a class="entry-role" href={`/work/${p.slug}`}>{p.data.title}</a>
+              <a class="entry-role" href={`/work/${p.id}`}>{p.data.title}</a>
               <span class="entry-dates">{p.data.yearRange ?? p.data.year}</span>
             </div>
             <div class="entry-sub">
